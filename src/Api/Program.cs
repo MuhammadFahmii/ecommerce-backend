@@ -1,0 +1,87 @@
+using System;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using netca.Api.Handlers;
+using netca.Application.Common.Models;
+using Serilog;
+
+namespace netca.Api
+{
+    /// <summary>
+    /// Program
+    /// </summary>
+    public static class Program
+    {
+        /// <summary>
+        /// Main function
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static void Main(string[] args)
+        {
+            var host = CreateWebHostBuilder(args).Build();
+            try
+            {
+                Log.Information("Starting host");
+                host.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
+
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            var services = new ServiceCollection();
+            var appSetting = new AppSetting();
+
+            services.AddOptions();
+
+            return WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    var env = hostingContext.HostingEnvironment;
+
+                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                        .AddJsonFile($"appsettings.Local.json", optional: true, reloadOnChange: true);
+
+                    config.AddEnvironmentVariables();
+
+                    config.AddCommandLine(args);
+                })
+                .UseKestrel((hostingContext, option) =>
+                {
+                    services.Configure<AppSetting>(hostingContext.Configuration);
+                    appSetting = services.BuildServiceProvider().GetService<IOptionsSnapshot<AppSetting>>()?.Value ??
+                                 new AppSetting();
+
+                    option.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(appSetting.Kestrel.KeepAliveTimeoutInM);
+                    option.Limits.MinRequestBodyDataRate =
+                        new MinDataRate(bytesPerSecond: appSetting.Kestrel.MinRequestBodyDataRate.BytesPerSecond,
+                            gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinRequestBodyDataRate.GracePeriod));
+                    option.Limits.MinResponseDataRate =
+                        new MinDataRate(bytesPerSecond: appSetting.Kestrel.MinResponseDataRate.BytesPerSecond,
+                            gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinResponseDataRate.GracePeriod));
+                    option.AddServerHeader = false;
+                })
+                .UseStartup<Startup>().UseSerilog((hostingContext, loggerConfiguration) =>
+                {
+                    services.Configure<AppSetting>(hostingContext.Configuration);
+                    appSetting = services.BuildServiceProvider().GetService<IOptionsSnapshot<AppSetting>>()?.Value ??
+                                 new AppSetting();
+                    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration).WriteTo
+                        .Sink(new LogEventSinkHandler(appSetting));
+                });
+        }
+    }
+}

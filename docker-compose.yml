@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  netca:
+    image: netca
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - "ConnectionStrings__DefaultConnection=Server=db;Database=netcaDb;User=sa;Password=Your_password123;MultipleActiveResultSets=true"
+    ports:
+      - "5000:5000"
+    restart: on-failure
