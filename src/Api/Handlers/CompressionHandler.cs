@@ -34,7 +34,8 @@ namespace netca.Api.Handlers
                                         "image/jpg",
                                         "application/json",
                                         "application/octet-stream",
-                                        "application/problem+json"
+                                        "application/problem+json",
+                                        "text/csv"
                                       };
                 options.EnableForHttps = true;
                 options.MimeTypes = mimeTypes;
