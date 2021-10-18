@@ -107,10 +107,10 @@ namespace netca.Application.Common.Models
     public class AuthorizationServer
     {
         /// <summary>
-        /// APIConnect
+        /// Gateway
         /// </summary>
         /// <value></value>
-        public string ApiConnect { get; set; } = "https://gateway-dev.unitedtractors.com/dev/internal";
+        public string Gateway { get; set; } = "https://gateway-dev.unitedtractors.com/dev/internal";
 
         /// <summary>
         /// Address

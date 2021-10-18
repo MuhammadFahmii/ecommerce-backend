@@ -52,7 +52,7 @@ namespace netca.Infrastructure.Services
             var userId = user.Claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value;
             var clientId = user.Claims.FirstOrDefault(i => i.Type == Constants.ClientId)?.Value;
 
-            var url = new Uri(_appSetting.AuthorizationServer.ApiConnect + $"/api/authorize/{userId}/{clientId}/{requirement.PermissionName}");
+            var url = new Uri(_appSetting.AuthorizationServer.Gateway + $"/api/authorize/{userId}/{clientId}/{requirement.PermissionName}");
             var response = await _httpClient.GetAsync(url);
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());

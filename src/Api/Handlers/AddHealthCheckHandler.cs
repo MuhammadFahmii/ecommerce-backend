@@ -38,7 +38,7 @@ namespace netca.Api.Handlers
         {
                 
             var ums = new Uri(appSetting.AuthorizationServer.Address);
-            var gateWay = new Uri(appSetting.AuthorizationServer.ApiConnect);
+            var gateWay = new Uri(appSetting.AuthorizationServer.Gateway);
             void UmsSetup(TcpHealthCheckOptions x) => x.AddHost(ums.Host, Convert.ToInt32(appSetting.AuthorizationServer.Address.Split(":")[2]));
             void GateWaySetup(TcpHealthCheckOptions x) => x.AddHost(gateWay.Host, 443);
             services.AddHealthChecks().AddCheck<SystemMemoryHealthcheck>(Constants.DefaultHealthCheckMemoryUsage);

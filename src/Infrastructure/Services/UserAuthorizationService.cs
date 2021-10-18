@@ -173,7 +173,7 @@ namespace netca.Infrastructure.Services
             if (!_isAuthenticated) return null;
             var userId = GetUserId();
             var clientId = GetClientId();
-            var url = new Uri(_appSetting.AuthorizationServer.ApiConnect +
+            var url = new Uri(_appSetting.AuthorizationServer.Gateway +
                               $"/api/user/attribute/{userId}/{clientId}/{_permissionName}");
             var response = await _httpClient.GetAsync(url, cancellationToken);
             _logger.LogDebug("Response:");
@@ -212,7 +212,7 @@ namespace netca.Infrastructure.Services
             if (!_isAuthenticated) return result;
             var jsonString = JsonConvert.SerializeObject(attributes);
 
-            var url = new Uri(_appSetting.AuthorizationServer.ApiConnect + $"/api/user/attributes/{serviceName}");
+            var url = new Uri(_appSetting.AuthorizationServer.Gateway + $"/api/user/attributes/{serviceName}");
 
             var response = await _httpClient.PostAsync(url,
                 new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson), cancellationToken);
@@ -287,7 +287,7 @@ namespace netca.Infrastructure.Services
             var result = new List<UserDeviceInfo>();
 
             if (!_isAuthenticated) return result;
-            var url = _appSetting.AuthorizationServer.ApiConnect + $"/api/user/device/{userId}/{clientId}";
+            var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/device/{userId}/{clientId}";
             var response = await _httpClient.GetAsync(url, cancellationToken);
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
@@ -316,7 +316,7 @@ namespace netca.Infrastructure.Services
         {
             var result = new UserEmailInfo();
             if (!_isAuthenticated) return result;
-            var url = _appSetting.AuthorizationServer.ApiConnect + $"/api/user/email/{userId}";
+            var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/email/{userId}";
             var response = await _httpClient.GetAsync(url, cancellationToken);
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
@@ -347,7 +347,7 @@ namespace netca.Infrastructure.Services
             var result = new GeneralParameterInfo();
 
             if (!_isAuthenticated) return result;
-            var url = new Uri(_appSetting.AuthorizationServer.ApiConnect + "api/generalparameter/" +
+            var url = new Uri(_appSetting.AuthorizationServer.Gateway + "api/generalparameter/" +
                               generalParameterCode);
             var response = await _httpClient.GetAsync(url, cancellationToken);
             _logger.LogDebug("Response:");
@@ -388,7 +388,7 @@ namespace netca.Infrastructure.Services
             if (!_isAuthenticated) return result;
             var userId = GetUserId();
             var clientId = GetClientId();
-            var url = _appSetting.AuthorizationServer.ApiConnect +
+            var url = _appSetting.AuthorizationServer.Gateway +
                       $"/api/user/attribute/service/{userId}/{clientId}/{_permissionName}?getService=true";
             var response = await _httpClient.GetAsync(url, cancellation);
             _logger.LogDebug("Response:");
@@ -422,7 +422,7 @@ namespace netca.Infrastructure.Services
 
             if (!_isAuthenticated) return result;
             var clientId = GetClientId();
-            var url = _appSetting.AuthorizationServer.ApiConnect + $"/api/user/clientid/{clientId}";
+            var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/clientid/{clientId}";
             var response = await _httpClient.GetAsync(url, cancellationToken);
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
