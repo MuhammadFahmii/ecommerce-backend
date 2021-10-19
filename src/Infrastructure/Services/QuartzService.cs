@@ -29,21 +29,27 @@ namespace netca.Infrastructure.Services
             where T : IJob
         {
             var jobName = typeof(T).Name;
-            var cronSchedule = appSetting.BackgroundJob.Jobs.FirstOrDefault(x => x.Key == jobName).Value;
+            var job = appSetting.BackgroundJob.Jobs.FirstOrDefault(x => x.Name.Equals(jobName));
 
 
-            if (string.IsNullOrEmpty(cronSchedule))
+            if (job == null || string.IsNullOrEmpty(job.Schedule))
             {
                 throw new ArgumentNullException($"No Quartz.NET Cron schedule found for {jobName} in configuration");
             }
+            if (job.IsParallel)
+            {
+                jobName += Environment.GetEnvironmentVariable("hostname");
+            }
             
-            var jobKey = new JobKey(jobName);
+            var jobKey = new JobKey(jobName, "Group");
+
             quartz.AddJob<T>(opts => opts.WithIdentity(jobKey));
 
             quartz.AddTrigger(opts => opts
                 .ForJob(jobKey)
-                .WithIdentity(jobName + "-trigger")
-                .WithCronSchedule(cronSchedule));
+                .WithDescription(job.Description)
+                .WithIdentity(jobName + "trigger", jobName + "Group")
+                .WithCronSchedule(job.Schedule));
         }
     }
 }

@@ -5,17 +5,13 @@
 // -----------------------------------------------------------------------------------
 
 using System;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using netca.Application;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
-using netca.Application.TodoLists.Queries.GetTodos;
-using netca.Application.WeatherForecasts.Queries.GetWeatherForecasts;
 using netca.Infrastructure.Files;
 using netca.Infrastructure.Jobs;
 using netca.Infrastructure.Persistence;
@@ -64,31 +60,46 @@ namespace netca.Infrastructure
             services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandlerService>();
             services.AddSingleton<IRedisService, RedisService>();
             services.AddHostedService<LifetimeEventsHostedService>();
-             
-            var md  = CreateServiceProvider(services).GetService<ISender>();
-            var xy = md.Send(new GetTodosQuery());
-            Console.WriteLine("xxxx"+xy.Id);
-            var x = md.Send(new GetWeatherForecastsQuery()).Result;
-            foreach (var xx in x)
-            {
-                Console.WriteLine(xx.Date);
-                Console.WriteLine(xx.Summary);
-            }
             if (!appSetting.BackgroundJob.IsEnable) return;
+            services.Configure<QuartzOptions>(options =>
+            {
+                options.Scheduling.IgnoreDuplicates = appSetting.BackgroundJob.PersistentStore.IgnoreDuplicates;
+                options.Scheduling.OverWriteExistingData = appSetting.BackgroundJob.PersistentStore.OverWriteExistingData;
+            });
             services.AddQuartz(q =>
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();
+                if (appSetting.BackgroundJob.UsePersistentStore)
+                {
+                    q.SchedulerId = appSetting.App.Title;
+                    q.SchedulerName = $"{appSetting.App.Title} Scheduler";
+                    q.UsePersistentStore(s =>
+                    {
+                        s.UseSqlServer(options =>
+                        {
+                            options.ConnectionString = appSetting.BackgroundJob.PersistentStore.ConnectionString;
+                            options.TablePrefix = appSetting.BackgroundJob.PersistentStore.TablePrefix;
+                        });
+                        s.RetryInterval = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.RetryInterval);
+                        s.UseJsonSerializer();
+                        s.UseClustering(cfg =>
+                        {
+                            cfg.CheckinInterval = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinInterval);
+                            cfg.CheckinMisfireThreshold = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinMisfireThreshold);
+                        });
+                    });
+                    q.MisfireThreshold = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.MisfireThreshold);
+                    q.UseDefaultThreadPool(tp =>
+                    {
+                        tp.MaxConcurrency = appSetting.BackgroundJob.PersistentStore.MaxConcurrency;
+                    });
+                }
 
                 q.AddJobAndTrigger<HelloWorldJob>(appSetting);
             });
 
             services.AddQuartzHostedService(
                 q => q.WaitForJobsToComplete = true);
-        }
-        
-        private static ServiceProvider CreateServiceProvider(IServiceCollection services){
-            var serviceProvider = services.BuildServiceProvider();
-            return serviceProvider;
         }
     }
 }
