@@ -17,17 +17,15 @@ namespace netca.Application.Common.Models
     public static class MockData
     {
         /// <summary>
-        /// GetUserAttibute
+        /// GetUserAttribute
         /// </summary>
         /// <returns></returns>
-        public static async Task<Dictionary<string, List<string>>> GetUserAttibute()
+        public static Dictionary<string, List<string>> GetUserAttribute()
         {
-            await Task.Delay(0);
             var result = new Dictionary<string, List<string>>();
             var plants = new List<string>();
-            List<string> WorkCenters;
-            WorkCenters = GetWorkCenters().Select(w => w.Key).ToList();
-            result.Add(Constants.WorkCenterFieldName, WorkCenters);
+            var workCenters = GetWorkCenters().Select(w => w.Key).ToList();
+            result.Add(Constants.WorkCenterFieldName, workCenters);
             plants.Add(Constants.All);
             result.Add(Constants.PlantFieldName, plants);
             return result;
@@ -51,39 +49,38 @@ namespace netca.Application.Common.Models
         }
 
         /// <summary>
-        /// GetAssignmentMechanicListResponse
+        /// GetUserByAttributeAsync
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<UserClientIdInfo>> getUserByAttribute()
+        public static List<UserClientIdInfo> GetUserByAttribute()
         {
-            await Task.Delay(0);
             return new List<UserClientIdInfo>()
             {
-                new UserClientIdInfo()
+                new()
                 {
                     UserId = new Guid("49f140da-707a-459e-4e60-08d708dc37c0"),
                     clientId = "b1a48ae8-3c71-4ae4-4e7b-08d708dc37c0",
                     isCustomer = false
                 },
-                new UserClientIdInfo()
+                new()
                 {
                     UserId = new Guid("b1a48ae8-3c71-4ae4-4e7b-08d708dc37c0"),
                     clientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
                     isCustomer = false
                 },
-                new UserClientIdInfo()
+                new()
                 {
                     UserId = new Guid("c8374c2f-08f7-4156-4e75-08d708dc37c0"),
                     clientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
                     isCustomer = false
                 },
-                new UserClientIdInfo()
+                new()
                 {
                     UserId = new Guid("6178aba0-dd0a-4615-4e7e-08d708dc37c0"),
                     clientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
                     isCustomer = false
                 },
-                new UserClientIdInfo()
+                new()
                 {
                     UserId = new Guid("647c1e9c-6fe4-4800-25d7-08d771620e86"),
                     clientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
@@ -150,28 +147,29 @@ namespace netca.Application.Common.Models
         /// GetWorkCenters
         /// </summary>
         /// <returns></returns>
-        public static List<KeyValuePair<string, string>> GetWorkCenters()
+        public static IEnumerable<KeyValuePair<string, string>> GetWorkCenters()
         {
-            return new List<KeyValuePair<string, string>>() {
-                new KeyValuePair<string, string>("M-ADRTP","FMC Adaro Tutupan"),
-                new KeyValuePair<string, string>("FM-BDIPM","FMC Bendili PAMA"),
-                new KeyValuePair<string, string>("FM-BIUPM","FMC Batukajang PAMA"),
-                new KeyValuePair<string, string>("FM-BKJBU","FMC Batukajang BUMA"),
-                new KeyValuePair<string, string>("FM-BKJSJ","FMC Batukajang SIMS"),
-                new KeyValuePair<string, string>("FM-BNEPM","FMC Bontang East Block Site - KITADIN"),
-                new KeyValuePair<string, string>("FM-DMIPM","FMC Damai Pama"),
-                new KeyValuePair<string, string>("FM-JBYPM","FMC Jembayan PAMA"),
-                new KeyValuePair<string, string>("FM-JKTMB","FMC Jakarta On Road Mayasari Bhakti"),
-                new KeyValuePair<string, string>("FM-JKTTJ","FMC Jakarta On Road Trans Jakarta"),
-                new KeyValuePair<string, string>("FM-LTIBU","FMC Lati Buma"),
-                new KeyValuePair<string, string>("FM-MLWSM","FMC Muaralawa SIMS"),
-                new KeyValuePair<string, string>("FM-SRKVL","FMC Soroako"),
-                new KeyValuePair<string, string>("FM-TJGBU","FMC Tanjung Buma"),
-                new KeyValuePair<string, string>("FM-TJGSI","FMC Tanjung Sis"),
-                new KeyValuePair<string, string>("FM-BGLKP","FMC Bengalon KPP"),
-                new KeyValuePair<string, string>("FM-BGLKW","FMC Bengalon KWN"),
-                new KeyValuePair<string, string>("FM-MTBPM","FMC MTBU Pama"),
-                new KeyValuePair<string, string>("FM-TBGKW","FMC Tabang KWN")
+            return new List<KeyValuePair<string, string>>
+            {
+                new("M-ADRTP","FMC Adaro Tutupan"),
+                new("FM-BDIPM","FMC Bendili PAMA"),
+                new("FM-BIUPM","FMC Batukajang PAMA"),
+                new("FM-BKJBU","FMC Batukajang BUMA"),
+                new("FM-BKJSJ","FMC Batukajang SIMS"),
+                new("FM-BNEPM","FMC Bontang East Block Site - KITADIN"),
+                new("FM-DMIPM","FMC Damai Pama"),
+                new("FM-JBYPM","FMC Jembayan PAMA"),
+                new("FM-JKTMB","FMC Jakarta On Road Mayasari Bhakti"),
+                new("FM-JKTTJ","FMC Jakarta On Road Trans Jakarta"),
+                new("FM-LTIBU","FMC Lati Buma"),
+                new("FM-MLWSM","FMC Muaralawa SIMS"),
+                new("FM-SRKVL","FMC Soroako"),
+                new("FM-TJGBU","FMC Tanjung Buma"),
+                new("FM-TJGSI","FMC Tanjung Sis"),
+                new("FM-BGLKP","FMC Bengalon KPP"),
+                new("FM-BGLKW","FMC Bengalon KWN"),
+                new("FM-MTBPM","FMC MTBU Pama"),
+                new("FM-TBGKW","FMC Tabang KWN")
             };
         }
     }

@@ -162,12 +162,12 @@ namespace netca.Infrastructure.Services
             Dictionary<string, List<string>> result = null;
             if (!IsProd() && !_isAuthenticated)
             {
-                return await MockData.GetUserAttibute();
+                return MockData.GetUserAttribute();
             }
 
             if (IsTest())
             {
-                return await MockData.GetUserAttibute();
+                return MockData.GetUserAttribute();
             }
 
             if (!_isAuthenticated) return null;
@@ -205,7 +205,7 @@ namespace netca.Infrastructure.Services
         {
             if (IsTest())
             {
-                return await MockData.getUserByAttribute();
+                return MockData.GetUserByAttribute();
             }
 
             var result = new List<UserClientIdInfo>();
