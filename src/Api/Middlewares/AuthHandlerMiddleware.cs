@@ -58,14 +58,15 @@ namespace netca.Api.Middlewares
 
             if (requiredCheck)
             {
-                var policyName = Authenticating(context, serviceName);
-                
+                _logger.LogDebug($"Authenticating");
                 var auth = await CheckAuthAsync(context);
                 if (!auth.Succeeded)
                 {
                     await context.ChallengeAsync();
                     return;
                 }
+                
+                var policyName = GeneratePolicy(context, serviceName);
 
                 var policy = AddPolicyToContext(context, policyName);
 
@@ -102,9 +103,9 @@ namespace netca.Api.Middlewares
             return policy;
         }
         
-        private string Authenticating(HttpContext context, string serviceName)
+        private string GeneratePolicy(HttpContext context, string serviceName)
         {
-            _logger.LogDebug($"Authenticating");
+            _logger.LogDebug($"GeneratePolicy");
             var path = context.Request.Path.ToString().Split("/").ToList();
             return StringExtensions.ToPolicyNameFormat(serviceName, context.Request.Method, path);
         }

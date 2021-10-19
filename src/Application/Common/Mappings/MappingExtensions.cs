@@ -28,8 +28,8 @@ namespace netca.Application.Common.Mappings
         /// <param name="pageSize"></param>
         /// <typeparam name="TDestination"></typeparam>
         /// <returns></returns>
-        public static Task<DocumentRootJson<List<TDestination>>> PaginatedListAsync<TDestination>(this IQueryable<TDestination> queryable, int totalItems, int pageNumber, int pageSize)
-            => JsonApiExtensionPaginated.CreateAsync(queryable, totalItems, pageNumber, pageSize);
+        public static Task<DocumentRootJson<List<TDestination>>> PaginatedListAsync<TDestination>(this IQueryable<TDestination> queryable, int pageNumber, int pageSize)
+            => JsonApiExtensionPaginated.CreateAsync(queryable, pageNumber, pageSize);
         
         /// <summary>
         /// ProjectToListAsync

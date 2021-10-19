@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,8 +13,10 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using JsonApiSerializer.JsonApi;
 using MediatR;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Mappings;
+using netca.Application.Common.Models;
 
 namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
 {
@@ -27,20 +28,18 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
         /// <summary>
         /// ListId
         /// </summary>
-        [Required]
+        [BindRequired]
         public Guid ListId { get; set; }
         
         /// <summary>
         /// PageNumber
         /// </summary>
-        [Required]
-        public int PageNumber { get; set; } = 1;
+        public int PageNumber { get; set; } = Constants.DefaultPageNumber;
         
         /// <summary>
         /// PageSize
         /// </summary>
-        [Required]
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; set; } = Constants.DefaultPageSize;
     }
     
     /// <summary>
@@ -74,7 +73,7 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
                 .Where(x => x.ListId == request.ListId)
                 .OrderBy(x => x.Title)
                 .ProjectTo<TodoItemBriefVm>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(  -1,request.PageNumber, request.PageSize);
+                .PaginatedListAsync(  request.PageNumber, request.PageSize);
         }
     }
 }

@@ -13,8 +13,8 @@ using AutoMapper.QueryableExtensions;
 using JsonApiSerializer.JsonApi;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using netca.Application.Common.Interfaces;
+using netca.Application.Common.Models;
 using netca.Application.Common.Vms;
 using netca.Domain.Enums;
 
@@ -23,7 +23,7 @@ namespace netca.Application.TodoLists.Queries.GetTodos
     /// <summary>
     /// GetTodosQuery
     /// </summary>
-    public class GetTodosQuery : IRequest<DocumentRootJson<TodosVm>>
+    public class GetTodosQuery : QueryModel, IRequest<DocumentRootJson<TodosVm>>
     {
     }
     
@@ -34,19 +34,16 @@ namespace netca.Application.TodoLists.Queries.GetTodos
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private  readonly ILogger<GetTodosQueryHandler> _logger;
         
         /// <summary>
         /// GetTodosQueryHandler
         /// </summary>
         /// <param name="context"></param>
         /// <param name="mapper"></param>
-        /// <param name="logger"></param>
-        public GetTodosQueryHandler(IApplicationDbContext context, IMapper mapper, ILogger<GetTodosQueryHandler> logger)
+        public GetTodosQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            _logger = logger;
         }
         
         /// <summary>
@@ -57,7 +54,11 @@ namespace netca.Application.TodoLists.Queries.GetTodos
         /// <returns></returns>
         public async Task<DocumentRootJson<TodosVm>> Handle(GetTodosQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogWarning("masuk2");
+            var countEntity = await _context.TodoLists
+                .AsNoTracking()
+                .QueryWithoutLimit(request)
+                .Select(x => x.Id)
+                .CountAsync(cancellationToken);
            var vm =  new TodosVm
             {
                 PriorityLevels = Enum.GetValues(typeof(PriorityLevel))
@@ -67,11 +68,12 @@ namespace netca.Application.TodoLists.Queries.GetTodos
 
                 Lists = await _context.TodoLists
                     .AsNoTracking()
+                    .Query(request)
                     .ProjectTo<TodoListVm>(_mapper.ConfigurationProvider)
-                    .OrderBy(t => t.Title)
-                    .ToListAsync(cancellationToken)
+                    .OrderBy(t => t.Title).ToListAsync(cancellationToken)
             };
-           return JsonApiExtensions.ToJsonApi(vm);
+           
+           return JsonApiExtensions.ToJsonApiPaginated(vm, countEntity, request?.PageNumber ?? Constants.DefaultPageNumber, request?.PageSize ?? Constants.DefaultPageSize);
         }
     }
 }

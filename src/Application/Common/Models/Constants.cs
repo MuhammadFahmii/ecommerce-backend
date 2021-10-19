@@ -147,13 +147,48 @@ namespace netca.Application.Common.Models
         public const int DefaultPageNumber = 1;
 
         #endregion paging
+        
+        #region Filter&SortSeparator
+
+        /// <sumary>
+        /// Comma Separator
+        /// </sumary>
+        public const string EscapedCommaPattern = @"(?<!($|[^\\])(\\\\)*?\\),";
+
+        /// <sumary>
+        /// Pipe Separator
+        /// </sumary>
+        public const string EscapedPipePattern = @"(?<!($|[^\\])(\\\\)*?\\)\|";
+
+        /// <sumary>
+        /// Comma Separator
+        /// </sumary>
+        public static readonly string[] Operators = new[] {
+            "!@=*",
+            "!_=*",
+            "!=*",
+            "!@=",
+            "!_=",
+            "==*",
+            "@=*",
+            "_=*",
+            "==",
+            "!=",
+            ">=",
+            "<=",
+            ">",
+            "<",
+            "@=",
+            "_="
+        };
+        #endregion
 
         #region  system
 
         /// <summary>
         /// format date yyyyMMddHHmmss
         /// </summary>
-        public const string yyyyMMddHHmmss = "yyyyMMddHHmmss";
+        public const string YyyyMMddHHmmss = "yyyyMMddHHmmss";
 
         /// <summary>
         /// SystemName
@@ -198,11 +233,6 @@ namespace netca.Application.Common.Models
         /// WorkCenterFieldName
         /// </summary>
         public const string WorkCenterFieldName = "Work Center";
-
-        /// <summary>
-        /// ServiceName
-        /// </summary>
-        public const string ServiceName = "netca";
 
         /// <summary>
         /// All

@@ -429,8 +429,93 @@ namespace netca.Application.Common.Models
         public bool IsEnable { get; set; } = true;
         
         /// <summary>
+        /// UsePersistentStore
+        /// </summary>
+        public bool UsePersistentStore { get; set; } = false;
+        
+        /// <summary>
+        /// PersistentStore
+        /// </summary>
+        public PersistentStore PersistentStore { get; set; } = new();
+        /// <summary>
         /// Jobs
         /// </summary>
-        public Dictionary<string, string> Jobs { get; set; } = new();
+        public List<Job> Jobs { get; set; } = new();
+    }
+    
+    /// <summary>
+    /// PersistentStore
+    /// </summary>
+    public class PersistentStore
+    {
+        /// <summary>
+        /// ConnectionString
+        /// </summary>
+        public string ConnectionString { get; set; } = "";
+        
+        /// <summary>
+        /// IgnoreDuplicates
+        /// </summary>
+        public bool IgnoreDuplicates { get; set; } = true;
+        
+        /// <summary>
+        /// OverWriteExistingData
+        /// </summary>
+        public bool OverWriteExistingData { get; set; } = true;
+        
+        /// <summary>
+        /// MaxConcurrency
+        /// </summary>
+        public int MaxConcurrency { get; set; } = 10;
+        
+        /// <summary>
+        /// RetryInterval
+        /// </summary>
+        public int RetryInterval { get; set; } = 15;
+        
+        /// <summary>
+        /// CheckinInterval
+        /// </summary>
+        public int CheckinInterval { get; set; } = 15000;
+        
+        /// <summary>
+        /// CheckinMisfireThreshold
+        /// </summary>
+        public int CheckinMisfireThreshold { get; set; } = 15000;
+        
+        /// <summary>
+        /// MisfireThreshold
+        /// </summary>
+        public int MisfireThreshold { get; set; } = 15000;
+        
+        /// <summary>
+        /// TablePrefix
+        /// </summary>
+        public string TablePrefix { get; set; } = "QRTZ_";
+    }
+    
+    /// <summary>
+    /// Job
+    /// </summary>
+    public class Job
+    {
+        /// <summary>
+        /// Name
+        /// </summary>
+        public string Name { get; set; } = "";
+        /// <summary>
+        /// IsParallel
+        /// </summary>
+        public bool IsParallel { get; set; } = false;
+
+        /// <summary>
+        /// Schedule
+        /// </summary>
+        public string Schedule { get; set; } = "";
+        
+        /// <summary>
+        /// Description
+        /// </summary>
+        public string Description { get; set; } = "";
     }
 }

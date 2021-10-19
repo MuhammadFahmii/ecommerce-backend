@@ -12,7 +12,6 @@ using JsonApiSerializer.JsonApi.WellKnown;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 namespace JsonApiSerializer.JsonApi
 {
@@ -25,16 +24,15 @@ namespace JsonApiSerializer.JsonApi
         /// CreateAsync
         /// </summary>
         /// <param name="source"></param>
-        /// <param name="totalItems"></param>
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async Task<DocumentRootJson<List<T>>> CreateAsync<T>(IQueryable<T> source, int totalItems, int pageNumber,
+        public static async Task<DocumentRootJson<List<T>>> CreateAsync<T>(IQueryable<T> source, int pageNumber,
             int pageSize)
         {
 
-            return await JsonApiExtensions.ToJsonApiProjectTo(source, totalItems, pageNumber, pageSize);
+            return await JsonApiExtensions.ToJsonApiProjectTo(source, pageNumber, pageSize);
         }
     }
 
@@ -47,14 +45,13 @@ namespace JsonApiSerializer.JsonApi
         /// ToJsonApiProjectTo
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="totalItems"></param>
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async Task<DocumentRootJson<List<T>>> ToJsonApiProjectTo<T>(IQueryable<T> data, int totalItems, int pageNumber = 1, int pageSize = 1)
+        public static async Task<DocumentRootJson<List<T>>> ToJsonApiProjectTo<T>(IQueryable<T> data, int pageNumber = 1, int pageSize = 1)
         {
-             totalItems = totalItems <= 0 ? await data.CountAsync() : totalItems;
+            var totalItems = await data.CountAsync();
             var items = await data.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
             var totalPages = totalItems > 0 ? (int)Math.Ceiling(totalItems / (double)pageSize) : 0;
             var hasPreviousPage = pageNumber > 1;
@@ -75,6 +72,38 @@ namespace JsonApiSerializer.JsonApi
             return new DocumentRootJson<List<T>>
             {
                 Data = items,
+                Meta = meta,
+                Status = new Status()
+            };
+        }
+        
+        /// <summary>
+        /// ConvertToJsonApi
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="totalItems"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public static DocumentRootJson<T> ToJsonApiPaginated<T>(T data, int totalItems = 1, int pageNumber = 1, int pageSize = 1)
+        {
+            var totalPages = totalItems > 0 ? (int)Math.Ceiling(totalItems / (double)pageSize) : 0 ;
+            var hasPreviousPage = pageNumber > 1;
+            var hasNextPage = pageNumber < totalPages;
+            var nextPageNumber =  hasNextPage ? pageNumber + 1 : totalPages;
+            var previousPageNumber = hasPreviousPage ? pageNumber - 1 : 1;
+            var meta = new Meta{
+                {"totalItems", totalItems},
+                {"pageNumber", pageNumber},
+                {"pageSize", pageSize},
+                {"totalPages", totalPages},
+                {"hasPreviousPage", hasPreviousPage},
+                {"hasNextPage", hasNextPage},
+                {"nextPageNumber", nextPageNumber},
+                {"previousPageNumber", previousPageNumber},
+            };
+            return new DocumentRootJson<T>{
+                Data = data,
                 Meta = meta,
                 Status = new Status()
             };

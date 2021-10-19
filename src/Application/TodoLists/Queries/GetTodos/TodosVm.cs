@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using JsonApiSerializer.JsonApi;
 using netca.Application.Common.Vms;
 
 namespace netca.Application.TodoLists.Queries.GetTodos
@@ -28,6 +29,6 @@ namespace netca.Application.TodoLists.Queries.GetTodos
         /// <summary>
         /// Lists
         /// </summary>
-        public IList<TodoListVm> Lists { get; set; }
+        public IList<TodoListVm>  Lists { get; set; }
     }
 }

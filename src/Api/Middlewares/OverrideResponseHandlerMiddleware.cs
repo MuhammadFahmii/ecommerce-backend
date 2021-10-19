@@ -84,11 +84,13 @@ namespace netca.Api.Middlewares
                                 break;
                             }
                             responseBody = await new StreamReader(memStream).ReadToEndAsync();
+                            memStream.Close();
                         }
                         watch.Stop();
                         var responseTimeForCompleteRequest = watch.ElapsedMilliseconds;
                         context = await RedisCachingAsync(policyName, context, responseBody, CancellationToken.None);
                         var buffer = Encoding.UTF8.GetBytes(ToJasonApi(statusCode, responseTimeForCompleteRequest, responseBody));
+                        
                         context.Response.ContentLength = buffer.Length;
                         await using (var output = new MemoryStream(buffer))
                         {

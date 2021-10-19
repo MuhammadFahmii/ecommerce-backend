@@ -58,8 +58,8 @@ namespace netca.Application.Common.Vms
         /// <param name="profile"></param>
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<TodoItemVm, TodoItem>()
-                .ForMember(x => x.DomainEvents, opt => opt.Ignore());
+            profile.CreateMap<TodoItem, TodoItemVm>()
+                .ForMember(d => d.Priority, opt => opt.MapFrom(s => (int)s.Priority));
         }
     }
 }
