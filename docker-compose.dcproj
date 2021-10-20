@@ -16,6 +16,9 @@
     <None Include=".dockerignore" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".template.config\template.json" />
     <Content Include="Dockerfile" />
+    <Content Include="LICENSE" />
+    <Content Include="README.md" />
   </ItemGroup>
 </Project>
