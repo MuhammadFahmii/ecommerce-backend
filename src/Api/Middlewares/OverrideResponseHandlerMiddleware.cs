@@ -72,19 +72,19 @@ namespace netca.Api.Middlewares
                             policyName = (string)context.Items["CurrentPolicyName"];
                             statusCode = context.Response.StatusCode;
                             memStream.Position = 0;
+                            
+                            if (statusCode != 200)
+                            {
+                                await memStream.CopyToAsync(originalBody);
+                                break;
+                            }
 
                             if (!context.Response.ContentType.Contains("application/json"))
                             {
                                 await memStream.CopyToAsync(originalBody);
                                 break;
                             }
-                            if (statusCode != 200)
-                            {
-                                await memStream.CopyToAsync(originalBody);
-                                break;
-                            }
                             responseBody = await new StreamReader(memStream).ReadToEndAsync();
-                            memStream.Close();
                         }
                         watch.Stop();
                         var responseTimeForCompleteRequest = watch.ElapsedMilliseconds;

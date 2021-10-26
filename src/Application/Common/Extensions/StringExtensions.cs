@@ -24,8 +24,8 @@ namespace netca.Application.Common.Extensions
         public static string Truncate(string s, int maxChars)
         {
             if (s == null)
-                return s;
-            return s.Length <= maxChars ? s : s.Substring(0, maxChars);
+                return null;
+            return s.Length <= maxChars ? s : s[..maxChars];
         }
         
         /// <summary>

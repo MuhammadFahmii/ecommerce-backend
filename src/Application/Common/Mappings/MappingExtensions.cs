@@ -23,7 +23,6 @@ namespace netca.Application.Common.Mappings
         /// PaginatedListAsync
         /// </summary>
         /// <param name="queryable"></param>
-        /// <param name="totalItems"></param>
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <typeparam name="TDestination"></typeparam>
