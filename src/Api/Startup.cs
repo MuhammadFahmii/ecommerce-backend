@@ -77,6 +77,7 @@ namespace netca.Api
             services.AddHttpContextAccessor();
             services.AddApplication();
             services.AddInfrastructure(Environment, AppSetting);
+            services.AddScoped<ApiAuthorizeFilterAttribute>();
             if (Environment.EnvironmentName == "Test")
             {
                 services.AddLocalPermissions(AppSetting);
@@ -97,7 +98,7 @@ namespace netca.Api
                 options.Filters.Add(new ProducesResponseTypeAttribute(typeof(object), (int)System.Net.HttpStatusCode.Forbidden));
                 options.Filters.Add(new ProducesResponseTypeAttribute(typeof(object), (int)System.Net.HttpStatusCode.InternalServerError));
             }).SetCompatibilityVersion(Latest);
-            
+
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services

@@ -67,11 +67,11 @@ namespace netca.Api
 
                     option.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(appSetting.Kestrel.KeepAliveTimeoutInM);
                     option.Limits.MinRequestBodyDataRate =
-                        new MinDataRate(bytesPerSecond: appSetting.Kestrel.MinRequestBodyDataRate.BytesPerSecond,
-                            gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinRequestBodyDataRate.GracePeriod));
+                        new MinDataRate(appSetting.Kestrel.MinRequestBodyDataRate.BytesPerSecond,
+                            TimeSpan.FromSeconds(appSetting.Kestrel.MinRequestBodyDataRate.GracePeriod));
                     option.Limits.MinResponseDataRate =
-                        new MinDataRate(bytesPerSecond: appSetting.Kestrel.MinResponseDataRate.BytesPerSecond,
-                            gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinResponseDataRate.GracePeriod));
+                        new MinDataRate(appSetting.Kestrel.MinResponseDataRate.BytesPerSecond,
+                            TimeSpan.FromSeconds(appSetting.Kestrel.MinResponseDataRate.GracePeriod));
                     option.AddServerHeader = false;
                 })
                 .UseStartup<Startup>().UseSerilog((hostingContext, loggerConfiguration) =>

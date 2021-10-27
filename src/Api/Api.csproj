@@ -6,6 +6,9 @@
         <AssemblyName>netca.Api</AssemblyName>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PreserveCompilationContext>false</PreserveCompilationContext>
+        <IsWebConfigTransformDisabled>true</IsWebConfigTransformDisabled>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
     </PropertyGroup>
 
     <ItemGroup>
