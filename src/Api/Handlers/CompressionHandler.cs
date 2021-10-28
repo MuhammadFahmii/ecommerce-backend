@@ -9,6 +9,7 @@ using System.IO.Compression;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
+using netca.Application.Common.Models;
 
 namespace netca.Api.Handlers
 {
@@ -17,7 +18,6 @@ namespace netca.Api.Handlers
     /// </summary>
     public static class CompressionHandler
     {
-
         /// <summary>
         /// ApplyCompress
         /// </summary>
@@ -29,13 +29,13 @@ namespace netca.Api.Handlers
             {
                 IEnumerable<string> mimeTypes = new[]
                                      {
-                                        "application/pdf",
-                                        "text/plain",
-                                        "image/jpg",
-                                        "application/json",
-                                        "application/octet-stream",
-                                        "application/problem+json",
-                                        "text/csv"
+                                        Constants.HeaderPdf,
+                                        Constants.HeaderTextPlain,
+                                        Constants.HeaderImageJpg,
+                                        Constants.HeaderJson,
+                                        Constants.HeaderOctetStream,
+                                        Constants.HeaderProblemJson,
+                                        Constants.HeaderTextCsv
                                       };
                 options.EnableForHttps = true;
                 options.MimeTypes = mimeTypes;

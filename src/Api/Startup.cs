@@ -99,7 +99,11 @@ namespace netca.Api
                 options.Filters.Add(new ProducesResponseTypeAttribute(typeof(object), (int)System.Net.HttpStatusCode.InternalServerError));
             }).SetCompatibilityVersion(Latest);
 
-            services.AddRouting(options => options.LowercaseUrls = true);
+            services.AddRouting(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            });
 
             services
                 .AddControllers()
