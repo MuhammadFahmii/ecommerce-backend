@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using netca.Application.Common.Models;
 using netca.Infrastructure.Apis;
 using Serilog;
@@ -89,7 +88,7 @@ namespace netca.Api.Handlers
                 return cacheMsTeam;
             }
 
-            cacheMsTeam = new CacheMSTeam{Counter = 0, Date = DateTime.UtcNow.AddHours(-1)};
+            cacheMsTeam = new CacheMSTeam{Counter = 0, Date = DateTime.UtcNow};
             return cacheMsTeam;
         }
 
