@@ -1,9 +1,9 @@
- <img align="left" width="116" height="116" src="https://raw.githubusercontent.com/jasontaylordev/CleanArchitecture/main/.github/icon.png" />
+ <img width="116" height="116" src="https://raw.githubusercontent.com/jasontaylordev/CleanArchitecture/main/.github/icon.png"  alt=""/>
 
 # .NET5 Clean Architecture Solution Template
 [![Build status](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_apis/build/status/netca-CI)](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_build/latest?definitionId=665)
 
-
+[![aif.netca package in dad-registry feed in Azure Artifacts](https://tfs.unitedtractors.com/DefaultCollection/_apis/public/Packaging/Feeds/f638be01-a0c6-4302-ae05-45ba95464364/Packages/791d0990-f814-427a-8f2c-cca0d2c01f46/Badge)](https://tfs.unitedtractors.com/DefaultCollection/_Packaging?feed=f638be01-a0c6-4302-ae05-45ba95464364&package=791d0990-f814-427a-8f2c-cca0d2c01f46&preferRelease=true&_a=package)
 <br/>
 
 This is a solution template for creating a ASP.NET Core following the principles of Clean Architecture. Create a new project based on this template by clicking the above **Use this template** button or by installing and running the associated NuGet package (see Getting Started for full details).
@@ -20,10 +20,10 @@ This is a solution template for creating a ASP.NET Core following the principles
 
 ## Getting Started
 
-The easiest way to get started is to install the [NuGet package](https://www.nuget.org/packages/Clean.Architecture.Solution.Template) and run `dotnet new ca-sln`:
+The easiest way to get started is to install the [NuGet package](https://tfs.unitedtractors.com/DefaultCollection/_Packaging?feed=f638be01-a0c6-4302-ae05-45ba95464364&package=791d0990-f814-427a-8f2c-cca0d2c01f46&preferRelease=true&_a=package) and run `dotnet new netca`:
 
 1. Install the latest [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
-2. Run `dotnet new --install Clean.Architecture.Solution.Template` to install the project template
+2. Run `dotnet new --install aif.netca` to install the project template
 3. Create a folder for your solution and cd into it (the template will use it as project name)
 4. Run `dotnet new netca` to create a new project
 5. Navigate to `src/Api` and run `dotnet run` to launch the back end (ASP.NET Core Web API)
@@ -53,11 +53,6 @@ Then open http://localhost:8080 on your browser.
 To disable Docker in Visual Studio, right-click on the **docker-compose** file in the **Solution Explorer** and select **Unload Project**.
 
 ### Database Configuration
-If you would like to use SQL Server, you will need to update **WebUI/appsettings.json** as follows:
-
-```json
-  "UseInMemoryDatabase": false,
-```
 
 Verify that the **DefaultConnection** connection string within **appsettings.json** points to a valid SQL Server instance.
 
