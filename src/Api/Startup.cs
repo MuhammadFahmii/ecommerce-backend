@@ -239,8 +239,6 @@ namespace netca.Api
 
             app.UseHealthCheck();
 
-            app.UseStaticFiles();
-
             app.UseOpenApi(x =>
                 x.PostProcess = (document, _) =>
                 {

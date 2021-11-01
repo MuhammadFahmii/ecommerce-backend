@@ -363,6 +363,12 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value></value>
         public string Secret { get; set; } = "";
+        
+        /// <summary>
+        /// CacheMSTeam
+        /// </summary>
+        /// <value></value>
+        public CacheMSTeam CacheMSTeam { get; set; } = new();
     }
 
     /// <summary>

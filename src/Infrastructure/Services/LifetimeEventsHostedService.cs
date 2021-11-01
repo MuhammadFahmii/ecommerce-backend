@@ -113,7 +113,7 @@ namespace netca.Infrastructure.Services
                 Facts = facts,
                 activityImage = ImgWarning
             });
-            _tmpl.summary = $"{_appName} has stopped";
+            _tmpl.summary = $"{_appName} has stopping";
             _tmpl.themeColor = Constants.MsTeamsThemeColorWarning;
             _tmpl.sections = sections;
 
@@ -128,7 +128,7 @@ namespace netca.Infrastructure.Services
         private void Send()
         {
             _logger.LogDebug($"Sending message to MsTeam with color {_tmpl.themeColor}");
-            SendToMsTeam.Send(_appSetting, _tmpl);
+            SendToMsTeams.Send(_appSetting, _tmpl).ConfigureAwait(false);
         }
     }
 }

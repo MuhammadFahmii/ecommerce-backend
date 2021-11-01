@@ -4,6 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 
 namespace netca.Application.Common.Models
@@ -34,11 +35,6 @@ namespace netca.Application.Common.Models
     public class Section
     {
         /// <summary>
-        /// markdown
-        /// </summary>
-        public bool markdown { get;} = true;
-        
-        /// <summary>
         /// activityTitle
         /// </summary>
         /// <value></value>
@@ -54,14 +50,7 @@ namespace netca.Application.Common.Models
         /// activityImage
         /// </summary>
         /// <value></value>
-
         public string activityImage {get; set;}
-        
-        /// <summary>
-        /// activityImageType
-        /// </summary>
-        /// <value></value>
-        public string activityImageType {get;} = Constants.MsTeamsActivityImageType;
 
         /// <summary>
         /// Facts
@@ -86,5 +75,26 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value></value>
         public string value { get; set;}
+    }
+    
+    /// <summary>
+    /// CacheMSTeam
+    /// </summary>
+    public class CacheMSTeam
+    {
+        /// <summary>
+        /// Counter
+        /// </summary>
+        public int Counter { get; set; } = 100;
+        
+        /// <summary>
+        /// Hours
+        /// </summary>
+        public double Hours => 24;
+        
+        /// <summary>
+        /// Date
+        /// </summary>
+        public DateTime Date { get; set; } = DateTime.Now;
     }
 }

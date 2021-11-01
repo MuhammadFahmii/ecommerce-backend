@@ -155,11 +155,6 @@ namespace netca.Application.Common.Models
         /// MsTeamsThemeColorWarning
         /// </summary>
         public const string MsTeamsThemeColorWarning = "#f7db05";
-
-        /// <summary>
-        /// MsTeamsThemeColorError
-        /// </summary>
-        public const string MsTeamsActivityImageType = "article";
         #endregion MsTeams
 
         #region  paging

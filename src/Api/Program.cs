@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -77,10 +78,13 @@ namespace netca.Api
                 .UseStartup<Startup>().UseSerilog((hostingContext, loggerConfiguration) =>
                 {
                     services.Configure<AppSetting>(hostingContext.Configuration);
+                    services.AddMemoryCache();
                     appSetting = services.BuildServiceProvider().GetService<IOptionsSnapshot<AppSetting>>()?.Value ??
                                  new AppSetting();
+                    var memoryCache = services.BuildServiceProvider().GetService<IMemoryCache>();
+                    var sink = new LogEventSinkHandler(appSetting, memoryCache);
                     loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration).WriteTo
-                        .Sink(new LogEventSinkHandler(appSetting));
+                        .Sink(sink);
                 });
         }
     }
