@@ -91,6 +91,5 @@ namespace netca.Api.Handlers
             cacheMsTeam = new CacheMSTeam{Counter = 0, Date = DateTime.UtcNow};
             return cacheMsTeam;
         }
-
     }
 }

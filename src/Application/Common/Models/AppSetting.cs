@@ -513,6 +513,11 @@ namespace netca.Application.Common.Models
         /// IsParallel
         /// </summary>
         public bool IsParallel { get; set; } = false;
+        
+        /// <summary>
+        /// IsEnable
+        /// </summary>
+        public bool IsEnable { get; set; } = false;
 
         /// <summary>
         /// Schedule

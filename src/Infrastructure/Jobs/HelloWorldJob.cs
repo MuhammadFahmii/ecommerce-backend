@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Interfaces;
-using netca.Infrastructure.Services;
 using Quartz;
 
 namespace netca.Infrastructure.Jobs

@@ -74,6 +74,7 @@ namespace netca.Api
         {
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             services.AddSingleton(AppSetting);
+            services.AddMemoryCache();
             services.AddHttpContextAccessor();
             services.AddApplication();
             services.AddInfrastructure(Environment, AppSetting);
