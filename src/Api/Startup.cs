@@ -74,6 +74,7 @@ namespace netca.Api
         {
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             services.AddSingleton(AppSetting);
+            services.AddMemoryCache();
             services.AddHttpContextAccessor();
             services.AddApplication();
             services.AddInfrastructure(Environment, AppSetting);
@@ -99,7 +100,11 @@ namespace netca.Api
                 options.Filters.Add(new ProducesResponseTypeAttribute(typeof(object), (int)System.Net.HttpStatusCode.InternalServerError));
             }).SetCompatibilityVersion(Latest);
 
-            services.AddRouting(options => options.LowercaseUrls = true);
+            services.AddRouting(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            });
 
             services
                 .AddControllers()
@@ -234,8 +239,6 @@ namespace netca.Api
             app.UseOverrideResponseHandler();
 
             app.UseHealthCheck();
-
-            app.UseStaticFiles();
 
             app.UseOpenApi(x =>
                 x.PostProcess = (document, _) =>

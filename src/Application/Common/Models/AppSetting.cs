@@ -363,6 +363,12 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value></value>
         public string Secret { get; set; } = "";
+        
+        /// <summary>
+        /// CacheMSTeam
+        /// </summary>
+        /// <value></value>
+        public CacheMSTeam CacheMSTeam { get; set; } = new();
     }
 
     /// <summary>
@@ -507,6 +513,11 @@ namespace netca.Application.Common.Models
         /// IsParallel
         /// </summary>
         public bool IsParallel { get; set; } = false;
+        
+        /// <summary>
+        /// IsEnable
+        /// </summary>
+        public bool IsEnable { get; set; } = false;
 
         /// <summary>
         /// Schedule

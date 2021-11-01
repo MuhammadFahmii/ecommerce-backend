@@ -96,6 +96,7 @@ namespace netca.Infrastructure
                 }
 
                 q.AddJobAndTrigger<HelloWorldJob>(appSetting);
+                q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
             });
 
             services.AddQuartzHostedService(

@@ -13,6 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using netca.Api.Filters;
+using netca.Application.Common.Models;
 using netca.Application.TodoLists.Queries.ExportTodos;
 using netca.Application.TodoLists.Queries.GetTodos;
 using NSwag.Annotations;
@@ -35,8 +36,6 @@ namespace netca.Api.Controllers
         {
         }
         
-        
-        
         /// <summary>
         /// get todos
         /// </summary>
@@ -44,7 +43,7 @@ namespace netca.Api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpGet]
-        [Produces("application/json")]
+        [Produces(Constants.HeaderJson)]
         [SwaggerResponse(HttpStatusCode.OK, typeof(DocumentRootJson<TodosVm>), Description = "Successfully to get todos")]
         [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = "BadRequest")]
         [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit), Description = "Unauthorized")]
@@ -62,7 +61,7 @@ namespace netca.Api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpGet("{id:guid}")]
-        [Produces("text/csv")]
+        [Produces(Constants.HeaderTextCsv)]
         [SwaggerResponse(HttpStatusCode.OK, typeof(DocumentRootJson<TodosVm>), Description = "Successfully to get todos csv")]
         [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = "BadRequest")]
         [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit), Description = "Unauthorized")]

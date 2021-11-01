@@ -30,8 +30,8 @@ namespace netca.Infrastructure.Services
         {
             var jobName = typeof(T).Name;
             var job = appSetting.BackgroundJob.Jobs.FirstOrDefault(x => x.Name.Equals(jobName));
-
-
+            if(job is { IsEnable: false }) return;
+            
             if (job == null || string.IsNullOrEmpty(job.Schedule))
             {
                 throw new ArgumentNullException($"No Quartz.NET Cron schedule found for {jobName} in configuration");

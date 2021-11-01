@@ -21,6 +21,11 @@ namespace netca.Api.Filters
     /// </summary>
     public class ApiAuthorizeFilterAttribute : ActionFilterAttribute
     {
+        /// <summary>
+        /// OnActionExecutionAsync
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="next"></param>
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ApiAuthorizeFilterAttribute>>();

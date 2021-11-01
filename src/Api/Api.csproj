@@ -10,7 +10,6 @@
         <ServerGarbageCollection>true</ServerGarbageCollection>
         <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
     </PropertyGroup>
-
     <ItemGroup>
       <PackageReference Include="AspNetCore.HealthChecks.Network" Version="5.0.4" />
       <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="5.0.2" />
@@ -30,6 +29,10 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+        <Content Update="appsettings.Local.json" CopyToPublishDirectory="Never" />
+        <None Include="wwwroot\**">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
