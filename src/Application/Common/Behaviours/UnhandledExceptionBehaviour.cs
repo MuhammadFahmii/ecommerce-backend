@@ -20,16 +20,16 @@ namespace netca.Application.Common.Behaviours
     public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly ILogger<TRequest> _logger;
-        
+
         /// <summary>
-        /// UnhandledExceptionBehaviour
+        /// Initializes a new instance of the <see cref="UnhandledExceptionBehaviour{TRequest, TResponse}"/> class.
         /// </summary>
         /// <param name="logger"></param>
         public UnhandledExceptionBehaviour(ILogger<TRequest> logger)
         {
             _logger = logger;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>

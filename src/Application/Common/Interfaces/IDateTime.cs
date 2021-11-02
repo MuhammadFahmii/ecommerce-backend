@@ -14,13 +14,13 @@ namespace netca.Application.Common.Interfaces
     public interface IDateTime
     {
         /// <summary>
-        /// Now
+        /// Gets now
         /// </summary>
         /// <value></value>
         DateTime Now { get; }
 
         /// <summary>
-        /// UtcNow
+        /// Gets utcNow
         /// </summary>
         /// <value></value>
         DateTime UtcNow { get; }

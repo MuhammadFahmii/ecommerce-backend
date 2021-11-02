@@ -18,7 +18,6 @@ namespace netca.Infrastructure.Apis
     /// </summary>
     public static class SendToMsTeam
     {
-
         /// <summary>
         /// SendToMsTeam
         /// </summary>
@@ -27,20 +26,24 @@ namespace netca.Infrastructure.Apis
         public static void Send(AppSetting appSetting, MsTeamTemplate tmpl)
         {
             Retry.Do(SendTo, appSetting, tmpl, TimeSpan.FromSeconds(5));
-
         }
+
         private static void SendTo(AppSetting appSetting, MsTeamTemplate tmpl)
         {
-            var  logger = Log.ForContext(typeof(SendToMsTeam));
+            var logger = Log.ForContext(typeof(SendToMsTeam));
             try
             {
                 using var client = new HttpClient(new HttpHandler(new HttpClientHandler()));
                 client.DefaultRequestHeaders.Add(appSetting.Bot.Header, appSetting.Bot.Secret);
                 var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(tmpl), Encoding.UTF8, Constants.HeaderJson);
                 var response = client.PostAsync(new Uri(appSetting.Bot.Address), content).Result;
+
                 logger.Verbose("Response:");
                 logger.Verbose(response.ToString());
-                if (response.IsSuccessStatusCode) return;
+
+                if (response.IsSuccessStatusCode)
+                    return;
+
                 throw new ThrowException("Request Failed");
             }
             catch (Exception e)

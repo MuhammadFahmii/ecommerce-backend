@@ -22,7 +22,6 @@ namespace netca.Application
         /// AddApplication
         /// </summary>
         /// <param name="services"></param>
-        /// <returns></returns>
         public static void AddApplication(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());

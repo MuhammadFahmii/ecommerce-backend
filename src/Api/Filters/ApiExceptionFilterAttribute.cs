@@ -20,9 +20,9 @@ namespace netca.Api.Filters
     {
         private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers;
         private readonly ILogger _logger;
-        
+
         /// <summary>
-        ///ApiExceptionFilterAttribute
+        /// Initializes a new instance of the <see cref="ApiExceptionFilterAttribute"/> class.
         /// </summary>
         /// <param name="loggerFactory"></param>
         public ApiExceptionFilterAttribute(ILoggerFactory loggerFactory)
@@ -33,7 +33,7 @@ namespace netca.Api.Filters
                 { typeof(OperationCanceledException), HandleOperationCancelledException }
             };
         }
-        
+
         /// <summary>
         /// OnException
         /// </summary>
@@ -53,7 +53,7 @@ namespace netca.Api.Filters
                 _exceptionHandlers[type].Invoke(context);
             }
         }
-        
+
         private void HandleOperationCancelledException(ExceptionContext context)
         {
             var details = new ProblemDetails
@@ -62,7 +62,7 @@ namespace netca.Api.Filters
                 Title = "Client Closed Request",
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
             };
-            
+
             _logger.LogWarning("Client Closed Request");
 
             context.Result = new ObjectResult(details)

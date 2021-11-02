@@ -37,14 +37,14 @@ namespace netca.Infrastructure.Services
         private readonly string _permissionName;
 
         /// <summary>
-        /// UserAuthorizationService
+        /// Initializes a new instance of the <see cref="UserAuthorizationService"/> class.
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="appSetting"></param>
         /// <param name="environment"></param>
         /// <param name="httpContextAccessor"></param>
-        public UserAuthorizationService(ILogger<UserAuthorizationService>  logger, AppSetting appSetting,
-            IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
+        public UserAuthorizationService(
+            ILogger<UserAuthorizationService> logger, AppSetting appSetting, IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
             _httpClient = new HttpClient(new HttpHandler(new HttpClientHandler()));
@@ -52,17 +52,18 @@ namespace netca.Infrastructure.Services
             _appSetting = appSetting;
             _environment = environment;
             _permissionName = (string)httpContextAccessor?.HttpContext?.Items["CurrentPolicyName"];
-            if (httpContextAccessor != null)
-            {
-                _isAuthenticated = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) !=
-                                   null;
-            }
 
-            _httpClient.DefaultRequestHeaders.Add(_appSetting.AuthorizationServer.Header,
-                _appSetting.AuthorizationServer.Secret);
+            if (httpContextAccessor != null)
+                _isAuthenticated = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) != null;
+
+            _httpClient.DefaultRequestHeaders.Add(
+                _appSetting.AuthorizationServer.Header,
+                _appSetting.AuthorizationServer.Secret
+            );
         }
 
         private bool IsProd() => _environment.IsProduction();
+
         private bool IsTest() => _environment.IsEnvironment("Test");
 
         /// <summary>
@@ -72,9 +73,7 @@ namespace netca.Infrastructure.Services
         public Guid GetUserId()
         {
             if (!IsProd() && !_isAuthenticated)
-            {
                 return Guid.NewGuid();
-            }
 
             var userId = _user.Claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value;
             return new Guid(userId ?? string.Empty);
@@ -87,9 +86,7 @@ namespace netca.Infrastructure.Services
         public string GetUserName()
         {
             if (!IsProd() && !_isAuthenticated)
-            {
                 return Constants.SystemEmail;
-            }
 
             return _user.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Name)?.Value;
         }
@@ -101,9 +98,7 @@ namespace netca.Infrastructure.Services
         public string GetCustomerCode()
         {
             if (!IsProd() && !_isAuthenticated)
-            {
                 return Constants.SystemCustomerName;
-            }
 
             return _user.Claims.FirstOrDefault(i => i.Type == Constants.CustomerCode)?.Value;
         }
@@ -115,9 +110,7 @@ namespace netca.Infrastructure.Services
         public string GetClientId()
         {
             if (!IsProd() && !_isAuthenticated)
-            {
                 return Constants.SystemClientId;
-            }
 
             return _user.Claims.FirstOrDefault(i => i.Type == Constants.ClientId)?.Value;
         }
@@ -131,9 +124,7 @@ namespace netca.Infrastructure.Services
             var result = MockData.GetAuthorizedUser();
 
             if (!IsProd() && !_isAuthenticated)
-            {
                 return result;
-            }
 
             if (_isAuthenticated)
             {
@@ -161,24 +152,27 @@ namespace netca.Infrastructure.Services
         {
             Dictionary<string, List<string>> result = null;
             if (!IsProd() && !_isAuthenticated)
-            {
                 return MockData.GetUserAttribute();
-            }
 
             if (IsTest())
-            {
                 return MockData.GetUserAttribute();
-            }
 
-            if (!_isAuthenticated) return null;
+            if (!_isAuthenticated)
+                return null;
+
             var userId = GetUserId();
             var clientId = GetClientId();
             var url = new Uri(_appSetting.AuthorizationServer.Gateway +
-                              $"/api/user/attribute/{userId}/{clientId}/{_permissionName}");
+                $"/api/user/attribute/{userId}/{clientId}/{_permissionName}");
+
             var response = await _httpClient.GetAsync(url, cancellationToken);
+
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
-            if (!response.IsSuccessStatusCode) return null;
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
             var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
 
             try
@@ -200,26 +194,35 @@ namespace netca.Infrastructure.Services
         /// <param name="attributes"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<UserClientIdInfo>> GetUsersByAttributesAsync(string serviceName,
-            Dictionary<string, IList<string>> attributes, CancellationToken cancellationToken)
+        public async Task<List<UserClientIdInfo>> GetUsersByAttributesAsync(
+            string serviceName, Dictionary<string, IList<string>> attributes, CancellationToken cancellationToken)
         {
             if (IsTest())
-            {
                 return MockData.GetUserByAttribute();
-            }
 
             var result = new List<UserClientIdInfo>();
-            if (!_isAuthenticated) return result;
+
+            if (!_isAuthenticated)
+                return result;
+
             var jsonString = JsonConvert.SerializeObject(attributes);
 
             var url = new Uri(_appSetting.AuthorizationServer.Gateway + $"/api/user/attributes/{serviceName}");
 
-            var response = await _httpClient.PostAsync(url,
-                new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson), cancellationToken);
+            var response = await _httpClient.PostAsync(
+                url,
+                new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
+                cancellationToken
+            );
+
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
-            if (!response.IsSuccessStatusCode) return result;
+
+            if (!response.IsSuccessStatusCode)
+                return result;
+
             var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+
             try
             {
                 result = JsonConvert.DeserializeObject<List<UserClientIdInfo>>(responseString);
@@ -241,27 +244,35 @@ namespace netca.Infrastructure.Services
         /// <param name="clientIds"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<UserClientIdInfo>> GetNotifiedUsersAsync(string serviceName,
-            Dictionary<string, List<string>> attributes,
-            string permission, IEnumerable<string> clientIds, CancellationToken cancellationToken)
+        public async Task<List<UserClientIdInfo>> GetNotifiedUsersAsync(
+            string serviceName, Dictionary<string, List<string>> attributes, string permission, IEnumerable<string> clientIds, CancellationToken cancellationToken)
         {
             var result = new List<UserClientIdInfo>();
 
-            if (!_isAuthenticated) return result;
+            if (!_isAuthenticated)
+                return result;
+
             var jsonString = JsonConvert.SerializeObject(attributes);
             var url = $"/api/user/attributes/notification/{serviceName}?notifPermission={permission}";
             var enumerable = clientIds.ToList();
-            if (enumerable.Any())
-            {
-                url = enumerable.Aggregate(url, (current, clientId) => current + $"&clientId={clientId}");
-            }
 
-            var response = await _httpClient.PostAsync(url,
-                new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson), cancellationToken);
+            if (enumerable.Any())
+                url = enumerable.Aggregate(url, (current, clientId) => current + $"&clientId={clientId}");
+
+            var response = await _httpClient.PostAsync(
+                url,
+                new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
+                cancellationToken
+            );
+
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
-            if (!response.IsSuccessStatusCode) return result;
+
+            if (!response.IsSuccessStatusCode)
+                return result;
+
             var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+
             try
             {
                 result = JsonConvert.DeserializeObject<List<UserClientIdInfo>>(responseString);
@@ -279,19 +290,25 @@ namespace netca.Infrastructure.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="clientId"></param>
-        ///<param name="cancellationToken"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<UserDeviceInfo>> GetDevicesIdByUserIdAsync(Guid userId, string clientId,
-            CancellationToken cancellationToken)
+        public async Task<List<UserDeviceInfo>> GetDevicesIdByUserIdAsync(
+            Guid userId, string clientId, CancellationToken cancellationToken)
         {
             var result = new List<UserDeviceInfo>();
 
-            if (!_isAuthenticated) return result;
+            if (!_isAuthenticated)
+                return result;
+
             var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/device/{userId}/{clientId}";
             var response = await _httpClient.GetAsync(url, cancellationToken);
+
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
-            if (!response.IsSuccessStatusCode) return result;
+
+            if (!response.IsSuccessStatusCode)
+                return result;
+
             var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
 
             try
@@ -315,12 +332,19 @@ namespace netca.Infrastructure.Services
         public async Task<UserEmailInfo> GetEmailByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
             var result = new UserEmailInfo();
-            if (!_isAuthenticated) return result;
+
+            if (!_isAuthenticated)
+                return result;
+
             var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/email/{userId}";
             var response = await _httpClient.GetAsync(url, cancellationToken);
+
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
-            if (!response.IsSuccessStatusCode) return result;
+
+            if (!response.IsSuccessStatusCode)
+                return result;
+
             var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
 
             try
@@ -341,19 +365,26 @@ namespace netca.Infrastructure.Services
         /// <param name="generalParameterCode"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<GeneralParameterInfo> GetGeneralParameterAsync(string generalParameterCode,
-            CancellationToken cancellationToken)
+        public async Task<GeneralParameterInfo> GetGeneralParameterAsync(
+            string generalParameterCode, CancellationToken cancellationToken)
         {
             var result = new GeneralParameterInfo();
 
-            if (!_isAuthenticated) return result;
-            var url = new Uri(_appSetting.AuthorizationServer.Gateway + "api/generalparameter/" +
-                              generalParameterCode);
+            if (!_isAuthenticated)
+                return result;
+
+            var url = new Uri(
+                _appSetting.AuthorizationServer.Gateway + "api/generalparameter/" + generalParameterCode);
             var response = await _httpClient.GetAsync(url, cancellationToken);
+
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
-            if (!response.IsSuccessStatusCode) return result;
+
+            if (!response.IsSuccessStatusCode)
+                return result;
+
             var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+
             try
             {
                 result = JsonConvert.DeserializeObject<GeneralParameterInfo>(responseString);
@@ -367,11 +398,11 @@ namespace netca.Infrastructure.Services
         }
 
         /// <summary>
-        /// GetUserServices
+        /// GetUserServicesAsync
         /// </summary>
         /// <param name="generalParameterCode"></param>
         /// <returns></returns>
-        public Task<List<string>> GetUserServices(string generalParameterCode)
+        public Task<List<string>> GetUserServicesAsync(string generalParameterCode)
         {
             throw new NotImplementedException();
         }
@@ -379,22 +410,28 @@ namespace netca.Infrastructure.Services
         /// <summary>
         /// GetUserAttributesAndServices
         /// </summary>
-        /// <param name="cancellation"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Dictionary<string, List<string>>> GetUserAttributesAndServicesAsync(CancellationToken cancellation)
+        public async Task<Dictionary<string, List<string>>> GetUserAttributesAndServicesAsync(CancellationToken cancellationToken)
         {
             var result = new Dictionary<string, List<string>>();
 
-            if (!_isAuthenticated) return result;
+            if (!_isAuthenticated)
+                return result;
+
             var userId = GetUserId();
             var clientId = GetClientId();
             var url = _appSetting.AuthorizationServer.Gateway +
-                      $"/api/user/attribute/service/{userId}/{clientId}/{_permissionName}?getService=true";
-            var response = await _httpClient.GetAsync(url, cancellation);
+                $"/api/user/attribute/service/{userId}/{clientId}/{_permissionName}?getService=true";
+            var response = await _httpClient.GetAsync(url, cancellationToken);
+
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
-            if (!response.IsSuccessStatusCode) return result;
-            var responseString = await response.Content.ReadAsStringAsync(cancellation);
+
+            if (!response.IsSuccessStatusCode)
+                return result;
+
+            var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
 
             try
             {
@@ -411,22 +448,28 @@ namespace netca.Infrastructure.Services
         /// <summary>
         /// GetUserListAsync
         /// </summary>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<List<UserMangementUser>> GetUserListAsync(CancellationToken cancellationToken)
         {
             var result = new List<UserMangementUser>();
-            if (IsTest())
-            {
-                return MockData.GetListMechanics();
-            }
 
-            if (!_isAuthenticated) return result;
+            if (IsTest())
+                return MockData.GetListMechanics();
+
+            if (!_isAuthenticated)
+                return result;
+
             var clientId = GetClientId();
             var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/clientid/{clientId}";
             var response = await _httpClient.GetAsync(url, cancellationToken);
+
             _logger.LogDebug("Response:");
             _logger.LogDebug(response.ToString());
-            if (!response.IsSuccessStatusCode) return result;
+
+            if (!response.IsSuccessStatusCode)
+                return result;
+
             var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
 
             try
@@ -439,6 +482,20 @@ namespace netca.Infrastructure.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// DeleteDeviceIdAsync
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        public async Task DeleteDeviceIdAsync(string deviceId)
+        {
+            if (!_isAuthenticated)
+                return;
+
+            var url = _appSetting.AuthorizationServer.Gateway + $"/api/deviceid/{deviceId}";
+            await _httpClient.DeleteAsync(url);
         }
     }
 }

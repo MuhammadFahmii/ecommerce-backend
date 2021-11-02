@@ -4,7 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using System.IO.Compression;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -17,26 +16,25 @@ namespace netca.Api.Handlers
     /// </summary>
     public static class CompressionHandler
     {
-
         /// <summary>
         /// ApplyCompress
         /// </summary>
         /// <param name="services"></param>
         public static void ApplyCompress(IServiceCollection services)
         {
-
             services.AddResponseCompression(options =>
             {
-                IEnumerable<string> mimeTypes = new[]
-                                     {
-                                        "application/pdf",
-                                        "text/plain",
-                                        "image/jpg",
-                                        "application/json",
-                                        "application/octet-stream",
-                                        "application/problem+json",
-                                        "text/csv"
-                                      };
+                var mimeTypes = new[]
+                    {
+                        "application/pdf",
+                        "text/plain",
+                        "image/jpg",
+                        "application/json",
+                        "application/octet-stream",
+                        "application/problem+json",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "text/csv"
+                    };
                 options.EnableForHttps = true;
                 options.MimeTypes = mimeTypes;
                 options.Providers.Add<GzipCompressionProvider>();
@@ -63,7 +61,6 @@ namespace netca.Api.Handlers
         /// AddCompressionHandler
         /// </summary>
         /// <param name="services"></param>
-        /// <returns></returns>
         public static void AddCompressionHandler(this IServiceCollection services)
         {
             CompressionHandler.ApplyCompress(services);

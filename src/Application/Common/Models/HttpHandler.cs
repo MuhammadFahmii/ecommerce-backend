@@ -16,7 +16,7 @@ namespace netca.Application.Common.Models
     public class HttpHandler : DelegatingHandler
     {
         /// <summary>
-        /// HttpHandler
+        /// Initializes a new instance of the <see cref="HttpHandler"/> class.
         /// </summary>
         /// <param name="innerHandler"></param>
         public HttpHandler(HttpMessageHandler innerHandler) : base(innerHandler)

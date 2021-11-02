@@ -14,18 +14,19 @@ namespace netca.Application.Common.Models
     public class MsTeamTemplate
     {
         /// <summary>
-        /// summary
+        /// Gets or sets summary
         /// </summary>
-        public string summary { get; set;} = Constants.MsTeamsSummaryError;
-        /// <summary>
-        /// themeColor
-        /// </summary>
-        public string themeColor { get; set;} = Constants.MsTeamsThemeColorError;
+        public string Summary { get; set; } = Constants.MsTeamsSummaryError;
 
         /// <summary>
-        /// sections
+        /// Gets or sets themeColor
         /// </summary>
-        public List<Section> sections {get; set;}
+        public string ThemeColor { get; set; } = Constants.MsTeamsThemeColorError;
+
+        /// <summary>
+        /// Gets or sets sections
+        /// </summary>
+        public List<Section> Sections { get; set; }
     }
 
     /// <summary>
@@ -34,40 +35,39 @@ namespace netca.Application.Common.Models
     public class Section
     {
         /// <summary>
-        /// markdown
+        /// Gets a value indicating whether markdown
         /// </summary>
-        public bool markdown { get;} = true;
-        
-        /// <summary>
-        /// activityTitle
-        /// </summary>
-        /// <value></value>
-        public string activityTitle { get; set;}
+        public bool Markdown { get; } = true;
 
         /// <summary>
-        /// activitySubtitle
+        /// Gets or sets activityTitle
         /// </summary>
         /// <value></value>
-        public string activitySubtitle { get; set;}
+        public string ActivityTitle { get; set; }
 
         /// <summary>
-        /// activityImage
+        /// Gets or sets activitySubtitle
         /// </summary>
         /// <value></value>
-
-        public string activityImage {get; set;}
-        
-        /// <summary>
-        /// activityImageType
-        /// </summary>
-        /// <value></value>
-        public string activityImageType {get;} = Constants.MsTeamsActivityImageType;
+        public string ActivitySubtitle { get; set; }
 
         /// <summary>
-        /// Facts
+        /// Gets or sets activityImage
         /// </summary>
         /// <value></value>
-        public List<Fact> Facts {get; set;}
+        public string ActivityImage { get; set; }
+
+        /// <summary>
+        /// Gets activityImageType
+        /// </summary>
+        /// <value></value>
+        public string ActivityImageType { get; } = Constants.MsTeamsActivityImageType;
+
+        /// <summary>
+        /// Gets or sets facts
+        /// </summary>
+        /// <value></value>
+        public List<Fact> Facts { get; set; }
     }
 
     /// <summary>
@@ -76,15 +76,15 @@ namespace netca.Application.Common.Models
     public class Fact
     {
         /// <summary>
-        /// name
+        /// Gets or sets name
         /// </summary>
         /// <value></value>
-        public string name { get; set;}
+        public string Name { get; set; }
 
         /// <summary>
-        /// value
+        /// Gets or sets value
         /// </summary>
         /// <value></value>
-        public string value { get; set;}
+        public string Value { get; set; }
     }
 }

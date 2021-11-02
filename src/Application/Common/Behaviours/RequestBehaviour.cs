@@ -24,7 +24,7 @@ namespace netca.Application.Common.Behaviours
         private readonly ILogger<RequestBehaviour<TRequest, TResponse>> _logger;
 
         /// <summary>
-        /// RequestBehaviour
+        /// Initializes a new instance of the <see cref="RequestBehaviour{TRequest, TResponse}"/> class.
         /// </summary>
         /// <param name="logger"></param>
         public RequestBehaviour(ILogger<RequestBehaviour<TRequest, TResponse>> logger)
@@ -39,11 +39,11 @@ namespace netca.Application.Common.Behaviours
         /// <param name="cancellationToken"></param>
         /// <param name="next"></param>
         /// <returns></returns>
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(
+            TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             var requestType = typeof(TRequest).Name;
-            
+
             try
             {
                 var response = await next();
@@ -61,6 +61,7 @@ namespace netca.Application.Common.Behaviours
                 {
                     throw new ThrowException("The request is not the Command or Query type");
                 }
+
                 return response;
             }
             catch (Exception e)
@@ -71,6 +72,7 @@ namespace netca.Application.Common.Behaviours
                         _logger.LogWarning("The request has been canceled");
                         break;
                 }
+
                 throw new ThrowException(e.Message);
             }
         }

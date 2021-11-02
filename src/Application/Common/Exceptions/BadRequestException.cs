@@ -14,11 +14,10 @@ namespace netca.Application.Common.Exceptions
     public class BadRequestException : Exception
     {
         /// <summary>
-        /// BadRequestException
+        /// Initializes a new instance of the <see cref="BadRequestException"/> class.
         /// </summary>
         /// <param name="message"></param>
-        public BadRequestException(string message)
-            : base(message)
+        public BadRequestException(string message) : base(message)
         {
         }
     }

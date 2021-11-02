@@ -19,10 +19,9 @@ namespace netca.Api.Handlers
         private readonly AppSetting _appSetting;
 
         /// <summary>
-        /// LogEventSinkHanlder
+        /// Initializes a new instance of the <see cref="LogEventSinkHandler"/> class.
         /// </summary>
         /// <param name="appSetting"></param>
-
         public LogEventSinkHandler(AppSetting appSetting)
         {
             _appSetting = appSetting;
@@ -36,9 +35,8 @@ namespace netca.Api.Handlers
         {
             if (logEvent.Level.ToString().Equals("Error"))
             {
-                Console.WriteLine("xxx"+_appSetting.App.Description);
+                Console.WriteLine("xxx" + _appSetting.App.Description);
             }
         }
-
     }
 }

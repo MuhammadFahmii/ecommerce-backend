@@ -30,8 +30,9 @@ namespace netca.Api.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
         private readonly AppSetting _appSetting;
+
         /// <summary>
-        /// ResponseTimeMiddleware
+        /// Initializes a new instance of the <see cref="OverrideResponseHandlerMiddleware"/> class.
         /// </summary>
         /// <param name="next"></param>
         /// <param name="redisService"></param>
@@ -45,6 +46,7 @@ namespace netca.Api.Middlewares
             _redisService = redisService;
             _logger = logger;
         }
+
         /// <summary>
         /// InvokeAsync
         /// </summary>
@@ -78,25 +80,27 @@ namespace netca.Api.Middlewares
                                 await memStream.CopyToAsync(originalBody);
                                 break;
                             }
+
                             if (statusCode != 200)
                             {
                                 await memStream.CopyToAsync(originalBody);
                                 break;
                             }
+
                             responseBody = await new StreamReader(memStream).ReadToEndAsync();
                             memStream.Close();
                         }
+
                         watch.Stop();
                         var responseTimeForCompleteRequest = watch.ElapsedMilliseconds;
                         context = await RedisCachingAsync(policyName, context, responseBody, CancellationToken.None);
-                        var buffer = Encoding.UTF8.GetBytes(ToJasonApi(statusCode, responseTimeForCompleteRequest, responseBody));
-                        
+                        var buffer = Encoding.UTF8.GetBytes(ToJsonApi(statusCode, responseTimeForCompleteRequest, responseBody));
+
                         context.Response.ContentLength = buffer.Length;
-                        await using (var output = new MemoryStream(buffer))
-                        {
-                            output.Position = 0;
-                            await output.CopyToAsync(originalBody);
-                        }
+                        using var output = new MemoryStream(buffer);
+                        output.Position = 0;
+                        await output.CopyToAsync(originalBody);
+
                         context.Response.Body = originalBody;
                     }
                     catch (Exception ex)
@@ -104,7 +108,8 @@ namespace netca.Api.Middlewares
                         _logger.LogCritical($"Error Overriding Response {ex.Message}");
                         throw;
                     }
-                } while (false);
+                }
+                while (false);
             }
             else
             {
@@ -112,7 +117,7 @@ namespace netca.Api.Middlewares
             }
         }
 
-        private string ToJasonApi(int statusCode, long responseTimeForCompleteRequest, string responseBody)
+        private string ToJsonApi(int statusCode, long responseTimeForCompleteRequest, string responseBody)
         {
             var json = JObject.Parse(responseBody);
             json["responseTime"] = responseTimeForCompleteRequest;
@@ -130,19 +135,25 @@ namespace netca.Api.Middlewares
                 status["code"] = statusCode;
                 status["desc"] = ReasonPhrases.GetReasonPhrase(statusCode);
             }
+
             return json.ToString();
         }
 
         private async Task<HttpContext> RedisCachingAsync(string policyName, HttpContext context, string responseBody, CancellationToken cancellationToken)
         {
             var requestIfNoneMatch = context.Request.Headers[Constants.HeaderIfNoneMatch].ToString() ?? "";
-            if (string.IsNullOrEmpty(requestIfNoneMatch)) return context;
+            if (string.IsNullOrEmpty(requestIfNoneMatch))
+                return context;
+
             var policy = IsCache(policyName);
-            if (policy is not { IsCache: true }) return context;
+            if (policy is not { IsCache: true })
+                return context;
+
             var key = await _redisService.SaveAsync(policy.Name, Constants.RedisSubKeyHttpRequest, responseBody, cancellationToken);
             context.Response.Headers[Constants.HeaderETag] = key;
             return context;
         }
+
         private Policy IsCache(string policy)
         {
             var policyList = _appSetting.RedisServer.Policy;
@@ -159,7 +170,6 @@ namespace netca.Api.Middlewares
         /// UseOverrideResponseHandler
         /// </summary>
         /// <param name="builder"></param>
-        /// <returns></returns>
         public static void UseOverrideResponseHandler(this IApplicationBuilder builder)
         {
             builder.UseMiddleware<OverrideResponseHandlerMiddleware>();

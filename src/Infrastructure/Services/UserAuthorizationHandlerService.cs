@@ -26,20 +26,21 @@ namespace netca.Infrastructure.Services
         private readonly AppSetting _appSetting;
 
         /// <summary>
-        /// logger
+        /// Initializes a new instance of the <see cref="UserAuthorizationHandlerService"/> class.
         /// </summary>
         /// <param name="logger"></param>
         /// <summary>
         /// UserAuthorizationHandler
         /// </summary>
         /// <param name="appSetting"></param>
-        public UserAuthorizationHandlerService(ILogger<UserAuthorizationHandlerService>  logger, AppSetting appSetting)
+        public UserAuthorizationHandlerService(ILogger<UserAuthorizationHandlerService> logger, AppSetting appSetting)
         {
             _logger = logger;
             _appSetting = appSetting;
             _httpClient = new HttpClient(new HttpHandler(new HttpClientHandler()));
             _httpClient.DefaultRequestHeaders.Add(_appSetting.AuthorizationServer.Header, _appSetting.AuthorizationServer.Secret);
         }
+
         /// <summary>
         /// HandleRequirementAsync
         /// </summary>
@@ -62,13 +63,14 @@ namespace netca.Infrastructure.Services
             }
         }
     }
-    
+
     /// <summary>
     /// Permission
     /// </summary>
     public class Permission : IAuthorizationRequirement
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="Permission"/> class.
         /// Permission
         /// </summary>
         /// <param name="permissionName"></param>
@@ -78,7 +80,7 @@ namespace netca.Infrastructure.Services
         }
 
         /// <summary>
-        /// PermissionName
+        /// Gets or sets permissionName
         /// </summary>
         /// <value></value>
         public string PermissionName { get; set; }

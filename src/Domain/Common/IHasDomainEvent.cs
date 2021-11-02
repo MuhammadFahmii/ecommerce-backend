@@ -15,31 +15,31 @@ namespace netca.Domain.Common
     public interface IHasDomainEvent
     {
         /// <summary>
-        /// DomainEvents
+        /// Gets or sets domainEvents
         /// </summary>
         public List<DomainEvent> DomainEvents { get; set; }
     }
-    
+
     /// <summary>
     /// DomainEvent
     /// </summary>
     public abstract class DomainEvent
     {
         /// <summary>
-        /// DomainEvent
+        /// Initializes a new instance of the <see cref="DomainEvent"/> class.
         /// </summary>
         protected DomainEvent()
         {
             DateOccurred = DateTimeOffset.UtcNow;
         }
-        
+
         /// <summary>
-        /// IsPublished
+        /// Gets or sets a value indicating whether isPublished
         /// </summary>
         public bool IsPublished { get; set; }
-        
+
         /// <summary>
-        /// DateOccurred
+        /// Gets or sets dateOccurred
         /// </summary>
         public DateTimeOffset DateOccurred { get; protected set; }
     }

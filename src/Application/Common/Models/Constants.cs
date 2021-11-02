@@ -20,6 +20,11 @@ namespace netca.Application.Common.Models
                                                     (SELECT ""Id"" FROM ""Assignments"" LIMIT 1)";
 
         /// <summary>
+        /// DefaultHealthCheckTimeoutInSeconds
+        /// </summary>
+        public const int DefaultHealthCheckTimeoutInSeconds = 60;
+
+        /// <summary>
         /// DefaultHealthCheckUmsName
         /// </summary>
         public const string DefaultHealthCheckUmsName = "UserManagementService";
@@ -53,6 +58,11 @@ namespace netca.Application.Common.Models
         /// DefaultHealthCheckDatabaseName
         /// </summary>
         public const string DefaultHealthCheckDatabaseName = "DB";
+
+        /// <summary>
+        /// DefaultPercentageUsedDegraded
+        /// </summary>
+        public const byte DefaultHealthCheckPercentageUsedDegraded = 90;
         #endregion healthcheck
 
         #region header
@@ -116,7 +126,7 @@ namespace netca.Application.Common.Models
         /// <summary>
         /// MsTeamsactivitySubtitleStop
         /// </summary>
-        public const string MsTeamsactivitySubtitleStop = "Application has stoped";
+        public const string MsTeamsactivitySubtitleStop = "Application has stopped";
 
         /// <summary>
         /// MsTeamsThemeColorError
@@ -211,6 +221,36 @@ namespace netca.Application.Common.Models
         public const string SystemClientId = "datacaptureapps01";
 
         #endregion system
+
+        #region  api
+
+        /// <summary>
+        /// ApiErrorDescription
+        /// </summary>
+        public static class ApiErrorDescription
+        {
+            /// <summary>
+            /// BadRequest
+            /// </summary>
+            public const string BadRequest = "BadRequest";
+
+            /// <summary>
+            /// Unauthorized
+            /// </summary>
+            public const string Unauthorized = "Unauthorized";
+
+            /// <summary>
+            /// Forbidden
+            /// </summary>
+            public const string Forbidden = "Forbidden";
+
+            /// <summary>
+            /// InternalServerError
+            /// </summary>
+            public const string InternalServerError = "InternalServerError";
+        }
+
+        #endregion api
 
         #region  UserAttribute
 

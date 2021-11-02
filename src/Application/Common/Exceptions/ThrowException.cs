@@ -14,11 +14,10 @@ namespace netca.Application.Common.Exceptions
     public class ThrowException : Exception
     {
         /// <summary>
-        /// ThrowException
+        /// Initializes a new instance of the <see cref="ThrowException"/> class.
         /// </summary>
         /// <param name="message"></param>
-        public ThrowException(string message)
-            : base(message)
+        public ThrowException(string message) : base(message)
         {
         }
     }

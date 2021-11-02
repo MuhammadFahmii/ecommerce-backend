@@ -17,15 +17,17 @@ namespace netca.Application.Common.Behaviours
     /// <summary>
     /// PerformanceBehaviour
     /// </summary>
+    /// <typeparam name="TRequest"></typeparam>
+    /// <typeparam name="TResponse"></typeparam>
     public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly Stopwatch _timer;
         private readonly ILogger<TRequest> _logger;
         private readonly IUserAuthorizationService _userAuthorizationService;
         private readonly AppSetting _appSetting;
-        
+
         /// <summary>
-        /// PerformanceBehaviour
+        /// Initializes a new instance of the <see cref="PerformanceBehaviour{TRequest, TResponse}"/> class.
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="userAuthorizationService"></param>
@@ -40,7 +42,7 @@ namespace netca.Application.Common.Behaviours
             _userAuthorizationService = userAuthorizationService;
             _appSetting = appSetting;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>
@@ -48,8 +50,8 @@ namespace netca.Application.Common.Behaviours
         /// <param name="cancellationToken"></param>
         /// <param name="next"></param>
         /// <returns></returns>
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(
+            TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             _timer.Start();
 
@@ -59,13 +61,19 @@ namespace netca.Application.Common.Behaviours
 
             var elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
-            if (elapsedMilliseconds <= _appSetting.RequestPerformanceInMs) return response;
+            if (elapsedMilliseconds <= _appSetting.RequestPerformanceInMs)
+                return response;
+
             var requestName = typeof(TRequest).Name;
             var userName = _userAuthorizationService.GetUserName();
 
             _logger.LogWarning(
                 "netca Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserName} {@Request}",
-                requestName, elapsedMilliseconds, userName, request);
+                requestName,
+                elapsedMilliseconds,
+                userName,
+                request
+            );
 
             return response;
         }

@@ -14,24 +14,22 @@ namespace netca.Application.Common.Exceptions
     public class NotFoundException : Exception
     {
         /// <summary>
-        /// NotFoundException
+        /// Initializes a new instance of the <see cref="NotFoundException"/> class.
         /// </summary>
-        public NotFoundException()
-            : base()
+        public NotFoundException() : base()
         {
         }
-        
+
         /// <summary>
-        /// NotFoundException
+        /// Initializes a new instance of the <see cref="NotFoundException"/> class.
         /// </summary>
         /// <param name="message"></param>
-        public NotFoundException(string message)
-            : base(message)
+        public NotFoundException(string message) : base(message)
         {
         }
-        
+
         /// <summary>
-        /// NotFoundException
+        /// Initializes a new instance of the <see cref="NotFoundException"/> class.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -39,9 +37,9 @@ namespace netca.Application.Common.Exceptions
             : base(message, innerException)
         {
         }
-        
+
         /// <summary>
-        /// NotFoundException
+        /// Initializes a new instance of the <see cref="NotFoundException"/> class.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="key"></param>

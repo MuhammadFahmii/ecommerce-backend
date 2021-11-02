@@ -12,17 +12,19 @@ namespace netca.Application.Common.Models
     /// <summary>
     /// DomainEventNotification
     /// </summary>
-    public class DomainEventNotification<TDomainEvent> : INotification where TDomainEvent : DomainEvent
+    /// <typeparam name="TDomainEvent"></typeparam>
+    public class DomainEventNotification<TDomainEvent> : INotification
+        where TDomainEvent : DomainEvent
     {
         /// <summary>
-        /// DomainEventNotification
+        /// Initializes a new instance of the <see cref="DomainEventNotification{TDomainEvent}"/> class.
         /// </summary>
         /// <param name="domainEvent"></param>
         public DomainEventNotification(TDomainEvent domainEvent)
         {
             DomainEvent = domainEvent;
         }
-        
+
         /// <summary>
         /// DomainEvent
         /// </summary>

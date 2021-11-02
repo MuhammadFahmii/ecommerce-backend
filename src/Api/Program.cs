@@ -20,7 +20,6 @@ namespace netca.Api
         /// Main function
         /// </summary>
         /// <param name="args"></param>
-        /// <returns></returns>
         public static void Main(string[] args)
         {
             var host = CreateWebHostBuilder(args).Build();
@@ -62,25 +61,31 @@ namespace netca.Api
                 .UseKestrel((hostingContext, option) =>
                 {
                     services.Configure<AppSetting>(hostingContext.Configuration);
-                    appSetting = services.BuildServiceProvider().GetService<IOptionsSnapshot<AppSetting>>()?.Value ??
-                                 new AppSetting();
+                    appSetting = services
+                        .BuildServiceProvider()
+                        .GetService<IOptionsSnapshot<AppSetting>>()?.Value ?? new AppSetting();
 
                     option.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(appSetting.Kestrel.KeepAliveTimeoutInM);
-                    option.Limits.MinRequestBodyDataRate =
-                        new MinDataRate(bytesPerSecond: appSetting.Kestrel.MinRequestBodyDataRate.BytesPerSecond,
-                            gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinRequestBodyDataRate.GracePeriod));
-                    option.Limits.MinResponseDataRate =
-                        new MinDataRate(bytesPerSecond: appSetting.Kestrel.MinResponseDataRate.BytesPerSecond,
-                            gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinResponseDataRate.GracePeriod));
+                    option.Limits.MinRequestBodyDataRate = new MinDataRate(
+                        bytesPerSecond: appSetting.Kestrel.MinRequestBodyDataRate.BytesPerSecond,
+                        gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinRequestBodyDataRate.GracePeriod)
+                    );
+                    option.Limits.MinResponseDataRate = new MinDataRate(
+                        bytesPerSecond: appSetting.Kestrel.MinResponseDataRate.BytesPerSecond,
+                        gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinResponseDataRate.GracePeriod)
+                    );
                     option.AddServerHeader = false;
                 })
-                .UseStartup<Startup>().UseSerilog((hostingContext, loggerConfiguration) =>
+                .UseStartup<Startup>()
+                .UseSerilog((hostingContext, loggerConfiguration) =>
                 {
                     services.Configure<AppSetting>(hostingContext.Configuration);
-                    appSetting = services.BuildServiceProvider().GetService<IOptionsSnapshot<AppSetting>>()?.Value ??
-                                 new AppSetting();
-                    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration).WriteTo
-                        .Sink(new LogEventSinkHandler(appSetting));
+                    appSetting = services
+                        .BuildServiceProvider()
+                        .GetService<IOptionsSnapshot<AppSetting>>()?.Value ?? new AppSetting();
+                    loggerConfiguration.ReadFrom
+                        .Configuration(hostingContext.Configuration)
+                        .WriteTo.Sink(new LogEventSinkHandler(appSetting));
                 });
         }
     }
