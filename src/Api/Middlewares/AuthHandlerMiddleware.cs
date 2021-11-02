@@ -52,9 +52,9 @@ namespace netca.Api.Middlewares
         {
             var serviceName = _appSetting.AuthorizationServer.Service;
             var whitelistPathSegment = _appSetting.AuthorizationServer.WhiteListPathSegment != null ?
-                                       _appSetting.AuthorizationServer.WhiteListPathSegment.Split(",").ToList<string>()
+                                       _appSetting.AuthorizationServer.WhiteListPathSegment.Split(",").ToList()
                                        : new List<string>();
-            var requiredCheck = whitelistPathSegment.All(item => !context.Request.Path.StartsWithSegments(item));
+            var requiredCheck = !whitelistPathSegment.Any(item => context.Request.Path.StartsWithSegments(item));
 
             if (requiredCheck)
             {
