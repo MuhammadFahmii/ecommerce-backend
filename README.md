@@ -3,7 +3,7 @@
 # DAD .NET5 Clean Architecture Web Api Solution Template
 [![Build status](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_apis/build/status/netca-CI)](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_build/latest?definitionId=665)
 
-[![aif.netca package in dad-registry feed in Azure Artifacts](https://tfs.unitedtractors.com/DefaultCollection/_apis/public/Packaging/Feeds/f638be01-a0c6-4302-ae05-45ba95464364/Packages/791d0990-f814-427a-8f2c-cca0d2c01f46/Badge)](https://tfs.unitedtractors.com/DefaultCollection/_Packaging?feed=f638be01-a0c6-4302-ae05-45ba95464364&package=791d0990-f814-427a-8f2c-cca0d2c01f46&preferRelease=true&_a=package)
+[![DAD.Clean.Architecture.WebApi.Solution.Template package in dad-registry@Release feed in Azure Artifacts](https://tfs.unitedtractors.com/DefaultCollection/_apis/public/Packaging/Feeds/f638be01-a0c6-4302-ae05-45ba95464364@50b3c3a2-8888-4fc3-a0ad-de7036f45f70/Packages/dcd873c3-8f3b-4c96-a39d-4ad2a979a758/Badge)](https://tfs.unitedtractors.com/DefaultCollection/_Packaging?feed=f638be01-a0c6-4302-ae05-45ba95464364%4050b3c3a2-8888-4fc3-a0ad-de7036f45f70&package=dcd873c3-8f3b-4c96-a39d-4ad2a979a758&preferRelease=true&_a=package)
 <br/>
 
 This is a solution template for creating a ASP.NET Core following the principles of Clean Architecture. Create a new project based on this template by clicking the above **Use this template** button or by installing and running the associated NuGet package (see Getting Started for full details).
