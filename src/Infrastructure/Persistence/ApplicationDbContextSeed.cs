@@ -18,7 +18,7 @@ namespace netca.Infrastructure.Persistence
     public static class ApplicationDbContextSeed
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>

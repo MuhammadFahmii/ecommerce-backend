@@ -22,11 +22,11 @@ namespace netca.Application.TodoLists.Queries.ExportTodos
     public class ExportTodosQuery : IRequest<ExportTodosVm>
     {
         /// <summary>
-        /// ListId
+        /// Gets or sets listId
         /// </summary>
         public Guid ListId { get; set; }
     }
-    
+
     /// <summary>
     /// ExportTodosQueryHandler
     /// </summary>
@@ -35,9 +35,9 @@ namespace netca.Application.TodoLists.Queries.ExportTodos
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICsvFileBuilder _fileBuilder;
-        
+
         /// <summary>
-        /// ExportTodosQueryHandler
+        /// Initializes a new instance of the <see cref="ExportTodosQueryHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="mapper"></param>
@@ -48,7 +48,7 @@ namespace netca.Application.TodoLists.Queries.ExportTodos
             _mapper = mapper;
             _fileBuilder = fileBuilder;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>

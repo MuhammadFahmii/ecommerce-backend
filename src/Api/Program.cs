@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -67,12 +68,12 @@ namespace netca.Api
 
                     option.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(appSetting.Kestrel.KeepAliveTimeoutInM);
                     option.Limits.MinRequestBodyDataRate = new MinDataRate(
-                        bytesPerSecond: appSetting.Kestrel.MinRequestBodyDataRate.BytesPerSecond,
-                        gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinRequestBodyDataRate.GracePeriod)
+                        appSetting.Kestrel.MinRequestBodyDataRate.BytesPerSecond,
+                        TimeSpan.FromSeconds(appSetting.Kestrel.MinRequestBodyDataRate.GracePeriod)
                     );
                     option.Limits.MinResponseDataRate = new MinDataRate(
-                        bytesPerSecond: appSetting.Kestrel.MinResponseDataRate.BytesPerSecond,
-                        gracePeriod: TimeSpan.FromSeconds(appSetting.Kestrel.MinResponseDataRate.GracePeriod)
+                        appSetting.Kestrel.MinResponseDataRate.BytesPerSecond,
+                        TimeSpan.FromSeconds(appSetting.Kestrel.MinResponseDataRate.GracePeriod)
                     );
                     option.AddServerHeader = false;
                 })
@@ -80,12 +81,14 @@ namespace netca.Api
                 .UseSerilog((hostingContext, loggerConfiguration) =>
                 {
                     services.Configure<AppSetting>(hostingContext.Configuration);
+                    services.AddMemoryCache();
                     appSetting = services
                         .BuildServiceProvider()
                         .GetService<IOptionsSnapshot<AppSetting>>()?.Value ?? new AppSetting();
-                    loggerConfiguration.ReadFrom
-                        .Configuration(hostingContext.Configuration)
-                        .WriteTo.Sink(new LogEventSinkHandler(appSetting));
+                    var memoryCache = services.BuildServiceProvider().GetService<IMemoryCache>();
+                    var sink = new LogEventSinkHandler(appSetting, memoryCache);
+                    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration).WriteTo
+                        .Sink(sink);
                 });
         }
     }

@@ -28,7 +28,7 @@ namespace netca.Domain.ValueObjects
         {
             Code = code;
         }
-        
+
         /// <summary>
         /// Colour
         /// </summary>
@@ -46,52 +46,52 @@ namespace netca.Domain.ValueObjects
 
             return colour;
         }
-        
+
         /// <summary>
-        /// White
+        /// Gets white
         /// </summary>
         public static Colour White => new Colour("#FFFFFF");
-        
+
         /// <summary>
-        /// Red
+        /// Gets red
         /// </summary>
         public static Colour Red => new Colour("#FF5733");
-        
+
         /// <summary>
-        /// Orange
+        /// Gets orange
         /// </summary>
         public static Colour Orange => new Colour("#FFC300");
-        
+
         /// <summary>
-        /// Yellow
+        /// Gets yellow
         /// </summary>
         public static Colour Yellow => new Colour("#FFFF66");
-        
+
         /// <summary>
-        /// Green
+        /// Gets green
         /// </summary>
         public static Colour Green => new Colour("#CCFF99");
-        
+
         /// <summary>
-        /// Blue
+        /// Gets blue
         /// </summary>
         public static Colour Blue => new Colour("#6666FF");
-        
+
         /// <summary>
-        /// Purple
+        /// Gets purple
         /// </summary>
         public static Colour Purple => new Colour("#9966CC");
-        
+
         /// <summary>
-        /// Grey
+        /// Gets grey
         /// </summary>
         public static Colour Grey => new Colour("#999999");
-        
+
         /// <summary>
-        /// Code
+        /// Gets code
         /// </summary>
         public string Code { get; private set; }
-        
+
         /// <summary>
         /// string
         /// </summary>
@@ -102,7 +102,7 @@ namespace netca.Domain.ValueObjects
         {
             return colour.ToString();
         }
-        
+
         /// <summary>
         /// Colour
         /// </summary>
@@ -112,7 +112,7 @@ namespace netca.Domain.ValueObjects
         {
             return From(code);
         }
-        
+
         /// <summary>
         /// ToString
         /// </summary>
@@ -121,9 +121,9 @@ namespace netca.Domain.ValueObjects
         {
             return Code;
         }
-        
+
         /// <summary>
-        /// SupportedColours
+        /// Gets supportedColours
         /// </summary>
         protected static IEnumerable<Colour> SupportedColours
         {
@@ -139,7 +139,7 @@ namespace netca.Domain.ValueObjects
                 yield return Grey;
             }
         }
-        
+
         /// <summary>
         /// GetEqualityComponents
         /// </summary>

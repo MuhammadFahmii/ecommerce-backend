@@ -80,9 +80,9 @@ namespace netca.Infrastructure.Services
         }
 
         /// <summary>
-        /// Gets or sets permissionName
+        /// Gets permissionName
         /// </summary>
         /// <value></value>
-        public string PermissionName { get; set; }
+        public string PermissionName { get; }
     }
 }

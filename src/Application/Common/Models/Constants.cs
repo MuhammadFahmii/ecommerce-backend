@@ -16,8 +16,8 @@ namespace netca.Application.Common.Models
         /// <summary>
         /// DefaultHealthCheckQuery
         /// </summary>
-        public const string DefaultHealthCheckQuery = @"(SELECT ""Id"" FROM ""Changelogs"" LIMIT 1) UNION ALL
-                                                    (SELECT ""Id"" FROM ""Assignments"" LIMIT 1)";
+        public const string DefaultHealthCheckQuery = @"SELECT TOP 1 Id FROM Changelogs UNION ALL 
+                                      SELECT TOP 1 Id FROM Assignments;";
 
         /// <summary>
         /// DefaultHealthCheckTimeoutInSeconds
@@ -67,11 +67,40 @@ namespace netca.Application.Common.Models
 
         #region header
 
-
         /// <summary>
         /// HeaderJson
         /// </summary>
         public const string HeaderJson = "application/json";
+
+        /// <summary>
+        /// HeaderPdf
+        /// </summary>
+        public const string HeaderPdf = "application/pdf";
+
+        /// <summary>
+        /// HeaderTextPlain
+        /// </summary>
+        public const string HeaderTextPlain = "text/plain";
+
+        /// <summary>
+        /// HeaderOctetStream
+        /// </summary>
+        public const string HeaderOctetStream = "application/octet-stream";
+
+        /// <summary>
+        /// HeaderProblemJson
+        /// </summary>
+        public const string HeaderProblemJson = "application/problem+json";
+
+        /// <summary>
+        /// HeaderTextCsv
+        /// </summary>
+        public const string HeaderTextCsv = "text/csv";
+
+        /// <summary>
+        /// HeaderImageJpg
+        /// </summary>
+        public const string HeaderImageJpg = "image/jpg";
 
         /// <summary>
         /// HeaderIfNoneMatch
@@ -86,14 +115,17 @@ namespace netca.Application.Common.Models
         #endregion header
 
         #region redis
+
         /// <summary>
         /// RedisSubKeyMessageConsume
         /// </summary>
         public const string RedisSubKeyMessageConsume = "MessageConsume";
+
         /// <summary>
         /// RedisSubKeyMessageProduce
         /// </summary>
         public const string RedisSubKeyMessageProduce = "MessageProduce";
+
         /// <summary>
         /// RedisSubKeyHttpRequest
         /// </summary>
@@ -137,11 +169,6 @@ namespace netca.Application.Common.Models
         /// MsTeamsThemeColorWarning
         /// </summary>
         public const string MsTeamsThemeColorWarning = "#f7db05";
-
-        /// <summary>
-        /// MsTeamsThemeColorError
-        /// </summary>
-        public const string MsTeamsActivityImageType = "article";
         #endregion MsTeams
 
         #region  paging
@@ -157,23 +184,24 @@ namespace netca.Application.Common.Models
         public const int DefaultPageNumber = 1;
 
         #endregion paging
-        
+
         #region Filter&SortSeparator
 
-        /// <sumary>
+        /// <summary>
         /// Comma Separator
-        /// </sumary>
+        /// </summary>
         public const string EscapedCommaPattern = @"(?<!($|[^\\])(\\\\)*?\\),";
 
-        /// <sumary>
+        /// <summary>
         /// Pipe Separator
-        /// </sumary>
+        /// </summary>
         public const string EscapedPipePattern = @"(?<!($|[^\\])(\\\\)*?\\)\|";
 
-        /// <sumary>
+        /// <summary>
         /// Comma Separator
-        /// </sumary>
-        public static readonly string[] Operators = new[] {
+        /// </summary>
+        public static readonly string[] Operators = new[]
+        {
             "!@=*",
             "!_=*",
             "!=*",

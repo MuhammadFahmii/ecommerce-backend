@@ -21,28 +21,28 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
     public class CreateTodoListCommand : IRequest<DocumentRootJson<CreatedVm>>
     {
         /// <summary>
-        /// Title
+        /// Gets or sets title
         /// </summary>
         [BindRequired]
         public string Title { get; set; }
     }
-    
+
     /// <summary>
     /// CreateTodoListCommandHandler
     /// </summary>
     public class CreateTodoListCommandHandler : IRequestHandler<CreateTodoListCommand, DocumentRootJson<CreatedVm>>
     {
         private readonly IApplicationDbContext _context;
-        
+
         /// <summary>
-        /// CreateTodoListCommandHandler
+        /// Initializes a new instance of the <see cref="CreateTodoListCommandHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
         public CreateTodoListCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>
@@ -60,7 +60,7 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return JsonApiExtensions.ToJsonApi( new CreatedVm{Id = entity.Id});
+            return JsonApiExtensions.ToJsonApi(new CreatedVm { Id = entity.Id });
         }
     }
 }

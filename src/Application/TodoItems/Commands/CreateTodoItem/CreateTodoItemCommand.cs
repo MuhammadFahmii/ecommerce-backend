@@ -24,13 +24,13 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem
     public class CreateTodoItemCommand : IRequest<DocumentRootJson<CreatedVm>>
     {
         /// <summary>
-        /// ListId
+        /// Gets or sets listId
         /// </summary>
         [BindRequired]
         public Guid ListId { get; set; }
-        
+
         /// <summary>
-        /// Title
+        /// Gets or sets title
         /// </summary>
         [BindRequired]
         public string Title { get; set; }
@@ -44,7 +44,7 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem
         private readonly IApplicationDbContext _context;
 
         /// <summary>
-        /// CreateTodoItemCommandHandler
+        /// Initializes a new instance of the <see cref="CreateTodoItemCommandHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
         public CreateTodoItemCommandHandler(IApplicationDbContext context)
@@ -58,8 +58,8 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<DocumentRootJson<CreatedVm>> Handle(CreateTodoItemCommand request,
-            CancellationToken cancellationToken)
+        public async Task<DocumentRootJson<CreatedVm>> Handle(
+            CreateTodoItemCommand request, CancellationToken cancellationToken)
         {
             var entity = new TodoItem
             {
@@ -74,7 +74,7 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return JsonApiExtensions.ToJsonApi( new CreatedVm{Id = entity.Id});
+            return JsonApiExtensions.ToJsonApi(new CreatedVm { Id = entity.Id });
         }
     }
 }

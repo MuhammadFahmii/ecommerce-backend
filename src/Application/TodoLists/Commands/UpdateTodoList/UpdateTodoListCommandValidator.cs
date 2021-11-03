@@ -19,9 +19,9 @@ namespace netca.Application.TodoLists.Commands.UpdateTodoList
     public class UpdateTodoListCommandValidator : AbstractValidator<UpdateTodoListCommand>
     {
         private readonly IApplicationDbContext _context;
-        
+
         /// <summary>
-        /// UpdateTodoListCommandValidator
+        /// Initializes a new instance of the <see cref="UpdateTodoListCommandValidator"/> class.
         /// </summary>
         /// <param name="context"></param>
         public UpdateTodoListCommandValidator(IApplicationDbContext context)

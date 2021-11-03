@@ -16,19 +16,19 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
     /// </summary>
     public class TodoItemBriefVm : AuditTableVm, IMapFrom<TodoItem>
     {
-        
+
         /// <summary>
-        /// ListId
+        /// Gets or sets listId
         /// </summary>
         public Guid ListId { get; set; }
-        
+
         /// <summary>
-        /// Title
+        /// Gets or sets title
         /// </summary>
         public string Title { get; set; }
-        
+
         /// <summary>
-        /// Done
+        /// Gets or sets a value indicating whether done
         /// </summary>
         public bool Done { get; set; }
     }

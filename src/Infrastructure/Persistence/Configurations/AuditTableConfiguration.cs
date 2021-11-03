@@ -51,9 +51,9 @@ namespace netca.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.DeletedDate)
                 .HasColumnType("datetime2");
-            
+
             builder.HasIndex(b => b.IsActive);
-            
+
             builder.HasIndex(b => b.DeletedDate);
         }
     }

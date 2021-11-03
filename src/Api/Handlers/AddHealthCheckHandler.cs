@@ -23,8 +23,8 @@ using netca.Application.Common.Models;
 
 namespace netca.Api.Handlers
 { /// <summary>
-    /// AddHealthCheckHandler
-    /// </summary>
+  /// AddHealthCheckHandler
+  /// </summary>
     public static class AddHealthCheckHandler
     {
         private const string HealthQuery = Constants.DefaultHealthCheckQuery;

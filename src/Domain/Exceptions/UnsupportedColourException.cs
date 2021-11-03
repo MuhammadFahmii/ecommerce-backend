@@ -14,6 +14,7 @@ namespace netca.Domain.Exceptions
     public class UnsupportedColourException : Exception
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="UnsupportedColourException"/> class.
         /// UnsupportedColourException
         /// </summary>
         /// <param name="code"></param>

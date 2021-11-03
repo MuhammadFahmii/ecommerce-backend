@@ -14,22 +14,22 @@ namespace netca.Application.WeatherForecasts.Queries.GetWeatherForecasts
     public class WeatherForecast
     {
         /// <summary>
-        /// Date
+        /// Gets or sets date
         /// </summary>
         public DateTime Date { get; set; }
-            
+
         /// <summary>
-        /// TemperatureC
+        /// Gets or sets temperatureC
         /// </summary>
         public int TemperatureC { get; set; }
-        
+
         /// <summary>
-        /// TemperatureF
+        /// Gets temperatureF
         /// </summary>
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-        
+
         /// <summary>
-        /// Summary
+        /// Gets or sets summary
         /// </summary>
         public string Summary { get; set; }
     }

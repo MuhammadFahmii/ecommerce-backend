@@ -14,7 +14,7 @@ namespace netca.Application.TodoItems.Commands.UpdateTodoItem
     public class UpdateTodoItemCommandValidator : AbstractValidator<UpdateTodoItemCommand>
     {
         /// <summary>
-        /// UpdateTodoItemCommandValidator
+        /// Initializes a new instance of the <see cref="UpdateTodoItemCommandValidator"/> class.
         /// </summary>
         public UpdateTodoItemCommandValidator()
         {

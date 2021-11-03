@@ -26,22 +26,22 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
     public class GetTodoItemsWithPaginationQuery : IRequest<DocumentRootJson<List<TodoItemBriefVm>>>
     {
         /// <summary>
-        /// ListId
+        /// Gets or sets listId
         /// </summary>
         [BindRequired]
         public Guid ListId { get; set; }
-        
+
         /// <summary>
-        /// PageNumber
+        /// Gets or sets pageNumber
         /// </summary>
         public int PageNumber { get; set; } = Constants.DefaultPageNumber;
-        
+
         /// <summary>
-        /// PageSize
+        /// Gets or sets pageSize
         /// </summary>
         public int PageSize { get; set; } = Constants.DefaultPageSize;
     }
-    
+
     /// <summary>
     /// GetTodoItemsWithPaginationQueryHandler
     /// </summary>
@@ -49,9 +49,9 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
-        
+
         /// <summary>
-        /// GetTodoItemsWithPaginationQueryHandler
+        /// Initializes a new instance of the <see cref="GetTodoItemsWithPaginationQueryHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="mapper"></param>
@@ -60,7 +60,7 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
             _context = context;
             _mapper = mapper;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>
@@ -73,7 +73,7 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
                 .Where(x => x.ListId == request.ListId)
                 .OrderBy(x => x.Title)
                 .ProjectTo<TodoItemBriefVm>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(  request.PageNumber, request.PageSize);
+                .PaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }
 }

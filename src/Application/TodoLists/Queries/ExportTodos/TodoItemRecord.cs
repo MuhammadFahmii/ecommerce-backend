@@ -15,12 +15,12 @@ namespace netca.Application.TodoLists.Queries.ExportTodos
     public class TodoItemRecord : IMapFrom<TodoItem>
     {
         /// <summary>
-        /// Title
+        /// Gets or sets title
         /// </summary>
         public string Title { get; set; }
-        
+
         /// <summary>
-        /// Done
+        /// Gets or sets a value indicating whether done
         /// </summary>
         public bool Done { get; set; }
     }

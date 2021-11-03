@@ -26,7 +26,7 @@ namespace netca.Application.Common.Models
         }
 
         /// <summary>
-        /// DomainEvent
+        /// Gets domainEvent
         /// </summary>
         public TDomainEvent DomainEvent { get; }
     }

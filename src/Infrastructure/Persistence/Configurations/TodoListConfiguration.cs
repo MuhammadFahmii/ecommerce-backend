@@ -13,7 +13,7 @@ namespace netca.Infrastructure.Persistence.Configurations
     /// <summary>
     /// TodoListConfiguration
     /// </summary>
-    public class TodoListConfiguration: AuditTableConfiguration<TodoList>
+    public class TodoListConfiguration : AuditTableConfiguration<TodoList>
     {
         /// <summary>
         /// Configure TodoList

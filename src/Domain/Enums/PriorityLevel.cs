@@ -15,17 +15,17 @@ namespace netca.Domain.Enums
         /// None
         /// </summary>
         None = 0,
-        
+
         /// <summary>
         /// Low
         /// </summary>
         Low = 1,
-        
+
         /// <summary>
         /// Medium
         /// </summary>
         Medium = 2,
-        
+
         /// <summary>
         /// High
         /// </summary>
