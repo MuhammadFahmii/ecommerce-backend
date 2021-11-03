@@ -63,10 +63,10 @@ namespace netca.Api.Controllers
         [HttpGet("{id:guid}")]
         [Produces(Constants.HeaderTextCsv)]
         [SwaggerResponse(HttpStatusCode.OK, typeof(DocumentRootJson<TodosVm>), Description = "Successfully to get todos csv")]
-        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = "BadRequest")]
-        [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit), Description = "Unauthorized")]
-        [SwaggerResponse(HttpStatusCode.Forbidden, typeof(Unit), Description = "Forbidden")]
-        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Unit), Description = "Internal Server Error")]
+        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = Constants.ApiErrorDescription.BadRequest)]
+        [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit), Description = Constants.ApiErrorDescription.Unauthorized)]
+        [SwaggerResponse(HttpStatusCode.Forbidden, typeof(Unit), Description = Constants.ApiErrorDescription.Forbidden)]
+        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Unit), Description = Constants.ApiErrorDescription.InternalServerError)]
         public async Task<FileResult> GetCsvAsync(Guid id, CancellationToken cancellationToken)
         {
             var vm = await Mediator.Send(new ExportTodosQuery { ListId = id }, cancellationToken);
