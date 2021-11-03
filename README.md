@@ -32,7 +32,7 @@ The easiest way to get started is to install the [NuGet package](https://tfs.uni
 <configuration>
   <packageSources>
     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
-    <add key="ut" value="https://tfs.unitedtractors.com/DefaultCollection/_packaging/dad-registry/nuget/v3/index.json" />
+    <add key="ut" value="https://tfs.unitedtractors.com/DefaultCollection/_packaging/dad-registry@Release/nuget/v3/index.json" />
   </packageSources>
   <packageSourceCredentials>
         <ut> 
