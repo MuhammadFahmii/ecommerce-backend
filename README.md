@@ -45,7 +45,7 @@ The easiest way to get started is to install the [NuGet package](https://tfs.uni
 ``` 
 1. Run `dotnet new --install DAD.Netca.WebApi.Solution.Template` to install the project template
 2. Create a folder for your solution and cd into it (the template will use it as project name)
-3. Run `dotnet new netca` to create a new project
+3. Run `dotnet new dad-ca-wa-sln` to create a new project
 4. Navigate to `src/Api` and run `dotnet run` to launch the back end (ASP.NET Core Web API)
 
 ### Docker Configuration
