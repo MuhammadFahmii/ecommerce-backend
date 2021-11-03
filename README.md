@@ -23,7 +23,7 @@ This is a solution template for creating a ASP.NET Core following the principles
 
 ## Getting Started
 
-The easiest way to get started is to install the [NuGet package](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_packaging?feed=dad-registry%40Release&package=DAD.Clean.Architecture.WebApi.Solution.Template&version&protocolType=NuGet&_a=package) and run `dotnet new netca`:
+The easiest way to get started is to install the [NuGet package](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_packaging?feed=dad-registry%40Release&package=DAD.Clean.Architecture.WebApi.Solution.Template&version&protocolType=NuGet&_a=package) and run `dotnet new dad-ca-wa-sln`:
 
 1. Install the latest [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 2. Add packageSources & packageSourceCredentials to `Nuget.config` : 
