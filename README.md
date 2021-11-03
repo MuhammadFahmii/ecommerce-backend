@@ -1,6 +1,6 @@
  <img width="116" height="116" src="https://raw.githubusercontent.com/jasontaylordev/CleanArchitecture/main/.github/icon.png"  alt=""/>
 
-# DAD .NET5 Clean Architecture Web Api Solution Template
+ # DAD .NET5 Clean Architecture Web Api Solution Template
 [![Build status](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_apis/build/status/netca-CI)](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_build/latest?definitionId=665)
 
 [![DAD.Clean.Architecture.WebApi.Solution.Template package in dad-registry@Release feed in Azure Artifacts](https://tfs.unitedtractors.com/DefaultCollection/_apis/public/Packaging/Feeds/f638be01-a0c6-4302-ae05-45ba95464364@50b3c3a2-8888-4fc3-a0ad-de7036f45f70/Packages/dcd873c3-8f3b-4c96-a39d-4ad2a979a758/Badge)](https://tfs.unitedtractors.com/DefaultCollection/_Packaging?feed=f638be01-a0c6-4302-ae05-45ba95464364%4050b3c3a2-8888-4fc3-a0ad-de7036f45f70&package=dcd873c3-8f3b-4c96-a39d-4ad2a979a758&preferRelease=true&_a=package)
@@ -23,7 +23,7 @@ This is a solution template for creating a ASP.NET Core following the principles
 
 ## Getting Started
 
-The easiest way to get started is to install the [NuGet package](https://tfs.unitedtractors.com/DefaultCollection/_Packaging?feed=f638be01-a0c6-4302-ae05-45ba95464364&package=791d0990-f814-427a-8f2c-cca0d2c01f46&preferRelease=true&_a=package) and run `dotnet new netca`:
+The easiest way to get started is to install the [NuGet package](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_packaging?feed=dad-registry%40Release&package=DAD.Clean.Architecture.WebApi.Solution.Template&version=0.1.0&protocolType=NuGet&_a=package) and run `dotnet new netca`:
 
 1. Install the latest [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 2. Add packageSources & packageSourceCredentials to `Nuget.config` : 
