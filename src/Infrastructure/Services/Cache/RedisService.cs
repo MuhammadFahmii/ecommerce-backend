@@ -47,7 +47,7 @@ namespace netca.Infrastructure.Services.Cache
 
         private  IDatabase Database => Connections.GetDatabase(_appSetting.RedisServer.DatabaseNumber);
 
-        private  List<IServer> Servers
+        private  IEnumerable<IServer> Servers
         {
             get
             {
