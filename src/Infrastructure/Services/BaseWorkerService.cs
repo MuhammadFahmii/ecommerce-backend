@@ -73,7 +73,7 @@ namespace netca.Infrastructure.Services
         /// <summary>
         /// Dispose
         /// </summary>
-        public virtual void Dispose()
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
