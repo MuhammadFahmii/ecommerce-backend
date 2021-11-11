@@ -48,7 +48,7 @@ namespace netca.Api.Handlers
             if (!logEvent.Level.Equals(LogEventLevel.Error)) return;
             var cacheMsTeam = GetCounter();
             var hours = (DateTime.UtcNow - cacheMsTeam.Date).TotalHours;
-            if (cacheMsTeam.Counter >= _appSetting.Bot.CacheMSTeam.Counter || hours >= _appSetting.Bot.CacheMSTeam.Hours) return;
+            if (cacheMsTeam.Counter >= _appSetting.Bot.CacheMsTeam.Counter || hours >= _appSetting.Bot.CacheMsTeam.Hours) return;
             SetCounter(cacheMsTeam); 
             var facts = new List<Fact>();
             var sections = new List<Section>();
@@ -73,22 +73,22 @@ namespace netca.Api.Handlers
             SendToMsTeams.Send(_appSetting, tmpl).ConfigureAwait(false);
         }
 
-        private void SetCounter(CacheMSTeam cacheMsTeam)
+        private void SetCounter(CacheMsTeam cacheMsTeam)
         {
             var cacheEntryOptions = new MemoryCacheEntryOptions()  
                 .SetAbsoluteExpiration(TimeSpan.FromDays(2));
-            _memoryCache.Set("CacheMSTeams", cacheMsTeam, cacheEntryOptions);
+            _memoryCache.Set("CacheMsTeams", cacheMsTeam, cacheEntryOptions);
         }
         
-        private CacheMSTeam GetCounter()
+        private CacheMsTeam GetCounter()
         {
-            var isExist = _memoryCache.TryGetValue("CacheMSTeams", out CacheMSTeam cacheMsTeam);
+            var isExist = _memoryCache.TryGetValue("CacheMsTeams", out CacheMsTeam cacheMsTeam);
             if (isExist)
             {
                 return cacheMsTeam;
             }
 
-            cacheMsTeam = new CacheMSTeam{Counter = 0, Date = DateTime.UtcNow};
+            cacheMsTeam = new CacheMsTeam{Counter = 0, Date = DateTime.UtcNow};
             return cacheMsTeam;
         }
     }

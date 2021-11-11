@@ -41,16 +41,16 @@ namespace netca.Api.Handlers
             var gateWay = new Uri(appSetting.AuthorizationServer.Gateway);
             void UmsSetup(TcpHealthCheckOptions x) => x.AddHost(ums.Host, Convert.ToInt32(appSetting.AuthorizationServer.Address.Split(":")[2]));
             void GateWaySetup(TcpHealthCheckOptions x) => x.AddHost(gateWay.Host, 443);
-            services.AddHealthChecks().AddCheck<SystemMemoryHealthcheck>(Constants.DefaultHealthCheckMemoryUsage);
-            services.AddHealthChecks().AddCheck<SystemCpuHealthcheck>(Constants.DefaultHealthCheckCpuUsage);
+            services.AddHealthChecks().AddCheck<SystemMemoryHealthCheck>(Constants.DefaultHealthCheckMemoryUsage);
+            services.AddHealthChecks().AddCheck<SystemCpuHealthCheck>(Constants.DefaultHealthCheckCpuUsage);
             services.AddHealthChecks().AddSqlServer(
-                connectionString: appSetting.ConnectionStrings.DefaultConnection,
+                appSetting.ConnectionStrings.DefaultConnection,
                 name: Constants.DefaultHealthCheckDatabaseName,
                 healthQuery: HealthQuery,
                 failureStatus: HealthStatus.Degraded);
-            services.AddHealthChecks().AddTcpHealthCheck(setup: UmsSetup, name: Constants.DefaultHealthCheckUmsName, failureStatus: HealthStatus.Degraded);
-            services.AddHealthChecks().AddTcpHealthCheck(setup: GateWaySetup, name: Constants.DefaultHealthCheckGateWayName, failureStatus: HealthStatus.Degraded);
-            services.AddHealthChecks().AddRedis(redisConnectionString: appSetting.RedisServer.Server, name: Constants.DefaultHealthCheckRedisName, failureStatus: HealthStatus.Degraded);
+            services.AddHealthChecks().AddTcpHealthCheck(setup: UmsSetup, name: Constants.DefaultHealthCheckUmsName, HealthStatus.Degraded);
+            services.AddHealthChecks().AddTcpHealthCheck(setup: GateWaySetup, name: Constants.DefaultHealthCheckGateWayName, HealthStatus.Degraded);
+            services.AddHealthChecks().AddRedis(appSetting.RedisServer.Server, name: Constants.DefaultHealthCheckRedisName, HealthStatus.Degraded);
         }
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace netca.Api.Handlers
     }
 
     /// <summary>
-    /// SystemCpuHealthcheck
+    /// SystemCpuHealthCheck
     /// </summary>
-    public class SystemCpuHealthcheck : IHealthCheck
+    public class SystemCpuHealthCheck : IHealthCheck
     {
         /// <summary>
         /// CheckHealthAsync
@@ -102,9 +102,9 @@ namespace netca.Api.Handlers
     }
 
     /// <summary>
-    /// SystemMemoryHealthcheck
+    /// SystemMemoryHealthCheck
     /// </summary>
-    public class SystemMemoryHealthcheck : IHealthCheck
+    public class SystemMemoryHealthCheck : IHealthCheck
     {
         /// <summary>
         /// CheckHealthAsync
@@ -247,26 +247,26 @@ namespace netca.Api.Handlers
         /// Status
         /// </summary>
         /// <value></value>
-        private UIHealthStatus Status { get; set; }
+        public UIHealthStatus Status { get; set; }
 
         /// <summary>
         /// TotalDuration
         /// </summary>
         /// <value></value>
-        private TimeSpan TotalDuration { get; set; }
+        public TimeSpan TotalDuration { get; set; }
 
         /// <summary>
         /// Entries
         /// </summary>
         /// <value></value>
-        private Dictionary<string, UIHealthReportEntry> Entries { get; }
+        public Dictionary<string, UIHealthReportEntry> Entries { get; }
 
         /// <summary>
         /// UIHealthReport
         /// </summary>
         /// <param name="entries"></param>
         /// <param name="totalDuration"></param>
-        private UiHealthReport(Dictionary<string, UIHealthReportEntry> entries, TimeSpan totalDuration)
+        public UiHealthReport(Dictionary<string, UIHealthReportEntry> entries, TimeSpan totalDuration)
         {
             Entries = entries;
             TotalDuration = totalDuration;
@@ -297,8 +297,7 @@ namespace netca.Api.Handlers
                 if (value.Exception != null)
                 {
                     var message = value.Exception?
-                        .Message
-                        .ToString();
+                        .Message;
 
                     entry.Exception = message;
                     entry.Description = value.Description ?? message;
@@ -306,30 +305,6 @@ namespace netca.Api.Handlers
 
                 uiReport.Entries.Add(key, entry);
             }
-
-            return uiReport;
-        }
-
-        /// <summary>
-        /// CreateFrom
-        /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="entryName"></param>
-        /// <returns></returns>
-        public static UiHealthReport CreateFrom(Exception exception, string entryName = "Endpoint")
-        {
-            var uiReport = new UiHealthReport(new Dictionary<string, UIHealthReportEntry>(), TimeSpan.FromSeconds(0))
-            {
-                Status = UIHealthStatus.Unhealthy,
-            };
-
-            uiReport.Entries.Add(entryName, new UIHealthReportEntry
-            {
-                Exception = exception.Message,
-                Description = exception.Message,
-                Duration = TimeSpan.FromSeconds(0),
-                Status = UIHealthStatus.Unhealthy
-            });
 
             return uiReport;
         }
@@ -396,7 +371,6 @@ namespace netca.Api.Handlers
     /// </summary>
     public static class UiResponseWriter
     {
-
         private static readonly byte[] EmptyResponse = { (byte)'{', (byte)'}' };
         private static readonly Lazy<JsonSerializerOptions> Options = new(CreateJsonOptions);
 
@@ -431,8 +405,7 @@ namespace netca.Api.Handlers
             var opt = new JsonSerializerOptions()
             {
                 AllowTrailingCommas = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                IgnoreNullValues = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
             opt.Converters.Add(new JsonStringEnumConverter());

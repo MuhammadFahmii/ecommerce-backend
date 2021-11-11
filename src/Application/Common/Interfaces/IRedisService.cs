@@ -23,7 +23,15 @@ namespace netca.Application.Common.Interfaces
         /// <summary>
         /// SaveAsync
         /// </summary>
-        Task<string> SaveAsync(string key, string sub, string value, CancellationToken cancellationToken);
+        Task<string> SaveAsync(string key, string sub, string value);
+        /// <summary>
+        /// ListLeftPush
+        /// </summary>
+        Task<long> ListLeftPushAsync(string key, string value);
+        /// <summary>
+        /// ListLeftPop
+        /// </summary>
+        Task<string> ListLeftPopAsync(string key);
         /// <summary>
         /// GetAllValueWithKeyAsync
         /// </summary>

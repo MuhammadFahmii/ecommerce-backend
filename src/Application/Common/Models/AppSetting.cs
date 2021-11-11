@@ -11,7 +11,7 @@ namespace netca.Application.Common.Models
     /// <summary>
     /// AppSetting
     /// </summary>
-     /// <summary>
+    /// <summary>
     /// AppSetting
     /// </summary>
     public class AppSetting
@@ -21,18 +21,12 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value></value>
         public bool IsEnableAuth { get; set; } = true;
-        
+
         /// <summary>
         /// IsEnableDetailError
         /// </summary>
         /// <value></value>
-        public bool IsEnableDetailError { get; set; } = false;
-
-        /// <summary>
-        /// EvaluationTimeinInS
-        /// </summary>
-        /// <value></value>
-        public int EvaluationTimeinInS { get; set; } = 10;
+        public bool IsEnableDetailError { get; set; }
 
         /// <summary>
         /// MinimumSecondsBetweenFailureNotifications
@@ -56,7 +50,7 @@ namespace netca.Application.Common.Models
         /// Kestrel
         /// </summary>
         /// <returns></returns>
-        public Kestrel Kestrel { get; set; } = new Kestrel();
+        public Kestrel Kestrel { get; set; } = new();
 
         /// <summary>
         /// CorsOrigin
@@ -69,6 +63,12 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <returns></returns>
         public Bot Bot { get; set; } = new();
+
+        /// <summary>
+        /// Messaging
+        /// </summary>
+        /// <returns></returns>
+        public Messaging Messaging { get; set; } = new();
 
         /// <summary>
         /// AuthorizationServer
@@ -88,17 +88,89 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <returns></returns>
         public App App { get; set; } = new App();
-        
+
         /// <summary>
         /// RedisServer
         /// </summary>
         /// <returns></returns>
         public RedisServer RedisServer { get; set; } = new();
-        
+
         /// <summary>
         /// BackgroundJob
         /// </summary>
         public BackgroundJob BackgroundJob { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Messaging
+    /// </summary>
+    public class Messaging
+    {
+        /// <summary>
+        /// AzureEventHubs
+        /// </summary>
+        /// <value></value>
+        public List<AzureEventHub> AzureEventHubs { get; set; } = new();
+    }
+
+    /// <summary>
+    /// AzureEventHub
+    /// </summary>
+    public class AzureEventHub
+    {
+        /// <summary>
+        /// Name
+        /// </summary>
+        /// <value></value>
+        public string Name { get; set; } = "dca";
+
+        /// <summary>
+        /// ConnectionString
+        /// </summary>
+        /// <value></value>
+        public string ConnectionString { get; set; } = "DCA_Tracking_Service";
+
+        /// <summary>
+        /// StorageAccount
+        /// </summary>
+        /// <value></value>
+        public string StorageAccount { get; set; } = "DCA_Tracking_Service";
+
+        /// <summary>
+        /// BlobContainerName
+        /// </summary>
+        /// <value></value>
+        public string BlobContainerName { get; set; } = "DCA_Tracking_Service";
+
+        /// <summary>
+        /// Topic
+        /// </summary>
+        /// <value></value>
+        public List<EventHubTopic> Topics { get; set; } = new();
+    }
+
+    /// <summary>
+    /// EventHubTopic
+    /// </summary>
+    public class EventHubTopic
+    {
+        /// <summary>
+        /// Name
+        /// </summary>
+        /// <value></value>
+        public string Name { get; set; } = "dca_assignmentservice_assignments_v1";
+
+        /// <summary>
+        /// GroupName
+        /// </summary>
+        /// <value></value>
+        public string GroupName { get; set; } = "$Default";
+
+        /// <summary>
+        /// Value
+        /// </summary>
+        /// <value></value>
+        public string Value { get; set; } = "dca_assignmentservice_assignments_v1";
     }
 
     /// <summary>
@@ -147,6 +219,7 @@ namespace netca.Application.Common.Models
         /// <value></value>
         public List<Policy> Policy { get; set; } = new();
     }
+
     /// <summary>
     /// Policy
     /// </summary>
@@ -163,14 +236,14 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value></value>
         public bool IsCheck { get; set; } = false;
-        
+
         /// <summary>
         /// IsCache
         /// </summary>
         /// <value></value>
         public bool IsCache { get; set; } = false;
     }
-    
+
     /// <summary>
     /// DatabaseSettings
     /// </summary>
@@ -242,7 +315,6 @@ namespace netca.Application.Common.Models
     /// </summary>
     public class Kestrel
     {
-        
         /// <summary>
         /// KeepAliveTimeoutInM
         /// </summary>
@@ -267,7 +339,6 @@ namespace netca.Application.Common.Models
     /// </summary>
     public class MinRequestBodyDataRate
     {
-        
         /// <summary>
         /// bytesPerSecond
         /// </summary>
@@ -286,7 +357,6 @@ namespace netca.Application.Common.Models
     /// </summary>
     public class MinResponseDataRate
     {
-        
         /// <summary>
         /// bytesPerSecond
         /// </summary>
@@ -323,7 +393,7 @@ namespace netca.Application.Common.Models
         /// <value></value>
         public string Uri { get; set; } = "https://www.unitedtractors.com";
     }
-    
+
     /// <summary>
     /// Bot
     /// </summary>
@@ -340,7 +410,7 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value></value>
         public string ServiceName { get; set; } = "DCA - netca";
-        
+
         /// <summary>
         /// ServiceDomain
         /// </summary>
@@ -363,12 +433,12 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value></value>
         public string Secret { get; set; } = "";
-        
+
         /// <summary>
-        /// CacheMSTeam
+        /// CacheMsTeam
         /// </summary>
         /// <value></value>
-        public CacheMSTeam CacheMSTeam { get; set; } = new();
+        public CacheMsTeam CacheMsTeam { get; set; } = new();
     }
 
     /// <summary>
@@ -382,7 +452,7 @@ namespace netca.Application.Common.Models
         /// <returns></returns>
         public string DefaultConnection { get; set; } = "netca.db";
     }
-    
+
     /// <summary>
     /// RedisServer
     /// </summary>
@@ -423,7 +493,7 @@ namespace netca.Application.Common.Models
         /// <value></value>
         public List<Policy> Policy { get; set; } = new();
     }
-    
+
     /// <summary>
     /// BackgroundJob
     /// </summary>
@@ -433,22 +503,23 @@ namespace netca.Application.Common.Models
         /// IsEnable
         /// </summary>
         public bool IsEnable { get; set; } = true;
-        
+
         /// <summary>
         /// UsePersistentStore
         /// </summary>
         public bool UsePersistentStore { get; set; } = false;
-        
+
         /// <summary>
         /// PersistentStore
         /// </summary>
         public PersistentStore PersistentStore { get; set; } = new();
+
         /// <summary>
         /// Jobs
         /// </summary>
         public List<Job> Jobs { get; set; } = new();
     }
-    
+
     /// <summary>
     /// PersistentStore
     /// </summary>
@@ -458,48 +529,48 @@ namespace netca.Application.Common.Models
         /// ConnectionString
         /// </summary>
         public string ConnectionString { get; set; } = "";
-        
+
         /// <summary>
         /// IgnoreDuplicates
         /// </summary>
         public bool IgnoreDuplicates { get; set; } = true;
-        
+
         /// <summary>
         /// OverWriteExistingData
         /// </summary>
         public bool OverWriteExistingData { get; set; } = true;
-        
+
         /// <summary>
         /// MaxConcurrency
         /// </summary>
         public int MaxConcurrency { get; set; } = 10;
-        
+
         /// <summary>
         /// RetryInterval
         /// </summary>
         public int RetryInterval { get; set; } = 15;
-        
+
         /// <summary>
         /// CheckinInterval
         /// </summary>
         public int CheckinInterval { get; set; } = 15000;
-        
+
         /// <summary>
         /// CheckinMisfireThreshold
         /// </summary>
         public int CheckinMisfireThreshold { get; set; } = 15000;
-        
+
         /// <summary>
         /// MisfireThreshold
         /// </summary>
         public int MisfireThreshold { get; set; } = 15000;
-        
+
         /// <summary>
         /// TablePrefix
         /// </summary>
         public string TablePrefix { get; set; } = "QRTZ_";
     }
-    
+
     /// <summary>
     /// Job
     /// </summary>
@@ -509,11 +580,12 @@ namespace netca.Application.Common.Models
         /// Name
         /// </summary>
         public string Name { get; set; } = "";
+
         /// <summary>
         /// IsParallel
         /// </summary>
         public bool IsParallel { get; set; } = false;
-        
+
         /// <summary>
         /// IsEnable
         /// </summary>
@@ -523,7 +595,7 @@ namespace netca.Application.Common.Models
         /// Schedule
         /// </summary>
         public string Schedule { get; set; } = "";
-        
+
         /// <summary>
         /// Description
         /// </summary>
