@@ -19,9 +19,10 @@ namespace netca.Infrastructure.Jobs
     public class HelloWorldJob : IJob
     {
         private readonly ILogger<HelloWorldJob> _logger;
-        private readonly IServiceScopeFactory _serviceScopeFactory;  
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+
         /// <summary>
-        /// HelloWorldJob
+        /// Initializes a new instance of the <see cref="HelloWorldJob"/> class.
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="serviceScopeFactory"></param>
@@ -30,7 +31,7 @@ namespace netca.Infrastructure.Jobs
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
         }
-        
+
         /// <summary>
         /// Execute
         /// </summary>
@@ -43,7 +44,7 @@ namespace netca.Infrastructure.Jobs
                 var dt = scope.ServiceProvider.GetRequiredService<IDateTime>();
                 _logger.LogWarning($"Hello world! at {dt.Now}");
             }
-            
+
             return Task.CompletedTask;
         }
     }

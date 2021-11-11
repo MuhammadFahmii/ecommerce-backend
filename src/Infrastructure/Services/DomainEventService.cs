@@ -21,9 +21,9 @@ namespace netca.Infrastructure.Services
     {
         private readonly ILogger<DomainEventService> _logger;
         private readonly IPublisher _mediator;
-        
+
         /// <summary>
-        /// DomainEventService
+        /// Initializes a new instance of the <see cref="DomainEventService"/> class.
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="mediator"></param>
@@ -32,17 +32,18 @@ namespace netca.Infrastructure.Services
             _logger = logger;
             _mediator = mediator;
         }
-        
+
         /// <summary>
         /// Publish
         /// </summary>
         /// <param name="domainEvent"></param>
+        /// <returns></returns>
         public async Task Publish(DomainEvent domainEvent)
         {
             _logger.LogInformation("Publishing domain event. Event - {event}", domainEvent.GetType().Name);
             await _mediator.Publish(GetNotificationCorrespondingToDomainEvent(domainEvent));
         }
-        
+
         /// <summary>
         /// GetNotificationCorrespondingToDomainEvent
         /// </summary>

@@ -14,7 +14,7 @@ namespace netca.Application.Common.Vms
     public class CreatedVm
     {
         /// <summary>
-        /// Id
+        /// Gets or sets id
         /// </summary>
         /// <value></value>
         public Guid Id { get; set; }

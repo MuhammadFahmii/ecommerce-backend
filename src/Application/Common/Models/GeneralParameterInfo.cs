@@ -14,43 +14,43 @@ namespace netca.Application.Common.Models
     public class GeneralParameterInfo
     {
         /// <summary>
-        /// GeneralParameterId
+        /// Gets or sets generalParameterId
         /// </summary>
         /// <value></value>
         public Guid GeneralParameterId { get; set; }
 
         /// <summary>
-        /// GeneralParameterCode
+        /// Gets or sets generalParameterCode
         /// </summary>
         /// <value></value>
         public string GeneralParameterCode { get; set; }
 
         /// <summary>
-        /// GeneralParameterValue1
+        /// Gets or sets generalParameterValue1
         /// </summary>
         /// <value></value>
         public string GeneralParameterValue1 { get; set; }
 
         /// <summary>
-        /// GeneralParameterValue2
+        /// Gets or sets generalParameterValue2
         /// </summary>
         /// <value></value>
         public string GeneralParameterValue2 { get; set; }
 
         /// <summary>
-        /// GeneralParameterValue3
+        /// Gets or sets generalParameterValue3
         /// </summary>
         /// <value></value>
         public string GeneralParameterValue3 { get; set; }
 
         /// <summary>
-        /// GeneralParameterValue4
+        /// Gets or sets generalParameterValue4
         /// </summary>
         /// <value></value>
         public string GeneralParameterValue4 { get; set; }
 
         /// <summary>
-        /// GeneralParameterValue5
+        /// Gets or sets generalParameterValue5
         /// </summary>
         /// <value></value>
         public string GeneralParameterValue5 { get; set; }
@@ -62,19 +62,19 @@ namespace netca.Application.Common.Models
     public class UserDeviceInfo
     {
         /// <summary>
-        /// DeviceId
+        /// Gets or sets deviceId
         /// </summary>
         /// <value></value>
         public string DeviceId { get; set; }
 
         /// <summary>
-        /// AppVersion
+        /// Gets or sets appVersion
         /// </summary>
         /// <value></value>
         public string AppVersion { get; set; }
 
         /// <summary>
-        /// OsVersion
+        /// Gets or sets osVersion
         /// </summary>
         /// <value></value>
         public string OsVersion { get; set; }
@@ -86,18 +86,19 @@ namespace netca.Application.Common.Models
     public class UserEmailInfo
     {
         /// <summary>
-        /// Email
+        /// Gets or sets email
         /// </summary>
         /// <value></value>
         public string Email { get; set; }
-        
+
         /// <summary>
-        /// FirstName
+        /// Gets or sets firstName
         /// </summary>
         /// <value></value>
         public string FirstName { get; set; }
+
         /// <summary>
-        /// LastName
+        /// Gets or sets lastName
         /// </summary>
         /// <value></value>
         public string LastName { get; set; }
@@ -105,150 +106,149 @@ namespace netca.Application.Common.Models
 
     /// <summary>
     /// UserClientIdInfo
-    /// </summary>   
+    /// </summary>
     public class UserClientIdInfo
     {
         /// <summary>
-        /// UserClientIdInfo
+        /// Gets or sets userClientIdInfo
         /// </summary>
         /// <value></value>
         public Guid UserId { get; set; }
 
         /// <summary>
-        /// clientId
+        /// Gets or sets clientId
         /// </summary>
         /// <value></value>
-        public string clientId { get; set; }
+        public string ClientId { get; set; }
 
         /// <summary>
-        /// isCustomer
+        /// Gets or sets a value indicating whether isCustomer
         /// </summary>
         /// <value></value>
-        public bool isCustomer { get; set; }
+        public bool IsCustomer { get; set; }
     }
-    
+
     /// <summary>
     /// UserMangementUser
     /// </summary>
     public class UserMangementUser
     {
         /// <summary>
-        /// UserId
+        /// Gets or sets userId
         /// </summary>
         /// <value></value>
         public Guid UserId { get; set; }
 
         /// <summary>
-        /// UserName
+        /// Gets or sets userName
         /// </summary>
         /// <value></value>
         public string UserName { get; set; }
 
         /// <summary>
-        /// Email
+        /// Gets or sets email
         /// </summary>
         /// <value></value>
         public string Email { get; set; }
 
         /// <summary>
-        /// FirstName
+        /// Gets or sets firstName
         /// </summary>
         /// <value></value>
         public string FirstName { get; set; }
 
         /// <summary>
-        /// LastName
+        /// Gets or sets lastName
         /// </summary>
         /// <value></value>
         public string LastName { get; set; }
 
         /// <summary>
-        /// CustomerCode
+        /// Gets or sets customerCode
         /// </summary>
         /// <value></value>
         public string CustomerCode { get; set; }
 
         /// <summary>
-        /// ContactNumber
+        /// Gets or sets contactNumber
         /// </summary>
         /// <value></value>
         public string ContactNumber { get; set; }
 
         /// <summary>
-        /// CreatedBy
+        /// Gets or sets createdBy
         /// </summary>
         /// <value></value>
         public string CreatedBy { get; set; }
 
         /// <summary>
-        /// CreatedDate
+        /// Gets or sets createdDate
         /// </summary>
         /// <value></value>
         public DateTime CreatedDate { get; set; }
 
         /// <summary>
-        /// UpdatedBy
+        /// Gets or sets updatedBy
         /// </summary>
         /// <value></value>
         public string UpdatedBy { get; set; }
 
         /// <summary>
-        /// UpdatedDate
+        /// Gets or sets updatedDate
         /// </summary>
         /// <value></value>
         public DateTime UpdatedDate { get; set; }
 
         /// <summary>
-        /// ForgotPasswordToken
+        /// Gets or sets forgotPasswordToken
         /// </summary>
         /// <value></value>
         public string ForgotPasswordToken { get; set; }
 
         /// <summary>
-        /// ForgotPasswordTokenExpiryDate
+        /// Gets or sets forgotPasswordTokenExpiryDate
         /// </summary>
         /// <value></value>
         public string ForgotPasswordTokenExpiryDate { get; set; }
     }
-    
+
     /// <summary>
     /// AuthorizedUser
     /// </summary>
     public class AuthorizedUser
     {
         /// <summary>
-        /// UserId
+        /// Gets or sets userId
         /// </summary>
         /// <value></value>
         public Guid UserId { get; set; }
-        
+
         /// <summary>
-        /// UserName
+        /// Gets or sets userName
         /// </summary>
         /// <value></value>
         public string UserName { get; set; }
 
         /// <summary>
-        /// UserName
+        /// Gets or sets UserFullName
         /// </summary>
         /// <value></value>
         public string UserFullName { get; set; }
 
         /// <summary>
-        /// CustomerCode
+        /// Gets or sets customerCode
         /// </summary>
         /// <value></value>
-
         public string CustomerCode { get; set; }
 
         /// <summary>
-        /// ClientId
+        /// Gets or sets clientId
         /// </summary>
         /// <value></value>
         public string ClientId { get; set; }
-        
+
         /// <summary>
-        /// RoleLevel
+        /// Gets or sets roleLevel
         /// </summary>
         /// <value></value>
         public int RoleLevel { get; set; }

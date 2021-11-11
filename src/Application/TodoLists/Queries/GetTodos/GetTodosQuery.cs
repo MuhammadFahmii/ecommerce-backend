@@ -26,17 +26,17 @@ namespace netca.Application.TodoLists.Queries.GetTodos
     public class GetTodosQuery : QueryModel, IRequest<DocumentRootJson<TodosVm>>
     {
     }
-    
+
     /// <summary>
     /// GetTodosQueryHandler
     /// </summary>
-    public class  GetTodosQueryHandler: IRequestHandler<GetTodosQuery, DocumentRootJson<TodosVm>>
+    public class GetTodosQueryHandler : IRequestHandler<GetTodosQuery, DocumentRootJson<TodosVm>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
-        
+
         /// <summary>
-        /// GetTodosQueryHandler
+        /// Initializes a new instance of the <see cref="GetTodosQueryHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="mapper"></param>
@@ -45,7 +45,7 @@ namespace netca.Application.TodoLists.Queries.GetTodos
             _context = context;
             _mapper = mapper;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>
@@ -59,21 +59,21 @@ namespace netca.Application.TodoLists.Queries.GetTodos
                 .QueryWithoutLimit(request)
                 .Select(x => x.Id)
                 .CountAsync(cancellationToken);
-           var vm =  new TodosVm
+            var vm = new TodosVm
             {
                 PriorityLevels = Enum.GetValues(typeof(PriorityLevel))
-                    .Cast<PriorityLevel>()
-                    .Select(p => new PriorityLevelVm { Value = (int)p, Name = p.ToString() })
-                    .ToList(),
+                     .Cast<PriorityLevel>()
+                     .Select(p => new PriorityLevelVm { Value = (int)p, Name = p.ToString() })
+                     .ToList(),
 
                 Lists = await _context.TodoLists
-                    .AsNoTracking()
-                    .Query(request)
-                    .ProjectTo<TodoListVm>(_mapper.ConfigurationProvider)
-                    .OrderBy(t => t.Title).ToListAsync(cancellationToken)
+                     .AsNoTracking()
+                     .Query(request)
+                     .ProjectTo<TodoListVm>(_mapper.ConfigurationProvider)
+                     .OrderBy(t => t.Title).ToListAsync(cancellationToken)
             };
-           
-           return JsonApiExtensions.ToJsonApiPaginated(vm, countEntity, request?.PageNumber ?? Constants.DefaultPageNumber, request?.PageSize ?? Constants.DefaultPageSize);
+
+            return JsonApiExtensions.ToJsonApiPaginated(vm, countEntity, request?.PageNumber ?? Constants.DefaultPageNumber, request?.PageSize ?? Constants.DefaultPageSize);
         }
     }
 }

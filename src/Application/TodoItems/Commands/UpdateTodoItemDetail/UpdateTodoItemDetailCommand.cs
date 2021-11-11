@@ -8,7 +8,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Interfaces;
 using netca.Domain.Entities;
@@ -22,52 +21,52 @@ namespace netca.Application.TodoItems.Commands.UpdateTodoItemDetail
     public class UpdateTodoItemDetailCommand : IRequest
     {
         /// <summary>
-        /// Id
+        /// Gets or sets id
         /// </summary>
         public Guid Id { get; set; }
-        
+
         /// <summary>
-        /// ListId
+        /// Gets or sets listId
         /// </summary>
         public Guid ListId { get; set; }
-        
+
         /// <summary>
-        /// Priority
+        /// Gets or sets priority
         /// </summary>
         public PriorityLevel Priority { get; set; }
-        
+
         /// <summary>
-        /// Note
+        /// Gets or sets note
         /// </summary>
         public string Note { get; set; }
     }
-    
+
     /// <summary>
-    /// 
+    /// UpdateTodoItemDetailCommandHandler
     /// </summary>
     public class UpdateTodoItemDetailCommandHandler : IRequestHandler<UpdateTodoItemDetailCommand>
     {
         private readonly IApplicationDbContext _context;
-        
+
         /// <summary>
-        /// UpdateTodoItemDetailCommandHandler
+        /// Initializes a new instance of the <see cref="UpdateTodoItemDetailCommandHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
         public UpdateTodoItemDetailCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="NotFoundException">Exception</exception>
         public async Task<Unit> Handle(UpdateTodoItemDetailCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.TodoItems.FindAsync(new object[]{request.Id}, cancellationToken);
+            var entity = await _context.TodoItems.FindAsync(new object[] { request.Id }, cancellationToken);
 
             if (entity == null)
             {

@@ -17,7 +17,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace netca.Api.Middlewares
 {
-     /// <summary>
+    /// <summary>
     /// CustomExceptionHandlerMiddleware
     /// </summary>
     public class CustomExceptionHandlerMiddleware
@@ -26,7 +26,7 @@ namespace netca.Api.Middlewares
         private readonly ILogger _logger;
 
         /// <summary>
-        /// CustomExceptionHandlerMiddleware
+        /// Initializes a new instance of the <see cref="CustomExceptionHandlerMiddleware"/> class.
         /// </summary>
         /// <param name="next"></param>
         /// <param name="logger"></param>
@@ -64,50 +64,64 @@ namespace netca.Api.Middlewares
                 case ValidationException validationException:
                     code = HttpStatusCode.BadRequest;
                     result = JsonConvert.SerializeObject(
-                        JsonApiExtensions.ToJsonApi(new object(),
-                        new Status{
-                            Code = (int)code,
-                            Desc = validationException.Errors
-                        }
-                    ), JsonExtensions.ErrorSerializerSettings());
+                        JsonApiExtensions.ToJsonApi(
+                            new object(),
+                            new Status
+                            {
+                                Code = (int)code,
+                                Desc = validationException.Errors
+                            }
+                        ),
+                        JsonExtensions.ErrorSerializerSettings());
                     break;
                 case BadRequestException badRequestException:
                     code = HttpStatusCode.BadRequest;
                     result = JsonConvert.SerializeObject(
-                        JsonApiExtensions.ToJsonApi(new object(),
-                        new Status{
-                            Code = (int)code,
-                            Desc = badRequestException.Message
-                        }
-                    ), JsonExtensions.ErrorSerializerSettings());
+                        JsonApiExtensions.ToJsonApi(
+                            new object(),
+                            new Status
+                            {
+                                Code = (int)code,
+                                Desc = badRequestException.Message
+                            }
+                        ),
+                        JsonExtensions.ErrorSerializerSettings());
                     break;
                 case NotFoundException _:
                     code = HttpStatusCode.NotFound;
                     result = JsonConvert.SerializeObject(
-                        JsonApiExtensions.ToJsonApi(new object(),
-                        new Status{
-                            Code = (int)code,
-                            Desc = exception.Message
-                        }
-                    ), JsonExtensions.ErrorSerializerSettings());
+                        JsonApiExtensions.ToJsonApi(
+                            new object(),
+                            new Status
+                            {
+                                Code = (int)code,
+                                Desc = exception.Message
+                            }
+                        ),
+                        JsonExtensions.ErrorSerializerSettings());
                     break;
             }
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
 
-            if (!string.IsNullOrEmpty(result)) return context.Response.WriteAsync(result);
+            if (!string.IsNullOrEmpty(result))
+                return context.Response.WriteAsync(result);
+
             result = JsonConvert.SerializeObject(
-                JsonApiExtensions.ToJsonApi(new object(),
-                    new Status{
+                JsonApiExtensions.ToJsonApi(
+                    new object(),
+                    new Status
+                    {
                         Code = (int)code,
                         Desc = "Internal Server Error"
                     }
-                ), JsonExtensions.ErrorSerializerSettings());
+                ),
+                JsonExtensions.ErrorSerializerSettings());
             logger.LogError($"Internal Server Error: {exception.Source} {exception.Message}");
+
             return context.Response.WriteAsync(result);
         }
-        
     }
 
     /// <summary>
@@ -119,7 +133,6 @@ namespace netca.Api.Middlewares
         /// UseCustomExceptionHandler
         /// </summary>
         /// <param name="builder"></param>
-        /// <returns></returns>
         public static void UseCustomExceptionHandler(this IApplicationBuilder builder)
         {
             builder.UseMiddleware<CustomExceptionHandlerMiddleware>();

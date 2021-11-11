@@ -12,11 +12,17 @@ namespace netca.Application.Common.Models
     public static class Constants
     {
         #region  healthcheck
+
         /// <summary>
         /// DefaultHealthCheckQuery
         /// </summary>
         public const string DefaultHealthCheckQuery = @"SELECT TOP 1 Id FROM Changelogs UNION ALL 
                                       SELECT TOP 1 Id FROM Assignments;";
+
+        /// <summary>
+        /// DefaultHealthCheckTimeoutInSeconds
+        /// </summary>
+        public const int DefaultHealthCheckTimeoutInSeconds = 60;
 
         /// <summary>
         /// DefaultHealthCheckUmsName
@@ -52,6 +58,11 @@ namespace netca.Application.Common.Models
         /// DefaultHealthCheckDatabaseName
         /// </summary>
         public const string DefaultHealthCheckDatabaseName = "DB";
+
+        /// <summary>
+        /// DefaultPercentageUsedDegraded
+        /// </summary>
+        public const byte DefaultHealthCheckPercentageUsedDegraded = 90;
         #endregion healthcheck
 
         #region header
@@ -60,37 +71,37 @@ namespace netca.Application.Common.Models
         /// HeaderJson
         /// </summary>
         public const string HeaderJson = "application/json";
-        
+
         /// <summary>
         /// HeaderPdf
         /// </summary>
         public const string HeaderPdf = "application/pdf";
-        
+
         /// <summary>
         /// HeaderTextPlain
         /// </summary>
         public const string HeaderTextPlain = "text/plain";
-        
+
         /// <summary>
         /// HeaderOctetStream
         /// </summary>
         public const string HeaderOctetStream = "application/octet-stream";
-        
+
         /// <summary>
         /// HeaderProblemJson
         /// </summary>
         public const string HeaderProblemJson = "application/problem+json";
-        
+
         /// <summary>
         /// HeaderTextCsv
         /// </summary>
         public const string HeaderTextCsv = "text/csv";
-        
+
         /// <summary>
         /// HeaderImageJpg
         /// </summary>
         public const string HeaderImageJpg = "image/jpg";
-        
+
         /// <summary>
         /// HeaderIfNoneMatch
         /// </summary>
@@ -104,14 +115,17 @@ namespace netca.Application.Common.Models
         #endregion header
 
         #region redis
+
         /// <summary>
         /// RedisSubKeyMessageConsume
         /// </summary>
         public const string RedisSubKeyMessageConsume = "MessageConsume";
+
         /// <summary>
         /// RedisSubKeyMessageProduce
         /// </summary>
         public const string RedisSubKeyMessageProduce = "MessageProduce";
+
         /// <summary>
         /// RedisSubKeyHttpRequest
         /// </summary>
@@ -144,7 +158,7 @@ namespace netca.Application.Common.Models
         /// <summary>
         /// MsTeamsactivitySubtitleStop
         /// </summary>
-        public const string MsTeamsactivitySubtitleStop = "Application has stoped";
+        public const string MsTeamsactivitySubtitleStop = "Application has stopped";
 
         /// <summary>
         /// MsTeamsThemeColorError
@@ -170,23 +184,24 @@ namespace netca.Application.Common.Models
         public const int DefaultPageNumber = 1;
 
         #endregion paging
-        
+
         #region Filter&SortSeparator
 
-        /// <sumary>
+        /// <summary>
         /// Comma Separator
-        /// </sumary>
+        /// </summary>
         public const string EscapedCommaPattern = @"(?<!($|[^\\])(\\\\)*?\\),";
 
-        /// <sumary>
+        /// <summary>
         /// Pipe Separator
-        /// </sumary>
+        /// </summary>
         public const string EscapedPipePattern = @"(?<!($|[^\\])(\\\\)*?\\)\|";
 
-        /// <sumary>
+        /// <summary>
         /// Comma Separator
-        /// </sumary>
-        public static readonly string[] Operators = new[] {
+        /// </summary>
+        public static readonly string[] Operators = new[]
+        {
             "!@=*",
             "!_=*",
             "!=*",
@@ -234,6 +249,36 @@ namespace netca.Application.Common.Models
         public const string SystemClientId = "datacaptureapps01";
 
         #endregion system
+
+        #region  api
+
+        /// <summary>
+        /// ApiErrorDescription
+        /// </summary>
+        public static class ApiErrorDescription
+        {
+            /// <summary>
+            /// BadRequest
+            /// </summary>
+            public const string BadRequest = "BadRequest";
+
+            /// <summary>
+            /// Unauthorized
+            /// </summary>
+            public const string Unauthorized = "Unauthorized";
+
+            /// <summary>
+            /// Forbidden
+            /// </summary>
+            public const string Forbidden = "Forbidden";
+
+            /// <summary>
+            /// InternalServerError
+            /// </summary>
+            public const string InternalServerError = "InternalServerError";
+        }
+
+        #endregion api
 
         #region  UserAttribute
 

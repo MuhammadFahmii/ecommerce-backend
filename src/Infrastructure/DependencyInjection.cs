@@ -32,26 +32,31 @@ namespace netca.Infrastructure
         /// <param name="services"></param>
         /// <param name="environment"></param>
         /// <param name="appSetting"></param>
-        /// <returns></returns>
-        public static void AddInfrastructure(this IServiceCollection services,
-            IWebHostEnvironment environment, AppSetting appSetting)
+        public static void AddInfrastructure(
+            this IServiceCollection services, IWebHostEnvironment environment, AppSetting appSetting)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(
+                options =>
                 options.UseSqlServer(
                     appSetting.ConnectionStrings.DefaultConnection,
                     b =>
                     {
                         b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
                         b.CommandTimeout(appSetting.DatabaseSettings.CommandTimeout);
-                        b.EnableRetryOnFailure(appSetting.DatabaseSettings.MaxRetryCount,
-                            TimeSpan.FromSeconds(appSetting.DatabaseSettings.MaxRetryDelay), null);
+                        b.EnableRetryOnFailure(
+                            appSetting.DatabaseSettings.MaxRetryCount,
+                            TimeSpan.FromSeconds(appSetting.DatabaseSettings.MaxRetryDelay),
+                            null
+                        );
 
                         if (!environment.IsProduction())
                         {
                             options.EnableSensitiveDataLogging();
                         }
                     }),
-                ServiceLifetime.Transient);
+                ServiceLifetime.Transient
+            );
+
             services.AddTransient<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
             services.AddScoped<IDomainEventService, DomainEventService>();
             services.AddTransient<IDateTime, DateTimeService>();
@@ -60,12 +65,16 @@ namespace netca.Infrastructure
             services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandlerService>();
             services.AddSingleton<IRedisService, RedisService>();
             services.AddHostedService<LifetimeEventsHostedService>();
-            if (!appSetting.BackgroundJob.IsEnable) return;
+
+            if (!appSetting.BackgroundJob.IsEnable)
+                return;
+
             services.Configure<QuartzOptions>(options =>
             {
                 options.Scheduling.IgnoreDuplicates = appSetting.BackgroundJob.PersistentStore.IgnoreDuplicates;
                 options.Scheduling.OverWriteExistingData = appSetting.BackgroundJob.PersistentStore.OverWriteExistingData;
             });
+
             services.AddQuartz(q =>
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();

@@ -11,8 +11,9 @@ namespace netca.Application.Common.Mappings
     /// <summary>
     /// IMapFrom
     /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IMapFrom<T>
-    {   
+    {
         /// <summary>
         /// Mapping
         /// </summary>

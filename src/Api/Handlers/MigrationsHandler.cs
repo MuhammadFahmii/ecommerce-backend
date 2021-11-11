@@ -25,11 +25,15 @@ namespace netca.Api.Handlers
         /// </summary>
         /// <param name="app"></param>
         /// <param name="appSetting"></param>
+        /// <returns></returns>
         public static async Task ApplyMigration(IApplicationBuilder app, AppSetting appSetting)
         {
-            if (!appSetting.DatabaseSettings.Migrations && !appSetting.DatabaseSettings.SeedData) return;
+            if (!appSetting.DatabaseSettings.Migrations && !appSetting.DatabaseSettings.SeedData)
+                return;
+
             using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();
-            var  logger = Log.ForContext(typeof(MigrationsHandler));
+            var logger = Log.ForContext(typeof(MigrationsHandler));
+
             try
             {
                 logger.Warning("Migrating Database");
@@ -49,7 +53,7 @@ namespace netca.Api.Handlers
                 }
             }
             catch (Exception ex)
-            {   
+            {
                 logger.Error(ex, "An error occurred while migrating the database.");
             }
         }
@@ -65,7 +69,6 @@ namespace netca.Api.Handlers
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="appSetting"></param>
-        /// <returns></returns>
         public static void UseMigrationsHandler(this IApplicationBuilder builder, AppSetting appSetting)
         {
             MigrationsHandler.ApplyMigration(builder, appSetting).ConfigureAwait(false);

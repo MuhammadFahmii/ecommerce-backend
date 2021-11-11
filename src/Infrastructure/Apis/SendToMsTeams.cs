@@ -18,12 +18,14 @@ namespace netca.Infrastructure.Apis
     /// </summary>
     public static class SendToMsTeams
     {
-        private static readonly  ILogger Logger = Log.ForContext(typeof(SendToMsTeams));
+        private static readonly ILogger Logger = Log.ForContext(typeof(SendToMsTeams));
+
         /// <summary>
         /// SendToMsTeam
         /// </summary>
         /// <param name="appSetting"></param>
         /// <param name="tmpl"></param>
+        /// <returns></returns>
         public static async Task Send(AppSetting appSetting, MsTeamTemplate tmpl)
         {
             using var client = new HttpClient(new HttpHandler(new HttpClientHandler()));
@@ -38,7 +40,7 @@ namespace netca.Infrastructure.Apis
             {
                 var content = new StringContent(str, Encoding.UTF8, Constants.HeaderJson);
                 var response = client.PostAsync(new Uri(appSetting.Bot.Address), content);
-                await response;   
+                await response;
             }
         }
     }

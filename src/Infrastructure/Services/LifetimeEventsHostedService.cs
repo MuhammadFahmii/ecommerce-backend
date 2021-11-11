@@ -23,20 +23,20 @@ namespace netca.Infrastructure.Services
         private readonly ILogger<LifetimeEventsHostedService> _logger;
         private readonly IHostApplicationLifetime _appLifetime;
         private readonly AppSetting _appSetting;
-        private const string ImgWarning = Constants.MsTeamsImageWarning;
-        private MsTeamTemplate _tmpl;
         private readonly string _appName;
         private readonly bool _isEnable;
 
+        private const string ImgWarning = Constants.MsTeamsImageWarning;
+        private MsTeamTemplate _tmpl;
+
         /// <summary>
-        /// LifetimeEventsHostedService
+        /// Initializes a new instance of the <see cref="LifetimeEventsHostedService"/> class.
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="appLifetime"></param>
         /// <param name="appSetting"></param>
         public LifetimeEventsHostedService(
-            ILogger<LifetimeEventsHostedService> logger, IHostApplicationLifetime appLifetime
-            , AppSetting appSetting)
+            ILogger<LifetimeEventsHostedService> logger, IHostApplicationLifetime appLifetime, AppSetting appSetting)
         {
             _logger = logger;
             _appLifetime = appLifetime;
@@ -52,7 +52,9 @@ namespace netca.Infrastructure.Services
         /// <returns></returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            if (!_isEnable) return Task.CompletedTask;
+            if (!_isEnable)
+                return Task.CompletedTask;
+
             _appLifetime.ApplicationStarted.Register(OnStarted);
             _appLifetime.ApplicationStopping.Register(OnStopping);
             _appLifetime.ApplicationStopped.Register(OnStopped);
@@ -74,23 +76,28 @@ namespace netca.Infrastructure.Services
         {
             const string msg = Constants.MsTeamsactivitySubtitleStart;
             _logger.LogDebug(msg);
+
             _tmpl = new MsTeamTemplate();
+
             var sections = new List<Section>();
             var facts = new List<Fact>
             {
-                new() { name = "Date", value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}" },
-                new() { name = "Message", value = msg }
+                new() { Name = "Date", Value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}" },
+                new() { Name = "Message", Value = msg }
             };
+
             sections.Add(new Section
             {
-                activityTitle = $"{_appName}",
-                activitySubtitle = msg,
+                ActivityTitle = $"{_appName}",
+                ActivitySubtitle = msg,
                 Facts = facts,
-                activityImage = ImgWarning
+                ActivityImage = ImgWarning
             });
-            _tmpl.summary = $"{_appName} has started";
-            _tmpl.themeColor = Constants.MsTeamsThemeColorWarning;
-            _tmpl.sections = sections;
+
+            _tmpl.Summary = $"{_appName} has started";
+            _tmpl.ThemeColor = Constants.MsTeamsThemeColorWarning;
+            _tmpl.Sections = sections;
+
             Send();
         }
 
@@ -100,22 +107,24 @@ namespace netca.Infrastructure.Services
             _logger.LogDebug("Try to stopping Application");
 
             _tmpl = new MsTeamTemplate();
+
             var sections = new List<Section>();
             var facts = new List<Fact>
             {
-                new() { name = "Date", value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}" },
-                new() { name = "Message", value = msg }
+                new() { Name = "Date", Value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}" },
+                new() { Name = "Message", Value = msg }
             };
+
             sections.Add(new Section
             {
-                activityTitle = $"{_appName}",
-                activitySubtitle = msg,
+                ActivityTitle = $"{_appName}",
+                ActivitySubtitle = msg,
                 Facts = facts,
-                activityImage = ImgWarning
+                ActivityImage = ImgWarning
             });
-            _tmpl.summary = $"{_appName} has stopping";
-            _tmpl.themeColor = Constants.MsTeamsThemeColorWarning;
-            _tmpl.sections = sections;
+            _tmpl.Summary = $"{_appName} has stopping";
+            _tmpl.ThemeColor = Constants.MsTeamsThemeColorWarning;
+            _tmpl.Sections = sections;
 
             Send();
         }
@@ -127,7 +136,7 @@ namespace netca.Infrastructure.Services
 
         private void Send()
         {
-            _logger.LogDebug($"Sending message to MsTeam with color {_tmpl.themeColor}");
+            _logger.LogDebug($"Sending message to MsTeam with color {_tmpl.ThemeColor}");
             SendToMsTeams.Send(_appSetting, _tmpl).ConfigureAwait(false);
         }
     }

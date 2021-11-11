@@ -18,9 +18,9 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
     public class CreateTodoListCommandValidator : AbstractValidator<CreateTodoListCommand>
     {
         private readonly IApplicationDbContext _context;
-        
+
         /// <summary>
-        /// CreateTodoListCommandValidator
+        /// Initializes a new instance of the <see cref="CreateTodoListCommandValidator"/> class.
         /// </summary>
         /// <param name="context"></param>
         public CreateTodoListCommandValidator(IApplicationDbContext context)

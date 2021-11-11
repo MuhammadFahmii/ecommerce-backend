@@ -25,7 +25,8 @@ namespace netca.Api.Handlers
             builder.UseCors(
                 options => options.WithOrigins(origin)
                     .SetIsOriginAllowedToAllowWildcardSubdomains()
-                    .AllowAnyMethod().AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
             );
         }
     }
@@ -40,7 +41,6 @@ namespace netca.Api.Handlers
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="appSetting"></param>
-        /// <returns></returns>
         public static void UseCorsOriginHanlder(this IApplicationBuilder builder, AppSetting appSetting)
         {
             CorsOriginHandler.ApplyCorsOrigin(builder, appSetting);

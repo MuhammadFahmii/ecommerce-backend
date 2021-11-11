@@ -12,17 +12,17 @@ namespace netca.Application.TodoLists.Queries.ExportTodos
     public class ExportTodosVm
     {
         /// <summary>
-        /// FileName
+        /// Gets or sets fileName
         /// </summary>
         public string FileName { get; set; }
-        
+
         /// <summary>
-        /// ContentType
+        /// Gets or sets contentType
         /// </summary>
         public string ContentType { get; set; }
-        
+
         /// <summary>
-        /// Content
+        /// Gets or sets content
         /// </summary>
         public byte[] Content { get; set; }
     }

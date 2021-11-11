@@ -7,6 +7,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using netca.Domain.Entities;
 
 namespace netca.Application.Common.Interfaces
@@ -17,20 +18,25 @@ namespace netca.Application.Common.Interfaces
     public interface IApplicationDbContext
     {
         /// <summary>
-        /// TodoLists
+        /// Gets or sets todoLists
         /// </summary>
         DbSet<TodoList> TodoLists { get; set; }
-        
+
         /// <summary>
-        /// TodoItems
+        /// Gets or sets todoItems
         /// </summary>
         DbSet<TodoItem> TodoItems { get; set; }
-        
+
         /// <summary>
-        /// Changelogs
+        /// Gets or sets changelogs
         /// </summary>
         DbSet<Changelog> Changelogs { get; set; }
-        
+
+        /// <summary>
+        /// Gets database
+        /// </summary>
+        public DatabaseFacade Database { get; }
+
         /// <summary>
         /// SaveChangesAsync
         /// </summary>

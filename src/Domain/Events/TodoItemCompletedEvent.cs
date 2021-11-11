@@ -15,6 +15,7 @@ namespace netca.Domain.Events
     public class TodoItemCompletedEvent : DomainEvent
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="TodoItemCompletedEvent"/> class.
         /// TodoItemCompletedEvent
         /// </summary>
         /// <param name="item"></param>
@@ -22,9 +23,9 @@ namespace netca.Domain.Events
         {
             Item = item;
         }
-        
+
         /// <summary>
-        /// TodoItem
+        /// Gets todoItem
         /// </summary>
         public TodoItem Item { get; }
     }

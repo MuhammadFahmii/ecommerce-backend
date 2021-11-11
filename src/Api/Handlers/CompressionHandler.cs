@@ -4,7 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using System.IO.Compression;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -24,19 +23,18 @@ namespace netca.Api.Handlers
         /// <param name="services"></param>
         public static void ApplyCompress(IServiceCollection services)
         {
-
             services.AddResponseCompression(options =>
             {
-                IEnumerable<string> mimeTypes = new[]
-                                     {
-                                        Constants.HeaderPdf,
-                                        Constants.HeaderTextPlain,
-                                        Constants.HeaderImageJpg,
-                                        Constants.HeaderJson,
-                                        Constants.HeaderOctetStream,
-                                        Constants.HeaderProblemJson,
-                                        Constants.HeaderTextCsv
-                                      };
+                var mimeTypes = new[]
+                {
+                    Constants.HeaderPdf,
+                    Constants.HeaderTextPlain,
+                    Constants.HeaderImageJpg,
+                    Constants.HeaderJson,
+                    Constants.HeaderOctetStream,
+                    Constants.HeaderProblemJson,
+                    Constants.HeaderTextCsv
+                };
                 options.EnableForHttps = true;
                 options.MimeTypes = mimeTypes;
                 options.Providers.Add<GzipCompressionProvider>();
@@ -63,7 +61,6 @@ namespace netca.Api.Handlers
         /// AddCompressionHandler
         /// </summary>
         /// <param name="services"></param>
-        /// <returns></returns>
         public static void AddCompressionHandler(this IServiceCollection services)
         {
             CompressionHandler.ApplyCompress(services);

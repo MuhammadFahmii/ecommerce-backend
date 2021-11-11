@@ -14,43 +14,43 @@ namespace netca.Application.Common.Vms
     public abstract class AuditTableVm
     {
         /// <summary>
-        /// Id
+        /// Gets or sets id
         /// </summary>
         /// <value></value>
         public Guid Id { get; set; }
 
         /// <summary>
-        /// CreatedBy
+        /// Gets or sets createdBy
         /// </summary>
         /// <value></value>
         public string CreatedBy { get; set; }
 
         /// <summary>
-        /// CreatedDate
+        /// Gets or sets createdDate
         /// </summary>
         /// <value></value>
-        public DateTime ? CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
         /// <summary>
-        /// UpdatedBy
+        /// Gets or sets updatedBy
         /// </summary>
         /// <value></value>
         public string UpdatedBy { get; set; }
 
         /// <summary>
-        /// UpdatedDate
+        /// Gets or sets updatedDate
         /// </summary>
         /// <value></value>
         public DateTime? UpdatedDate { get; set; }
 
         /// <summary>
-        /// DeletedDate
+        /// Gets or sets deletedDate
         /// </summary>
         /// <value></value>
         public DateTime? DeletedDate { get; set; }
 
         /// <summary>
-        /// IsActive
+        /// Gets or sets a value indicating whether isActive
         /// </summary>
         /// <value></value>
         public bool IsActive { get; set; }

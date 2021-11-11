@@ -50,6 +50,7 @@ namespace netca.Application.Common.Extensions
             var result = DateTime.TryParseExact(date, formatDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out defaultDate);
             return result ? defaultDate.AddHours(addHour) : defaultDate;
         }
+
         /// <summary>
         /// FormatDate
         /// </summary>
@@ -64,7 +65,8 @@ namespace netca.Application.Common.Extensions
             if (IsDateFormat(date, formatDate))
             {
                 var result = DateTime.ParseExact(date, formatDate, CultureInfo.CurrentCulture);
-                if (time.Length == 5) time = "0" + time;
+                if (time.Length == 5)
+                    time = "0" + time;
                 var timeSpanFormat = new TimeSpan(0, int.Parse(time[..2]), int.Parse(time.Substring(2, 2)), int.Parse(time.Substring(4, 2)));
 
                 result += timeSpanFormat;
@@ -75,6 +77,7 @@ namespace netca.Application.Common.Extensions
                 return null;
             }
         }
+
         /// <summary>
         /// GetUnixTimestamp
         /// </summary>

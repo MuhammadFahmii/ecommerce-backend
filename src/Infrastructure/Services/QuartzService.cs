@@ -22,25 +22,22 @@ namespace netca.Infrastructure.Services
         /// <param name="quartz"></param>
         /// <param name="appSetting"></param>
         /// <typeparam name="T"></typeparam>
-        /// <exception cref="Exception"></exception>
-        public static void AddJobAndTrigger<T>(
-            this IServiceCollectionQuartzConfigurator quartz,
-            AppSetting appSetting)
+        /// <exception cref="Exception">Exception</exception>
+        public static void AddJobAndTrigger<T>(this IServiceCollectionQuartzConfigurator quartz, AppSetting appSetting)
             where T : IJob
         {
             var jobName = typeof(T).Name;
             var job = appSetting.BackgroundJob.Jobs.FirstOrDefault(x => x.Name.Equals(jobName));
-            if(job is { IsEnable: false }) return;
-            
+
+            if (job is { IsEnable: false })
+                return;
+
             if (job == null || string.IsNullOrEmpty(job.Schedule))
-            {
                 throw new ArgumentNullException($"No Quartz.NET Cron schedule found for {jobName} in configuration");
-            }
+
             if (job.IsParallel)
-            {
                 jobName += Environment.GetEnvironmentVariable("hostname");
-            }
-            
+
             var jobKey = new JobKey(jobName, "Group");
 
             quartz.AddJob<T>(opts => opts.WithIdentity(jobKey));

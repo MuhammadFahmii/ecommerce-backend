@@ -23,14 +23,19 @@ namespace netca.Application.Common.Models
         /// <param name="tmpl"></param>
         /// <param name="retryInterval"></param>
         /// <param name="maxAttemptCount"></param>
-        public static void Do(Action<AppSetting,MsTeamTemplate> action, AppSetting appSetting, MsTeamTemplate tmpl, TimeSpan retryInterval, int maxAttemptCount = 3)
+        public static void Do(Action<AppSetting, MsTeamTemplate> action, AppSetting appSetting, MsTeamTemplate tmpl, TimeSpan retryInterval, int maxAttemptCount = 3)
         {
-            Do<object>(() =>
-            {
-                action(appSetting, tmpl);
-                return null;
-            }, retryInterval, maxAttemptCount);
+            Do<object>(
+                () =>
+                {
+                    action(appSetting, tmpl);
+                    return null;
+                },
+                retryInterval,
+                maxAttemptCount
+            );
         }
+
         private static void Do<T>(Func<T> action, TimeSpan retryInterval, int maxAttemptCount = 3)
         {
             var exceptions = new List<Exception>();
@@ -52,6 +57,7 @@ namespace netca.Application.Common.Models
                     exceptions.Add(ex);
                 }
             }
+
             throw new AggregateException(exceptions);
         }
     }

@@ -17,7 +17,7 @@ namespace netca.Application.Common.Exceptions
     public class ValidationException : Exception
     {
         /// <summary>
-        /// ValidationException
+        /// Initializes a new instance of the <see cref="ValidationException"/> class.
         /// </summary>
         public ValidationException()
             : base("One or more validation failures have occurred.")
@@ -26,7 +26,7 @@ namespace netca.Application.Common.Exceptions
         }
 
         /// <summary>
-        /// ValidationException
+        /// Initializes a new instance of the <see cref="ValidationException"/> class.
         /// </summary>
         /// <param name="failures"></param>
         public ValidationException(IEnumerable<ValidationFailure> failures)
@@ -38,8 +38,9 @@ namespace netca.Application.Common.Exceptions
         }
 
         /// <summary>
-        /// Errors
+        /// Gets errors
         /// </summary>
+        /// <value></value>
         public IDictionary<string, string[]> Errors { get; }
     }
 }

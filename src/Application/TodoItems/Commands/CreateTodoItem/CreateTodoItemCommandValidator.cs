@@ -14,7 +14,7 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem
     public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCommand>
     {
         /// <summary>
-        /// CreateTodoItemCommandValidator
+        /// Initializes a new instance of the <see cref="CreateTodoItemCommandValidator"/> class.
         /// </summary>
         public CreateTodoItemCommandValidator()
         {

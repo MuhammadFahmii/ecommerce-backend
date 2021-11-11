@@ -12,12 +12,13 @@ namespace netca.Application.Dtos
     public class RedisDto
     {
         /// <summary>
-        /// Code
+        /// Gets or sets code
         /// </summary>
         /// <value></value>
         public string Key { get; set; }
+
         /// <summary>
-        /// Desc
+        /// Gets or sets desc
         /// </summary>
         /// <value></value>
         public string Value { get; set; }

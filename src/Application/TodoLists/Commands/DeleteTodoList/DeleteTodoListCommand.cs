@@ -23,35 +23,35 @@ namespace netca.Application.TodoLists.Commands.DeleteTodoList
     public class DeleteTodoListCommand : IRequest
     {
         /// <summary>
-        /// Id
+        /// Gets or sets id
         /// </summary>
         [BindRequired]
         public Guid Id { get; set; }
     }
-    
+
     /// <summary>
     /// DeleteTodoListCommandHandler
     /// </summary>
     public class DeleteTodoListCommandHandler : IRequestHandler<DeleteTodoListCommand>
     {
         private readonly IApplicationDbContext _context;
-        
+
         /// <summary>
-        /// DeleteTodoListCommandHandler
+        /// Initializes a new instance of the <see cref="DeleteTodoListCommandHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
         public DeleteTodoListCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="NotFoundException">Exception</exception>
         public async Task<Unit> Handle(DeleteTodoListCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.TodoLists

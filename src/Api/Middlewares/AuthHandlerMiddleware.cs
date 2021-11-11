@@ -28,7 +28,7 @@ namespace netca.Api.Middlewares
         private readonly ILogger<AuthHandlerMiddleware> _logger;
 
         /// <summary>
-        /// AuthHandlerMiddleware
+        /// Initializes a new instance of the <see cref="AuthHandlerMiddleware"/> class.
         /// </summary>
         /// <param name="next"></param>
         /// <param name="appSetting"></param>
@@ -47,10 +47,10 @@ namespace netca.Api.Middlewares
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            var whitelistPathSegment = _appSetting.AuthorizationServer.WhiteListPathSegment !=null ?
+            var whitelistPathSegment = _appSetting.AuthorizationServer.WhiteListPathSegment != null ?
                                        _appSetting.AuthorizationServer.WhiteListPathSegment.Split(",").ToList()
                                        : new List<string>();
-            var requiredCheck = whitelistPathSegment.All(item => !context.Request.Path.StartsWithSegments(item));
+            var requiredCheck = !whitelistPathSegment.Any(item => context.Request.Path.StartsWithSegments(item));
 
             if (requiredCheck)
             {
@@ -62,6 +62,7 @@ namespace netca.Api.Middlewares
                     return;
                 }
             }
+
             await _next(context);
         }
 
@@ -81,7 +82,6 @@ namespace netca.Api.Middlewares
         /// UseAuthHandler
         /// </summary>
         /// <param name="builder"></param>
-        /// <returns></returns>
         public static void UseAuthHandler(this IApplicationBuilder builder)
         {
             builder.UseAuthentication();
@@ -93,30 +93,28 @@ namespace netca.Api.Middlewares
         /// </summary>
         /// <param name="services"></param>
         /// <param name="appSetting"></param>
-        /// <returns></returns>
         public static void AddPermissions(this IServiceCollection services, AppSetting appSetting)
         {
             services.AddAuthentication(options =>
-           {
-               options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-               options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-               options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Authority = appSetting.AuthorizationServer.Address;
+                options.Audience = appSetting.AuthorizationServer.Service;
+                options.RequireHttpsMetadata = false;
+            });
 
-           })
-           .AddJwtBearer(options =>
-           {
-               options.Authority = appSetting.AuthorizationServer.Address;
-               options.Audience = appSetting.AuthorizationServer.Service;
-               options.RequireHttpsMetadata = false;
-
-           });
             services.AddAuthorization(options =>
             {
                 var policy = appSetting.AuthorizationServer.Policy ?? new List<Policy>();
-                foreach (var p in policy)
+                policy.ForEach(p =>
                 {
                     options.AddPolicy(p.Name, pol => pol.Requirements.Add(new Permission(p.Name)));
-                }
+                });
             });
         }
     }

@@ -19,7 +19,7 @@ namespace netca.Application.WeatherForecasts.Queries.GetWeatherForecasts
     public class GetWeatherForecastsQuery : IRequest<IEnumerable<WeatherForecast>>
     {
     }
-    
+
     /// <summary>
     /// GetWeatherForecastsQueryHandler
     /// </summary>
@@ -29,7 +29,7 @@ namespace netca.Application.WeatherForecasts.Queries.GetWeatherForecasts
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
-        
+
         /// <summary>
         /// Handle
         /// </summary>

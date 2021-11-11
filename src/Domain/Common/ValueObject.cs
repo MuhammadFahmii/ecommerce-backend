@@ -29,7 +29,7 @@ namespace netca.Domain.Common
 
             return left?.Equals(right) != false;
         }
-        
+
         /// <summary>
         /// NotEqualOperator
         /// </summary>
@@ -38,16 +38,15 @@ namespace netca.Domain.Common
         /// <returns></returns>
         protected static bool NotEqualOperator(ValueObject left, ValueObject right)
         {
-            return !(EqualOperator(left, right));
+            return !EqualOperator(left, right);
         }
-        
+
         /// <summary>
         /// GetEqualityComponents
         /// </summary>
         /// <returns></returns>
         protected abstract IEnumerable<object> GetEqualityComponents();
-        
-        
+
         /// <summary>
         /// Equals
         /// </summary>
@@ -56,14 +55,12 @@ namespace netca.Domain.Common
         public override bool Equals(object obj)
         {
             if (obj == null || obj.GetType() != GetType())
-            {
                 return false;
-            }
 
             var other = (ValueObject)obj;
             return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
         }
-        
+
         /// <summary>
         /// GetHashCode
         /// </summary>

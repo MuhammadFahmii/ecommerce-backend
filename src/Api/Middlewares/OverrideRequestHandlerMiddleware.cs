@@ -22,8 +22,9 @@ namespace netca.Api.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
         private readonly IRedisService _redisService;
+
         /// <summary>
-        /// RequestTimeMiddleware
+        /// Initializes a new instance of the <see cref="OverrideRequestHandlerMiddleware"/> class.
         /// </summary>
         /// <param name="next"></param>
         /// <param name="redisService"></param>
@@ -35,6 +36,7 @@ namespace netca.Api.Middlewares
             _redisService = redisService;
             _logger = logger;
         }
+
         /// <summary>
         /// InvokeAsync
         /// </summary>
@@ -59,6 +61,7 @@ namespace netca.Api.Middlewares
                     }
                 }
             }
+
             await _next(context);
         }
     }
@@ -72,7 +75,6 @@ namespace netca.Api.Middlewares
         /// UseOverrideRequestHandler
         /// </summary>
         /// <param name="builder"></param>
-        /// <returns></returns>
         public static void UseOverrideRequestHandler(this IApplicationBuilder builder)
         {
             builder.UseMiddleware<OverrideRequestHandlerMiddleware>();
