@@ -65,6 +65,7 @@ namespace netca.Infrastructure
             services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandlerService>();
             services.AddSingleton<IRedisService, RedisService>();
             services.AddHostedService<LifetimeEventsHostedService>();
+            services.AddHostedService<OrderProcessService>();
 
             if (!appSetting.BackgroundJob.IsEnable)
                 return;
@@ -105,7 +106,11 @@ namespace netca.Infrastructure
                 }
 
                 q.AddJobAndTrigger<HelloWorldJob>(appSetting);
-                q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
+                q.AddJobAndTrigger<ProduceOrderJob>(appSetting);
+                if (appSetting.Bot.IsEnable)
+                {
+                    q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
+                }
             });
 
             services.AddQuartzHostedService(

@@ -23,8 +23,8 @@ using netca.Application.Common.Models;
 
 namespace netca.Api.Handlers
 { /// <summary>
-  /// AddHealthCheckHandler
-  /// </summary>
+    /// AddHealthCheckHandler
+    /// </summary>
     public static class AddHealthCheckHandler
     {
         private const string HealthQuery = Constants.DefaultHealthCheckQuery;
@@ -36,6 +36,7 @@ namespace netca.Api.Handlers
         /// <param name="appSetting"></param>
         public static void AddHealthCheck(this IServiceCollection services, AppSetting appSetting)
         {
+                
             var ums = new Uri(appSetting.AuthorizationServer.Address);
             var gateWay = new Uri(appSetting.AuthorizationServer.Gateway);
             void UmsSetup(TcpHealthCheckOptions x) => x.AddHost(ums.Host, Convert.ToInt32(appSetting.AuthorizationServer.Address.Split(":")[2]));
@@ -46,27 +47,10 @@ namespace netca.Api.Handlers
                 connectionString: appSetting.ConnectionStrings.DefaultConnection,
                 name: Constants.DefaultHealthCheckDatabaseName,
                 healthQuery: HealthQuery,
-                failureStatus: HealthStatus.Degraded,
-                timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)
-            );
-            services.AddHealthChecks().AddTcpHealthCheck(
-                UmsSetup,
-                Constants.DefaultHealthCheckUmsName,
-                HealthStatus.Degraded,
-                timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)
-            );
-            services.AddHealthChecks().AddTcpHealthCheck(
-                GateWaySetup,
-                Constants.DefaultHealthCheckGateWayName,
-                HealthStatus.Degraded,
-                timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)
-            );
-            services.AddHealthChecks().AddRedis(
-                appSetting.RedisServer.Server,
-                Constants.DefaultHealthCheckRedisName,
-                HealthStatus.Degraded,
-                timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)
-            );
+                failureStatus: HealthStatus.Degraded);
+            services.AddHealthChecks().AddTcpHealthCheck(setup: UmsSetup, name: Constants.DefaultHealthCheckUmsName, failureStatus: HealthStatus.Degraded);
+            services.AddHealthChecks().AddTcpHealthCheck(setup: GateWaySetup, name: Constants.DefaultHealthCheckGateWayName, failureStatus: HealthStatus.Degraded);
+            services.AddHealthChecks().AddRedis(redisConnectionString: appSetting.RedisServer.Server, name: Constants.DefaultHealthCheckRedisName, failureStatus: HealthStatus.Degraded);
         }
 
         /// <summary>
@@ -91,19 +75,15 @@ namespace netca.Api.Handlers
         /// <summary>
         /// CheckHealthAsync
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             var startTime = DateTime.UtcNow;
             var startCpuUsage = Process.GetCurrentProcess().TotalProcessorTime;
-
             await Task.Delay(500, cancellationToken);
 
             var endTime = DateTime.UtcNow;
             var endCpuUsage = Process.GetCurrentProcess().TotalProcessorTime;
-
             var cpuUsedMs = (endCpuUsage - startCpuUsage).TotalMilliseconds;
             var totalMsPassed = (endTime - startTime).TotalMilliseconds;
             var cpuUsageTotal = cpuUsedMs / (Environment.ProcessorCount * totalMsPassed);
@@ -112,9 +92,10 @@ namespace netca.Api.Handlers
 
             var data = new Dictionary<string, object> { { "Cpu_Usage", cpuUsageTotal } };
 
-            if (cpuUsageTotal > Constants.DefaultHealthCheckPercentageUsedDegraded)
+            if (cpuUsageTotal > 90)
+            {
                 status = HealthStatus.Degraded;
-
+            }
             var result = new HealthCheckResult(status, null, null, data);
 
             return await Task.FromResult(result);
@@ -129,9 +110,6 @@ namespace netca.Api.Handlers
         /// <summary>
         /// CheckHealthAsync
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             var client = new MemoryMetricsClient();
@@ -139,8 +117,10 @@ namespace netca.Api.Handlers
             var percentUsed = 100 * metrics.Used / metrics.Total;
 
             var status = HealthStatus.Healthy;
-            if (percentUsed > Constants.DefaultHealthCheckPercentageUsedDegraded)
+            if (percentUsed > 90)
+            {
                 status = HealthStatus.Degraded;
+            }
 
             var data = new Dictionary<string, object>
             {
@@ -161,30 +141,28 @@ namespace netca.Api.Handlers
     public class MemoryMetrics
     {
         /// <summary>
-        /// Gets or sets total memory
+        /// Total Memory
         /// </summary>
         public double Total { get; set; }
 
         /// <summary>
-        /// Gets or sets used memory
+        /// Used Memory
         /// </summary>
         public double Used { get; set; }
-
         /// <summary>
-        /// Gets or sets free memory
+        /// Free Memory
         /// </summary>
         public double Free { get; set; }
     }
 
     /// <summary>
-    /// MemoryMetricsClient
+    /// MemoryMetrics
     /// </summary>
     public class MemoryMetricsClient
     {
         /// <summary>
         /// GetMetrics
         /// </summary>
-        /// <returns></returns>
         public MemoryMetrics GetMetrics()
         {
             var metrics = IsUnix() ? GetUnixMetrics() : GetWindowsMetrics();
@@ -192,11 +170,18 @@ namespace netca.Api.Handlers
             return metrics;
         }
 
-        private bool IsUnix() => RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
-            RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        private static bool IsUnix()
+        {
+            var isUnix = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
+                         RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+
+            return isUnix;
+        }
 
         private MemoryMetrics GetWindowsMetrics()
         {
+            var output = "";
+
             var info = new ProcessStartInfo
             {
                 FileName = "wmic",
@@ -204,8 +189,10 @@ namespace netca.Api.Handlers
                 RedirectStandardOutput = true
             };
 
-            using var process = Process.Start(info);
-            var output = process.StandardOutput.ReadToEnd();
+            using (var process = Process.Start(info))
+            {
+                if (process != null) output = process.StandardOutput.ReadToEnd();
+            }
 
             var lines = output.Trim().Split("\n");
             var freeMemoryParts = lines[0].Split("=", StringSplitOptions.RemoveEmptyEntries);
@@ -223,6 +210,8 @@ namespace netca.Api.Handlers
 
         private MemoryMetrics GetUnixMetrics()
         {
+            var output = "";
+
             var info = new ProcessStartInfo("free -m")
             {
                 FileName = "/bin/bash",
@@ -230,8 +219,11 @@ namespace netca.Api.Handlers
                 RedirectStandardOutput = true
             };
 
-            using var process = Process.Start(info);
-            var output = process.StandardOutput.ReadToEnd();
+            using (var process = Process.Start(info))
+            {
+                if (process != null) output = process.StandardOutput.ReadToEnd();
+                Console.WriteLine(output);
+            }
 
             var lines = output.Split("\n");
             var memory = lines[1].Split(" ", StringSplitOptions.RemoveEmptyEntries);
@@ -248,31 +240,34 @@ namespace netca.Api.Handlers
     }
 
     /// <summary>
-    /// UiHealthReport
+    /// UIHealthReport
     /// </summary>
     public class UiHealthReport
     {
         /// <summary>
-        /// Gets or sets status
+        /// Status
         /// </summary>
-        public UiHealthStatus Status { get; set; }
+        /// <value></value>
+        private UIHealthStatus Status { get; set; }
 
         /// <summary>
-        /// Gets or sets totalDuration
+        /// TotalDuration
         /// </summary>
-        public TimeSpan TotalDuration { get; set; }
+        /// <value></value>
+        private TimeSpan TotalDuration { get; set; }
 
         /// <summary>
-        /// Gets entries
+        /// Entries
         /// </summary>
-        public Dictionary<string, UiHealthReportEntry> Entries { get; }
+        /// <value></value>
+        private Dictionary<string, UIHealthReportEntry> Entries { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UiHealthReport"/> class.
+        /// UIHealthReport
         /// </summary>
         /// <param name="entries"></param>
         /// <param name="totalDuration"></param>
-        public UiHealthReport(Dictionary<string, UiHealthReportEntry> entries, TimeSpan totalDuration)
+        private UiHealthReport(Dictionary<string, UIHealthReportEntry> entries, TimeSpan totalDuration)
         {
             Entries = entries;
             TotalDuration = totalDuration;
@@ -285,19 +280,19 @@ namespace netca.Api.Handlers
         /// <returns></returns>
         public static UiHealthReport CreateFrom(HealthReport report)
         {
-            var uiReport = new UiHealthReport(new Dictionary<string, UiHealthReportEntry>(), report.TotalDuration)
+            var uiReport = new UiHealthReport(new Dictionary<string, UIHealthReportEntry>(), report.TotalDuration)
             {
-                Status = (UiHealthStatus)report.Status,
+                Status = (UIHealthStatus)report.Status,
             };
 
             foreach (var (key, value) in report.Entries)
             {
-                var entry = new UiHealthReportEntry
+                var entry = new UIHealthReportEntry
                 {
                     Data = value.Data,
                     Description = value.Description,
                     Duration = value.Duration,
-                    Status = (UiHealthStatus)value.Status
+                    Status = (UIHealthStatus)value.Status
                 };
 
                 if (value.Exception != null)
@@ -324,27 +319,26 @@ namespace netca.Api.Handlers
         /// <returns></returns>
         public static UiHealthReport CreateFrom(Exception exception, string entryName = "Endpoint")
         {
-            var uiReport = new UiHealthReport(new Dictionary<string, UiHealthReportEntry>(), TimeSpan.FromSeconds(0))
+            var uiReport = new UiHealthReport(new Dictionary<string, UIHealthReportEntry>(), TimeSpan.FromSeconds(0))
             {
-                Status = UiHealthStatus.Unhealthy,
+                Status = UIHealthStatus.Unhealthy,
             };
 
-            uiReport.Entries.Add(entryName, new UiHealthReportEntry
+            uiReport.Entries.Add(entryName, new UIHealthReportEntry
             {
                 Exception = exception.Message,
                 Description = exception.Message,
                 Duration = TimeSpan.FromSeconds(0),
-                Status = UiHealthStatus.Unhealthy
+                Status = UIHealthStatus.Unhealthy
             });
 
             return uiReport;
         }
     }
-
     /// <summary>
-    /// UiHealthStatus
+    /// /UIHealthStatus
     /// </summary>
-    public enum UiHealthStatus
+    public enum UIHealthStatus
     {
         /// <summary>
         /// Unhealthy
@@ -363,46 +357,47 @@ namespace netca.Api.Handlers
     }
 
     /// <summary>
-    /// UiHealthReportEntry
+    /// UIHealthReportEntry
     /// </summary>
-    public class UiHealthReportEntry
+    public class UIHealthReportEntry
     {
         /// <summary>
-        /// Gets or Sets Data
+        /// Data
         /// </summary>
         /// <value></value>
         public IReadOnlyDictionary<string, object> Data { get; set; }
 
         /// <summary>
-        /// Gets or Sets Description
+        /// Description
         /// </summary>
         /// <value></value>
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets or Sets Duration
+        /// Duration
         /// </summary>
         /// <value></value>
         public TimeSpan Duration { get; set; }
 
         /// <summary>
-        /// Gets or Sets Exception
+        /// Exception
         /// </summary>
         /// <value></value>
         public string Exception { get; set; }
 
         /// <summary>
-        /// Gets or Sets Status
+        /// Status
         /// </summary>
         /// <value></value>
-        public UiHealthStatus Status { get; set; }
+        public UIHealthStatus Status { get; set; }
     }
-
+    
     /// <summary>
-    /// UiResponseWriter
+    /// UIResponseWriter
     /// </summary>
     public static class UiResponseWriter
     {
+
         private static readonly byte[] EmptyResponse = { (byte)'{', (byte)'}' };
         private static readonly Lazy<JsonSerializerOptions> Options = new(CreateJsonOptions);
 
@@ -434,44 +429,28 @@ namespace netca.Api.Handlers
 
         private static JsonSerializerOptions CreateJsonOptions()
         {
-            var jsonSerializeOptions = new JsonSerializerOptions()
+            var opt = new JsonSerializerOptions()
             {
                 AllowTrailingCommas = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 IgnoreNullValues = true,
             };
 
-            jsonSerializeOptions.Converters.Add(new JsonStringEnumConverter());
+            opt.Converters.Add(new JsonStringEnumConverter());
 
-            jsonSerializeOptions.Converters.Add(new TimeSpanConverter());
+            opt.Converters.Add(new TimeSpanConverter());
 
-            return jsonSerializeOptions;
+            return opt;
         }
     }
 
-    /// <summary>
-    /// TimeSpanConverter
-    /// </summary>
-    internal class TimeSpanConverter : JsonConverter<TimeSpan>
+    internal class TimeSpanConverter
+        : JsonConverter<TimeSpan>
     {
-        /// <summary>
-        /// Read
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="typeToConvert"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
         public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             return default;
         }
-
-        /// <summary>
-        /// Write
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="value"></param>
-        /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, TimeSpan value, JsonSerializerOptions options)
         {
             writer.WriteStringValue(value.ToString());

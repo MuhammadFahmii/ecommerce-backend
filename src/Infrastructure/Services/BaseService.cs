@@ -14,7 +14,7 @@ namespace netca.Infrastructure.Services
     public abstract class BaseService
     {
         /// <summary>
-        /// Generates a key for a Redis Entry  , follows the Redis Name Convention of inserting a colon : to identify values
+        /// Generates a key for a Redis Entry  , follows the Redis Name Convention of inserting a column : to identify values
         /// </summary>
         /// <param name="key">Redis identifier key</param>
         /// <param name="sub">Redis sub key</param>

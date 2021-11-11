@@ -17,7 +17,8 @@ namespace netca.Application.Common.Models
         /// DefaultHealthCheckQuery
         /// </summary>
         public const string DefaultHealthCheckQuery = @"SELECT TOP 1 Id FROM Changelogs UNION ALL 
-                                      SELECT TOP 1 Id FROM Assignments;";
+                                      SELECT TOP 1 Id FROM TodoItems UNION ALL 
+                                      SELECT TOP 1 Id FROM TodoLists;";
 
         /// <summary>
         /// DefaultHealthCheckTimeoutInSeconds

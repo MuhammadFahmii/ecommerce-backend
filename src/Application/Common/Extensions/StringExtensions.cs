@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace netca.Application.Common.Extensions
@@ -47,11 +48,11 @@ namespace netca.Application.Common.Extensions
         /// <returns></returns>
         public static string SplitArrayString(string arrayString)
         {
-            string result = "";
+            StringBuilder result = new StringBuilder();
             var splitString = arrayString.Split(' ');
             if (splitString.Length > 1)
             {
-                bool first = true;
+                var first = true;
                 foreach (var category in splitString)
                 {
                     if (first)
@@ -60,10 +61,10 @@ namespace netca.Application.Common.Extensions
                         continue;
                     }
 
-                    result += category + " ";
+                    result.Append(category + " ");
                 }
 
-                return result;
+                return result.ToString();
             }
             else
             {

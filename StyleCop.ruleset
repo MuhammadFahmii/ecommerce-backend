@@ -42,5 +42,6 @@
     <Rule Id="SA1629" Action="None" />
     <Rule Id="SA1633" Action="None" />
     <Rule Id="SA1649" Action="None" />
+    <Rule Id="SA1300" Action="None" />
   </Rules>
 </RuleSet>

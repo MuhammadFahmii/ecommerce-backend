@@ -71,7 +71,7 @@ namespace netca.Api.Middlewares
                         {
                             context.Response.Body = memStream;
                             await _next(context);
-                            policyName = (string)context.Items["CurrentPolicyName"];
+                            policyName = (string)context.Items["CurrentPolicyName"]!;
                             statusCode = context.Response.StatusCode;
                             memStream.Position = 0;
 
@@ -92,11 +92,11 @@ namespace netca.Api.Middlewares
 
                         watch.Stop();
                         var responseTimeForCompleteRequest = watch.ElapsedMilliseconds;
-                        context = await RedisCachingAsync(policyName, context, responseBody, CancellationToken.None);
+                        context = await RedisCachingAsync(policyName, context, responseBody);
                         var buffer = Encoding.UTF8.GetBytes(ToJsonApi(statusCode, responseTimeForCompleteRequest, responseBody));
 
                         context.Response.ContentLength = buffer.Length;
-                        using var output = new MemoryStream(buffer);
+                        await using var output = new MemoryStream(buffer);
                         output.Position = 0;
                         await output.CopyToAsync(originalBody);
 
@@ -138,7 +138,7 @@ namespace netca.Api.Middlewares
             return json.ToString();
         }
 
-        private async Task<HttpContext> RedisCachingAsync(string policyName, HttpContext context, string responseBody, CancellationToken cancellationToken)
+        private async Task<HttpContext> RedisCachingAsync(string policyName, HttpContext context, string responseBody)
         {
             var requestIfNoneMatch = context.Request.Headers[Constants.HeaderIfNoneMatch].ToString() ?? "";
             if (string.IsNullOrEmpty(requestIfNoneMatch))
@@ -148,7 +148,7 @@ namespace netca.Api.Middlewares
             if (policy is not { IsCache: true })
                 return context;
 
-            var key = await _redisService.SaveAsync(policy.Name, Constants.RedisSubKeyHttpRequest, responseBody, cancellationToken);
+            var key = await _redisService.SaveAsync(policy.Name, Constants.RedisSubKeyHttpRequest, responseBody);
             context.Response.Headers[Constants.HeaderETag] = key;
             return context;
         }
@@ -156,7 +156,7 @@ namespace netca.Api.Middlewares
         private Policy IsCache(string policy)
         {
             var policyList = _appSetting.RedisServer.Policy;
-            return policyList.Count.Equals(0) ? null : policyList.SingleOrDefault(x => x.Name.ToLower().Equals(policy.ToLower()));
+            return (policyList.Count.Equals(0) ? null : policyList.SingleOrDefault(x => x.Name.ToLower().Equals(policy.ToLower())))!;
         }
     }
 

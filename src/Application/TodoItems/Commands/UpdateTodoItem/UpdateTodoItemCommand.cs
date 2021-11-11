@@ -30,7 +30,7 @@ namespace netca.Application.TodoItems.Commands.UpdateTodoItem
         /// Gets or sets title
         /// </summary>
         [BindRequired]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether done

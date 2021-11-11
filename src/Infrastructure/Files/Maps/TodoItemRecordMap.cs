@@ -13,7 +13,7 @@ namespace netca.Infrastructure.Files.Maps
     /// <summary>
     /// TodoItemRecordMap
     /// </summary>
-    public class TodoItemRecordMap : ClassMap<TodoItemRecord>
+    public sealed class TodoItemRecordMap : ClassMap<TodoItemRecord>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TodoItemRecordMap"/> class.

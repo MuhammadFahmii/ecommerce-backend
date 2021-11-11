@@ -28,7 +28,6 @@ using NJsonSchema.Generation;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using Serilog;
-using static Microsoft.AspNetCore.Mvc.CompatibilityVersion;
 
 namespace netca.Api
 {
@@ -106,7 +105,7 @@ namespace netca.Api
                 options.Filters.Add(new ProducesResponseTypeAttribute(typeof(object), (int)System.Net.HttpStatusCode.Unauthorized));
                 options.Filters.Add(new ProducesResponseTypeAttribute(typeof(object), (int)System.Net.HttpStatusCode.Forbidden));
                 options.Filters.Add(new ProducesResponseTypeAttribute(typeof(object), (int)System.Net.HttpStatusCode.InternalServerError));
-            }).SetCompatibilityVersion(Latest);
+            });
 
             services.AddRouting(options =>
             {

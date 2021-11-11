@@ -13,9 +13,6 @@ namespace netca.Infrastructure.Persistence.Configurations
     /// <summary>
     /// AuditTableConfiguration
     /// </summary>
-    /// <summary>
-    /// AuditTableConfiguration
-    /// </summary>
     /// <typeparam name="TBase"></typeparam>
     public abstract class AuditTableConfiguration<TBase> : IEntityTypeConfiguration<TBase>
         where TBase : AuditTableEntity

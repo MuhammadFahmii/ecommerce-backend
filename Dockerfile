@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime:5.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 ENV ASPNETCORE_URLS=http://+:8080
 WORKDIR /app
 EXPOSE 8080

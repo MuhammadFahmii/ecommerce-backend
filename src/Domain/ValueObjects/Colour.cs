@@ -34,7 +34,6 @@ namespace netca.Domain.ValueObjects
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        /// <exception cref="UnsupportedColourException"></exception>
         public static Colour From(string code)
         {
             var colour = new Colour { Code = code };
@@ -97,7 +96,6 @@ namespace netca.Domain.ValueObjects
         /// </summary>
         /// <param name="colour"></param>
         /// <returns></returns>
-
         public static implicit operator string(Colour colour)
         {
             return colour.ToString();

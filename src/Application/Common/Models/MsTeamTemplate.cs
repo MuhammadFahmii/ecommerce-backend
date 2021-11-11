@@ -79,9 +79,9 @@ namespace netca.Application.Common.Models
     }
 
     /// <summary>
-    /// CacheMSTeam
+    /// CacheMsTeam
     /// </summary>
-    public class CacheMSTeam
+    public class CacheMsTeam
     {
         /// <summary>
         /// Gets or sets counter

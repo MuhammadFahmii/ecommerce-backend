@@ -16,7 +16,6 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
     /// </summary>
     public class TodoItemBriefVm : AuditTableVm, IMapFrom<TodoItem>
     {
-
         /// <summary>
         /// Gets or sets listId
         /// </summary>

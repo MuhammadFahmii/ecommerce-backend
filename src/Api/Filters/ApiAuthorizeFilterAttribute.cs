@@ -26,7 +26,6 @@ namespace netca.Api.Filters
         /// </summary>
         /// <param name="context"></param>
         /// <param name="next"></param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ApiAuthorizeFilterAttribute>>();
@@ -42,10 +41,10 @@ namespace netca.Api.Filters
                 {
                     var auth = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
                     logger.LogDebug($"Checking permission {policy.Name}");
-                    var permissionChek = auth.AuthorizeAsync(context.HttpContext.User, null, policy.Name).Result;
+                    var permissionChek=  auth.AuthorizeAsync(context.HttpContext.User, null, policy.Name).Result;
                     if (!permissionChek.Succeeded)
                     {
-                        context.Result = new ForbidResult();
+                        context.Result = new ForbidResult();  
                     }
                     else
                     {
@@ -60,10 +59,9 @@ namespace netca.Api.Filters
             catch (Exception e)
             {
                 logger.LogWarning($"error Checking permission {e.Message}");
-                context.Result = new ForbidResult();
+                context.Result = new ForbidResult();  
             }
         }
-
         private static Policy GetPolicy(ILogger logger, AppSetting appSetting, string policy)
         {
             logger.LogDebug($"Get Policy {policy} if exists");

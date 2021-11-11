@@ -24,33 +24,30 @@ namespace netca.Infrastructure.Services.Cache
     {
         private readonly ILogger<RedisService> _logger;
         private readonly AppSetting _appSetting;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="RedisService"/> class.
         /// RedisVoteService
         /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="appSetting"></param>
         /// <returns></returns>
         public RedisService(ILogger<RedisService> logger, AppSetting appSetting)
         {
             _logger = logger;
             _appSetting = appSetting;
             ConnectionString = _appSetting.RedisServer.Server;
-        }
 
-        private static string ConnectionString { get; set; }
-        private readonly Lazy<ConnectionMultiplexer> _lazyConnection = new(() => ConnectionMultiplexer.Connect(ConnectionString));
+        }
+        
+        private static string ConnectionString { get; set; } 
+        private  readonly Lazy<ConnectionMultiplexer> _lazyConnection = new(() => ConnectionMultiplexer.Connect(ConnectionString));
 
         /// <summary>
-        /// Gets connections
+        /// Connections
         /// </summary>
         /// <value></value>
-        private ConnectionMultiplexer Connections => _lazyConnection.Value;
+        private  ConnectionMultiplexer Connections => _lazyConnection.Value;
 
-        private IDatabase Database => Connections.GetDatabase(_appSetting.RedisServer.DatabaseNumber);
+        private  IDatabase Database => Connections.GetDatabase(_appSetting.RedisServer.DatabaseNumber);
 
-        private List<IServer> Servers
+        private  List<IServer> Servers
         {
             get
             {
@@ -59,11 +56,33 @@ namespace netca.Infrastructure.Services.Cache
                 return servers;
             }
         }
+        
+        /// <summary>
+        /// ListLeftPushAsync
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public async Task<long> ListLeftPushAsync(string key, string value)
+        {
+            key += _appSetting.RedisServer.InstanceName;
+            return await Database.ListLeftPushAsync(key, value);
+        }
+        
+        /// <summary>
+        /// ListLeftPopAsync
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public async Task<string> ListLeftPopAsync(string key)
+        {
+            key += _appSetting.RedisServer.InstanceName;
+            return await Database.ListLeftPopAsync(key);
+        }
 
         /// <summary>
         /// Delete
         /// </summary>
-        /// <param name="key"></param>
         /// <returns></returns>
         public async Task DeleteAsync(string key)
         {
@@ -73,11 +92,9 @@ namespace netca.Infrastructure.Services.Cache
                 _logger.LogDebug($"Delete Redis with key {key}");
             }
         }
-
         /// <summary>
         /// Get
         /// </summary>
-        /// <param name="key"></param>
         /// <returns></returns>
         public async Task<string> GetAsync(string key)
         {
@@ -88,7 +105,6 @@ namespace netca.Infrastructure.Services.Cache
         /// <summary>
         /// GetAllValueWithKeyAsync
         /// </summary>
-        /// <param name="key"></param>
         /// <returns></returns>
         public async Task<IEnumerable<RedisDto>> GetAllValueWithKeyAsync(string key)
         {
@@ -106,7 +122,6 @@ namespace netca.Infrastructure.Services.Cache
                         Value = value
                     });
                 }
-
                 _logger.LogTrace($"Success Get all data from Redis");
                 return data.OrderBy(o => o.Key);
             }
@@ -116,21 +131,19 @@ namespace netca.Infrastructure.Services.Cache
                 return data;
             }
         }
-
         /// <summary>
         /// SaveAsync
         /// </summary>
         /// <param name="key"></param>
         /// <param name="sub"></param>
         /// <param name="value"></param>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> SaveAsync(string key, string sub, string value, CancellationToken cancellationToken)
+        public async Task<string> SaveAsync(string key, string sub, string value)
         {
             var resultKey = "";
             try
             {
-                if (key != null && value != null && sub != null)
+                if (value != null && sub != null)
                 {
                     TimeSpan? expiry = null;
                     if (sub.ToLower().Equals(Constants.RedisSubKeyHttpRequest.ToLower()))
@@ -142,7 +155,6 @@ namespace netca.Infrastructure.Services.Cache
                     {
                         expiry = TimeSpan.FromDays(_appSetting.RedisServer.MessageExpiryInDays);
                     }
-
                     sub += _appSetting.RedisServer.InstanceName;
                     resultKey = this.GenerateKey(key, sub);
                     await Database.StringSetAsync(resultKey, value, expiry);
@@ -153,7 +165,6 @@ namespace netca.Infrastructure.Services.Cache
             {
                 _logger.LogError($"Failed Save to Redis, Key: {resultKey}");
             }
-
             return resultKey;
         }
     }

@@ -16,13 +16,6 @@ namespace netca.Application.Common.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="NotFoundException"/> class.
         /// </summary>
-        public NotFoundException() : base()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotFoundException"/> class.
-        /// </summary>
         /// <param name="message"></param>
         public NotFoundException(string message) : base(message)
         {

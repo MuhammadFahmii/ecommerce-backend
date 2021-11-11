@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>netca.Domain</RootNamespace>
         <AssemblyName>netca.Domain</AssemblyName>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PreserveCompilationContext>false</PreserveCompilationContext>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
 </Project>

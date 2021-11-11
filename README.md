@@ -10,8 +10,8 @@ This is a solution template for creating a ASP.NET Core following the principles
 
 ## Technologies
 
-* ASP.NET Core 5
-* [Entity Framework Core 5](https://docs.microsoft.com/en-us/ef/core/)
+* ASP.NET Core
+* [ASP.NET Core 6](https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-6.0)
 * [MediatR](https://github.com/jbogard/MediatR)
 * [AutoMapper](https://automapper.org/)
 * [Quartz.NET](https://www.quartz-scheduler.net/)
@@ -51,7 +51,7 @@ The easiest way to get started is to install the [NuGet package](https://tfs.uni
 ### Docker Configuration
 
 In order to get Docker working, you will need to add a temporary SSL cert and mount a volume to hold that cert.
-You can find [Microsoft Docs](https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-3.1) that describe the steps required for Windows, macOS, and Linux.
+You can find [Microsoft Docs](https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-6.0) that describe the steps required for Windows, macOS, and Linux.
 
 For Windows:
 The following will need to be executed from your terminal to create a cert

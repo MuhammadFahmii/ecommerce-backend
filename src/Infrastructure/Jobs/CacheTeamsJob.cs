@@ -20,11 +20,11 @@ namespace netca.Infrastructure.Jobs
     [DisallowConcurrentExecution]
     public class CacheTeamsJob : IJob
     {
+        
         private readonly ILogger<CacheTeamsJob> _logger;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-
+        private readonly IServiceScopeFactory _serviceScopeFactory;  
         /// <summary>
-        /// Initializes a new instance of the <see cref="CacheTeamsJob"/> class.
+        /// CacheTeamsJob
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="serviceScopeFactory"></param>
@@ -33,7 +33,7 @@ namespace netca.Infrastructure.Jobs
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
         }
-
+        
         /// <summary>
         /// Execute
         /// </summary>
@@ -47,34 +47,33 @@ namespace netca.Infrastructure.Jobs
                 var appSet = scope.ServiceProvider.GetRequiredService<AppSetting>();
                 var ctm = GetCounter(ch);
                 var hours = (DateTime.UtcNow - ctm.Date).TotalHours;
-                if (hours < appSet.Bot.CacheMSTeam.Hours)
-                    return Task.CompletedTask;
+                if (hours < appSet.Bot.CacheMsTeam.Hours) return Task.CompletedTask;
                 _logger.LogWarning($"Resetting CacheMSTeams");
                 ctm.Counter = 0;
                 ctm.Date = DateTime.UtcNow;
                 SetCounter(ctm, ch);
             }
-
+            
             return Task.CompletedTask;
         }
-
-        private static void SetCounter(CacheMSTeam cacheMsTeam, IMemoryCache mc)
+        
+        private static void SetCounter(CacheMsTeam CacheMsTeam, IMemoryCache mc)
         {
-            var cacheEntryOptions = new MemoryCacheEntryOptions()
+            var cacheEntryOptions = new MemoryCacheEntryOptions()  
                 .SetAbsoluteExpiration(TimeSpan.FromDays(2));
-            mc.Set("CacheMSTeams", cacheMsTeam, cacheEntryOptions);
+            mc.Set("CacheMSTeams", CacheMsTeam, cacheEntryOptions);
         }
-
-        private static CacheMSTeam GetCounter(IMemoryCache mc)
+        
+        private static CacheMsTeam GetCounter(IMemoryCache mc)
         {
-            var isExist = mc.TryGetValue("CacheMSTeams", out CacheMSTeam cacheMsTeam);
+            var isExist = mc.TryGetValue("CacheMSTeams", out CacheMsTeam CacheMsTeam);
             if (isExist)
             {
-                return cacheMsTeam;
+                return CacheMsTeam;
             }
 
-            cacheMsTeam = new CacheMSTeam { Counter = 0, Date = DateTime.UtcNow };
-            return cacheMsTeam;
+            CacheMsTeam = new CacheMsTeam{Counter = 0, Date = DateTime.UtcNow};
+            return CacheMsTeam;
         }
     }
 }
