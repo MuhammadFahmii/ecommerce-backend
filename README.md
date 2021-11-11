@@ -1,6 +1,6 @@
  <img width="116" height="116" src="https://raw.githubusercontent.com/jasontaylordev/CleanArchitecture/main/.github/icon.png"  alt=""/>
 
- # DAD .NET5 Clean Architecture Web Api Solution Template
+ # DAD .NET Clean Architecture Web Api Solution Template
 [![Build status](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_apis/build/status/netca-CI)](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_build/latest?definitionId=665)
 
 [![DAD.Clean.Architecture.WebApi.Solution.Template package in dad-registry feed in Azure Artifacts](https://tfs.unitedtractors.com/DefaultCollection/_apis/public/Packaging/Feeds/f638be01-a0c6-4302-ae05-45ba95464364/Packages/dcd873c3-8f3b-4c96-a39d-4ad2a979a758/Badge)](https://tfs.unitedtractors.com/DefaultCollection/_Packaging?feed=f638be01-a0c6-4302-ae05-45ba95464364&package=dcd873c3-8f3b-4c96-a39d-4ad2a979a758&preferRelease=true&_a=package)
@@ -10,7 +10,6 @@ This is a solution template for creating a ASP.NET Core following the principles
 
 ## Technologies
 
-* ASP.NET Core
 * [ASP.NET Core 6](https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-6.0)
 * [MediatR](https://github.com/jbogard/MediatR)
 * [AutoMapper](https://automapper.org/)
@@ -25,7 +24,7 @@ This is a solution template for creating a ASP.NET Core following the principles
 
 The easiest way to get started is to install the [NuGet package](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_packaging?feed=dad-registry%40Release&package=DAD.Clean.Architecture.WebApi.Solution.Template&version&protocolType=NuGet&_a=package) and run `dotnet new dad-ca-wa-sln`:
 
-1. Install the latest [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+1. Install the latest [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 2. Add packageSources & packageSourceCredentials to `Nuget.config` : 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -45,8 +44,9 @@ The easiest way to get started is to install the [NuGet package](https://tfs.uni
 ``` 
 3. Run `dotnet new --install DAD.Clean.Architecture.WebApi.Solution.Template` to install the project template
 4. Create a folder for your solution and cd into it (the template will use it as project name)
-5. Run `dotnet new dad-ca-wa-sln` to create a new project
-6. Navigate to `src/Api` and run `dotnet run` to launch the back end (ASP.NET Core Web API)
+5. Run `dotnet new dad-ca-wa-sln -h` for the options
+6. Run `dotnet new dad-ca-wa-sln` to create a new project
+7. Navigate to `src/Api` and run `dotnet run` to launch the back end (ASP.NET Core Web API)
 
 ### Docker Configuration
 
