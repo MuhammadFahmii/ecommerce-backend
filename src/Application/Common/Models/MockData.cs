@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace netca.Application.Common.Models
 {
@@ -59,32 +58,32 @@ namespace netca.Application.Common.Models
                 new()
                 {
                     UserId = new Guid("49f140da-707a-459e-4e60-08d708dc37c0"),
-                    clientId = "b1a48ae8-3c71-4ae4-4e7b-08d708dc37c0",
-                    isCustomer = false
+                    ClientId = "b1a48ae8-3c71-4ae4-4e7b-08d708dc37c0",
+                    IsCustomer = false
                 },
                 new()
                 {
                     UserId = new Guid("b1a48ae8-3c71-4ae4-4e7b-08d708dc37c0"),
-                    clientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
-                    isCustomer = false
+                    ClientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
+                    IsCustomer = false
                 },
                 new()
                 {
                     UserId = new Guid("c8374c2f-08f7-4156-4e75-08d708dc37c0"),
-                    clientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
-                    isCustomer = false
+                    ClientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
+                    IsCustomer = false
                 },
                 new()
                 {
                     UserId = new Guid("6178aba0-dd0a-4615-4e7e-08d708dc37c0"),
-                    clientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
-                    isCustomer = false
+                    ClientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
+                    IsCustomer = false
                 },
                 new()
                 {
                     UserId = new Guid("647c1e9c-6fe4-4800-25d7-08d771620e86"),
-                    clientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
-                    isCustomer = false
+                    ClientId = "3ea6f2ac-92aa-4a4c-8725-daa9350be5c8",
+                    IsCustomer = false
                 }
             };
         }
@@ -97,28 +96,31 @@ namespace netca.Application.Common.Models
         {
             var result = new List<UserMangementUser>()
             {
-                new UserMangementUser
+                new()
                 {
                     UserId = new Guid("49f140da-707a-459e-4e60-08d708dc37c0"),
                     UserName = "80107002@unitedtractors.com",
                     Email = "80107002@unitedtractors.com",
                     FirstName = "Agus",
                     LastName = "LISANTO"
-                }, new UserMangementUser
+                },
+                new()
                 {
                     UserId = new Guid("b1a48ae8-3c71-4ae4-4e7b-08d708dc37c0"),
                     UserName = "70316028@unitedtractors.com",
                     Email = "inengahsuarma54@gmail.com",
                     FirstName = "I NENGAH",
                     LastName = "I NENGAH"
-                }, new UserMangementUser
+                },
+                new()
                 {
                     UserId = new Guid("c8374c2f-08f7-4156-4e75-08d708dc37c0"),
                     UserName = "81300006@unitedtractors.com",
                     Email = "81300006@unitedtractors.com",
                     FirstName = "HENDRAWAN",
                     LastName = "HENDRAWAN"
-                }, new UserMangementUser
+                },
+                new()
                 {
                     UserId = new Guid("6178aba0-dd0a-4615-4e7e-08d708dc37c0"),
                     UserName = "80101070@unitedtractors.com",
@@ -151,25 +153,25 @@ namespace netca.Application.Common.Models
         {
             return new List<KeyValuePair<string, string>>
             {
-                new("M-ADRTP","FMC Adaro Tutupan"),
-                new("FM-BDIPM","FMC Bendili PAMA"),
-                new("FM-BIUPM","FMC Batukajang PAMA"),
-                new("FM-BKJBU","FMC Batukajang BUMA"),
-                new("FM-BKJSJ","FMC Batukajang SIMS"),
-                new("FM-BNEPM","FMC Bontang East Block Site - KITADIN"),
-                new("FM-DMIPM","FMC Damai Pama"),
-                new("FM-JBYPM","FMC Jembayan PAMA"),
-                new("FM-JKTMB","FMC Jakarta On Road Mayasari Bhakti"),
-                new("FM-JKTTJ","FMC Jakarta On Road Trans Jakarta"),
-                new("FM-LTIBU","FMC Lati Buma"),
-                new("FM-MLWSM","FMC Muaralawa SIMS"),
-                new("FM-SRKVL","FMC Soroako"),
-                new("FM-TJGBU","FMC Tanjung Buma"),
-                new("FM-TJGSI","FMC Tanjung Sis"),
-                new("FM-BGLKP","FMC Bengalon KPP"),
-                new("FM-BGLKW","FMC Bengalon KWN"),
-                new("FM-MTBPM","FMC MTBU Pama"),
-                new("FM-TBGKW","FMC Tabang KWN")
+                new("M-ADRTP", "FMC Adaro Tutupan"),
+                new("FM-BDIPM", "FMC Bendili PAMA"),
+                new("FM-BIUPM", "FMC Batukajang PAMA"),
+                new("FM-BKJBU", "FMC Batukajang BUMA"),
+                new("FM-BKJSJ", "FMC Batukajang SIMS"),
+                new("FM-BNEPM", "FMC Bontang East Block Site - KITADIN"),
+                new("FM-DMIPM", "FMC Damai Pama"),
+                new("FM-JBYPM", "FMC Jembayan PAMA"),
+                new("FM-JKTMB", "FMC Jakarta On Road Mayasari Bhakti"),
+                new("FM-JKTTJ", "FMC Jakarta On Road Trans Jakarta"),
+                new("FM-LTIBU", "FMC Lati Buma"),
+                new("FM-MLWSM", "FMC Muaralawa SIMS"),
+                new("FM-SRKVL", "FMC Soroako"),
+                new("FM-TJGBU", "FMC Tanjung Buma"),
+                new("FM-TJGSI", "FMC Tanjung Sis"),
+                new("FM-BGLKP", "FMC Bengalon KPP"),
+                new("FM-BGLKW", "FMC Bengalon KWN"),
+                new("FM-MTBPM", "FMC MTBU Pama"),
+                new("FM-TBGKW", "FMC Tabang KWN")
             };
         }
     }

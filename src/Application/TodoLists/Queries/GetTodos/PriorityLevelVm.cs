@@ -12,12 +12,12 @@ namespace netca.Application.TodoLists.Queries.GetTodos
     public class PriorityLevelVm
     {
         /// <summary>
-        /// Value
+        /// Gets or sets value
         /// </summary>
         public int Value { get; set; }
-        
+
         /// <summary>
-        /// Name
+        /// Gets or sets name
         /// </summary>
         public string Name { get; set; }
     }

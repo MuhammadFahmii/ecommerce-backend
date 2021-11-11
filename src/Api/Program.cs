@@ -21,7 +21,6 @@ namespace netca.Api
         /// Main function
         /// </summary>
         /// <param name="args"></param>
-        /// <returns></returns>
         public static void Main(string[] args)
         {
             var host = CreateWebHostBuilder(args).Build();
@@ -63,24 +62,29 @@ namespace netca.Api
                 .UseKestrel((hostingContext, option) =>
                 {
                     services.Configure<AppSetting>(hostingContext.Configuration);
-                    appSetting = services.BuildServiceProvider().GetService<IOptionsSnapshot<AppSetting>>()?.Value ??
-                                 new AppSetting();
+                    appSetting = services
+                        .BuildServiceProvider()
+                        .GetService<IOptionsSnapshot<AppSetting>>()?.Value ?? new AppSetting();
 
                     option.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(appSetting.Kestrel.KeepAliveTimeoutInM);
-                    option.Limits.MinRequestBodyDataRate =
-                        new MinDataRate(appSetting.Kestrel.MinRequestBodyDataRate.BytesPerSecond,
-                            TimeSpan.FromSeconds(appSetting.Kestrel.MinRequestBodyDataRate.GracePeriod));
-                    option.Limits.MinResponseDataRate =
-                        new MinDataRate(appSetting.Kestrel.MinResponseDataRate.BytesPerSecond,
-                            TimeSpan.FromSeconds(appSetting.Kestrel.MinResponseDataRate.GracePeriod));
+                    option.Limits.MinRequestBodyDataRate = new MinDataRate(
+                        appSetting.Kestrel.MinRequestBodyDataRate.BytesPerSecond,
+                        TimeSpan.FromSeconds(appSetting.Kestrel.MinRequestBodyDataRate.GracePeriod)
+                    );
+                    option.Limits.MinResponseDataRate = new MinDataRate(
+                        appSetting.Kestrel.MinResponseDataRate.BytesPerSecond,
+                        TimeSpan.FromSeconds(appSetting.Kestrel.MinResponseDataRate.GracePeriod)
+                    );
                     option.AddServerHeader = false;
                 })
-                .UseStartup<Startup>().UseSerilog((hostingContext, loggerConfiguration) =>
+                .UseStartup<Startup>()
+                .UseSerilog((hostingContext, loggerConfiguration) =>
                 {
                     services.Configure<AppSetting>(hostingContext.Configuration);
                     services.AddMemoryCache();
-                    appSetting = services.BuildServiceProvider().GetService<IOptionsSnapshot<AppSetting>>()?.Value ??
-                                 new AppSetting();
+                    appSetting = services
+                        .BuildServiceProvider()
+                        .GetService<IOptionsSnapshot<AppSetting>>()?.Value ?? new AppSetting();
                     var memoryCache = services.BuildServiceProvider().GetService<IMemoryCache>();
                     var sink = new LogEventSinkHandler(appSetting, memoryCache);
                     loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration).WriteTo

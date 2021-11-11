@@ -31,7 +31,7 @@ namespace netca.Infrastructure.Files
             {
                 using var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
 
-                csvWriter.Configuration.RegisterClassMap<TodoItemRecordMap>();
+                csvWriter.Context.RegisterClassMap<TodoItemRecordMap>();
                 csvWriter.WriteRecords(records);
             }
 

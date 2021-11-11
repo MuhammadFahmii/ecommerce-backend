@@ -48,7 +48,7 @@ namespace netca.Application.Common.Interfaces
         AuthorizedUser GetAuthorizedUser();
 
         /// <summary>
-        /// GetUserAttributes
+        /// GetUserAttributesAsync
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -61,10 +61,11 @@ namespace netca.Application.Common.Interfaces
         /// <param name="attributes"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<UserClientIdInfo>> GetUsersByAttributesAsync(string serviceName, Dictionary<string, IList<string>> attributes, CancellationToken cancellationToken);
+        Task<List<UserClientIdInfo>> GetUsersByAttributesAsync(
+            string serviceName, Dictionary<string, IList<string>> attributes, CancellationToken cancellationToken);
 
         /// <summary>
-        /// GetNotifiedUsers
+        /// GetNotifiedUsersAsync
         /// </summary>
         /// <param name="serviceName"></param>
         /// <param name="attributes"></param>
@@ -72,7 +73,8 @@ namespace netca.Application.Common.Interfaces
         /// <param name="clientIds"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<UserClientIdInfo>> GetNotifiedUsersAsync(string serviceName, Dictionary<string, List<string>> attributes, string permission, IEnumerable<string> clientIds, CancellationToken cancellationToken);
+        Task<List<UserClientIdInfo>> GetNotifiedUsersAsync(
+            string serviceName, Dictionary<string, List<string>> attributes, string permission, IEnumerable<string> clientIds, CancellationToken cancellationToken);
 
         /// <summary>
         /// GetDevicesIdByUserId
@@ -84,7 +86,7 @@ namespace netca.Application.Common.Interfaces
         Task<List<UserDeviceInfo>> GetDevicesIdByUserIdAsync(Guid userId, string clientId, CancellationToken cancellationToken);
 
         /// <summary>
-        /// GetEmailByUserId
+        /// GetEmailByUserIdAsync
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="cancellationToken"></param>
@@ -92,7 +94,7 @@ namespace netca.Application.Common.Interfaces
         Task<UserEmailInfo> GetEmailByUserIdAsync(Guid userId, CancellationToken cancellationToken);
 
         /// <summary>
-        /// GetGeneralParameter
+        /// GetGeneralParameterAsync
         /// </summary>
         /// <param name="generalParameterCode"></param>
         /// <param name="cancellationToken"></param>
@@ -104,19 +106,27 @@ namespace netca.Application.Common.Interfaces
         /// </summary>
         /// <param name="generalParameterCode"></param>
         /// <returns></returns>
-        Task<List<string>> GetUserServices(string generalParameterCode);
+        Task<List<string>> GetUserServicesAsync(string generalParameterCode);
 
         /// <summary>
-        /// GetUserAttributesAndServices
+        /// GetUserAttributesAndServicesAsync
         /// </summary>
-        /// <param name="cancellation"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Dictionary<string, List<string>>> GetUserAttributesAndServicesAsync(CancellationToken cancellation);
+        Task<Dictionary<string, List<string>>> GetUserAttributesAndServicesAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// GetUserListAsync
         /// </summary>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<List<UserMangementUser>> GetUserListAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// DeleteDeviceIdAsync
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        Task DeleteDeviceIdAsync(string deviceId);
     }
 }

@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.Logging
     public static class AppLoggingExtensions
     {
         /// <summary>
-        /// LoggerFactory
+        /// Gets or sets loggerFactory
         /// </summary>
         /// <value></value>
         public static ILoggerFactory LoggerFactory { get; set; }

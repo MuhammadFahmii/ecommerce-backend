@@ -5,7 +5,6 @@
 // -----------------------------------------------------------------------------------
 
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using netca.Application.Dtos;
 
@@ -20,22 +19,31 @@ namespace netca.Application.Common.Interfaces
         /// Get
         /// </summary>
         Task<string> GetAsync(string key);
+
         /// <summary>
         /// SaveAsync
         /// </summary>
         Task<string> SaveAsync(string key, string sub, string value);
-        /// <summary>
-        /// ListLeftPush
-        /// </summary>
-        Task<long> ListLeftPushAsync(string key, string value);
-        /// <summary>
-        /// ListLeftPop
-        /// </summary>
-        Task<string> ListLeftPopAsync(string key);
+
         /// <summary>
         /// GetAllValueWithKeyAsync
         /// </summary>
         Task<IEnumerable<RedisDto>> GetAllValueWithKeyAsync(string key);
+
+        /// <summary>
+        /// ListLeftPushAsync
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        Task<long> ListLeftPushAsync(string key, string value);
+        
+        /// <summary>
+        /// ListLeftPopAsync
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Task<string> ListLeftPopAsync(string key);
         /// <summary>
         /// Delete
         /// </summary>

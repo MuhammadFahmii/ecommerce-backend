@@ -22,7 +22,7 @@ namespace netca.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Changelog> builder)
         {
             builder.HasKey(e => e.Id);
-            
+
             builder.Property(e => e.Id)
                 .HasColumnType("Uniqueidentifier")
                 .ValueGeneratedOnAdd();

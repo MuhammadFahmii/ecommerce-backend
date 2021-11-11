@@ -48,7 +48,7 @@ namespace netca.Infrastructure.Jobs
                 var ctm = GetCounter(ch);
                 var hours = (DateTime.UtcNow - ctm.Date).TotalHours;
                 if (hours < appSet.Bot.CacheMsTeam.Hours) return Task.CompletedTask;
-                _logger.LogWarning($"Resetting CacheMsTeams");
+                _logger.LogWarning($"Resetting CacheMSTeams");
                 ctm.Counter = 0;
                 ctm.Date = DateTime.UtcNow;
                 SetCounter(ctm, ch);
@@ -57,23 +57,23 @@ namespace netca.Infrastructure.Jobs
             return Task.CompletedTask;
         }
         
-        private static void SetCounter(CacheMsTeam cacheMsTeam, IMemoryCache mc)
+        private static void SetCounter(CacheMsTeam CacheMsTeam, IMemoryCache mc)
         {
             var cacheEntryOptions = new MemoryCacheEntryOptions()  
                 .SetAbsoluteExpiration(TimeSpan.FromDays(2));
-            mc.Set("CacheMsTeams", cacheMsTeam, cacheEntryOptions);
+            mc.Set("CacheMSTeams", CacheMsTeam, cacheEntryOptions);
         }
         
         private static CacheMsTeam GetCounter(IMemoryCache mc)
         {
-            var isExist = mc.TryGetValue("CacheMsTeams", out CacheMsTeam cacheMsTeam);
+            var isExist = mc.TryGetValue("CacheMSTeams", out CacheMsTeam CacheMsTeam);
             if (isExist)
             {
-                return cacheMsTeam;
+                return CacheMsTeam;
             }
 
-            cacheMsTeam = new CacheMsTeam{Counter = 0, Date = DateTime.UtcNow};
-            return cacheMsTeam;
+            CacheMsTeam = new CacheMsTeam{Counter = 0, Date = DateTime.UtcNow};
+            return CacheMsTeam;
         }
     }
 }

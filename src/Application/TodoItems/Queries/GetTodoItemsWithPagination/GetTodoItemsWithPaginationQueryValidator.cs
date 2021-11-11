@@ -14,7 +14,7 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
     public class GetTodoItemsWithPaginationQueryValidator : AbstractValidator<GetTodoItemsWithPaginationQuery>
     {
         /// <summary>
-        /// GetTodoItemsWithPaginationQueryValidator
+        /// Initializes a new instance of the <see cref="GetTodoItemsWithPaginationQueryValidator"/> class.
         /// </summary>
         public GetTodoItemsWithPaginationQueryValidator()
         {

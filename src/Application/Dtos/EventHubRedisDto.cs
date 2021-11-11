@@ -12,12 +12,13 @@ namespace netca.Application.Dtos
     public class EventHubRedisDto
     {
         /// <summary>
-        /// EventHubName
+        /// Gets or sets eventHubName
         /// </summary>
         /// <value></value>
         public string Name { get; set; }
+
         /// <summary>
-        /// Value
+        /// Gets or sets value
         /// </summary>
         /// <value></value>
         public string Value { get; set; }

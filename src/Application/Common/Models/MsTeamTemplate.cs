@@ -15,18 +15,19 @@ namespace netca.Application.Common.Models
     public class MsTeamTemplate
     {
         /// <summary>
-        /// summary
+        /// Gets or sets summary
         /// </summary>
-        public string summary { get; set;} = Constants.MsTeamsSummaryError;
-        /// <summary>
-        /// themeColor
-        /// </summary>
-        public string themeColor { get; set;} = Constants.MsTeamsThemeColorError;
+        public string Summary { get; set; } = Constants.MsTeamsSummaryError;
 
         /// <summary>
-        /// sections
+        /// Gets or sets themeColor
         /// </summary>
-        public List<Section> sections {get; set;}
+        public string ThemeColor { get; set; } = Constants.MsTeamsThemeColorError;
+
+        /// <summary>
+        /// Gets or sets sections
+        /// </summary>
+        public List<Section> Sections { get; set; }
     }
 
     /// <summary>
@@ -35,28 +36,28 @@ namespace netca.Application.Common.Models
     public class Section
     {
         /// <summary>
-        /// activityTitle
+        /// Gets or sets activityTitle
         /// </summary>
         /// <value></value>
-        public string activityTitle { get; set;}
+        public string ActivityTitle { get; set; }
 
         /// <summary>
-        /// activitySubtitle
+        /// Gets or sets activitySubtitle
         /// </summary>
         /// <value></value>
-        public string activitySubtitle { get; set;}
+        public string ActivitySubtitle { get; set; }
 
         /// <summary>
-        /// activityImage
+        /// Gets or sets activityImage
         /// </summary>
         /// <value></value>
-        public string activityImage {get; set;}
+        public string ActivityImage { get; set; }
 
         /// <summary>
-        /// Facts
+        /// Gets or sets facts
         /// </summary>
         /// <value></value>
-        public List<Fact> Facts {get; set;}
+        public List<Fact> Facts { get; set; }
     }
 
     /// <summary>
@@ -65,35 +66,35 @@ namespace netca.Application.Common.Models
     public class Fact
     {
         /// <summary>
-        /// name
+        /// Gets or sets name
         /// </summary>
         /// <value></value>
-        public string name { get; set;}
+        public string Name { get; set; }
 
         /// <summary>
-        /// value
+        /// Gets or sets value
         /// </summary>
         /// <value></value>
-        public string value { get; set;}
+        public string Value { get; set; }
     }
-    
+
     /// <summary>
     /// CacheMsTeam
     /// </summary>
     public class CacheMsTeam
     {
         /// <summary>
-        /// Counter
+        /// Gets or sets counter
         /// </summary>
         public int Counter { get; set; } = 100;
-        
+
         /// <summary>
-        /// Hours
+        /// Gets hours
         /// </summary>
         public double Hours => 24;
-        
+
         /// <summary>
-        /// Date
+        /// Gets or sets date
         /// </summary>
         public DateTime Date { get; set; } = DateTime.Now;
     }

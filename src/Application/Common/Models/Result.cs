@@ -19,26 +19,26 @@ namespace netca.Application.Common.Models
             Succeeded = succeeded;
             Errors = errors.ToArray();
         }
-        
+
         /// <summary>
-        /// Succeeded
+        /// Gets or sets a value indicating whether succeeded
         /// </summary>
         public bool Succeeded { get; set; }
-        
+
         /// <summary>
-        /// Errors
+        /// Gets or sets errors
         /// </summary>
         public string[] Errors { get; set; }
-        
+
         /// <summary>
-        /// Result
+        /// Success
         /// </summary>
         /// <returns></returns>
         public static Result Success()
         {
             return new Result(true, System.Array.Empty<string>());
         }
-        
+
         /// <summary>
         /// Failure
         /// </summary>

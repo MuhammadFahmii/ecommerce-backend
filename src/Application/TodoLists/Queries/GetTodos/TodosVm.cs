@@ -17,18 +17,19 @@ namespace netca.Application.TodoLists.Queries.GetTodos
     public class TodosVm
     {
         /// <summary>
-        /// Id
+        /// Gets or sets id
         /// </summary>
         /// <value></value>
         public Guid Id { get; set; } = Guid.NewGuid();
+
         /// <summary>
-        /// PriorityLevels
+        /// Gets or sets priorityLevels
         /// </summary>
         public IList<PriorityLevelVm> PriorityLevels { get; set; }
-        
+
         /// <summary>
-        /// Lists
+        /// Gets or sets lists
         /// </summary>
-        public IList<TodoListVm>  Lists { get; set; }
+        public IList<TodoListVm> Lists { get; set; }
     }
 }

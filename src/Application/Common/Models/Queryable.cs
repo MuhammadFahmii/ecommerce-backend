@@ -20,6 +20,7 @@ namespace netca.Application.Common.Models
     {
         private static readonly ILogger Logger = AppLoggingExtensions.CreateLogger("Queryable");
         private static Type _type;
+
         /// <summary>
         /// Query
         /// </summary>
@@ -29,7 +30,6 @@ namespace netca.Application.Common.Models
         /// <returns></returns>
         public static IQueryable<T> Query<T>(this IQueryable<T> source, QueryModel queryModel)
         {
-
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -39,8 +39,10 @@ namespace netca.Application.Common.Models
 
             source = Sort(source, queryModel.GetSortsParsed());
 
-            if (queryModel.PageNumber < 1) { queryModel.PageNumber = Constants.DefaultPageNumber; }
-            if (queryModel.PageSize < 1) { queryModel.PageSize = Constants.DefaultPageSize; }
+            if (queryModel.PageNumber < 1)
+                queryModel.PageNumber = Constants.DefaultPageNumber;
+            if (queryModel.PageSize < 1)
+                queryModel.PageSize = Constants.DefaultPageSize;
 
             source = Limit(source, queryModel.PageNumber ?? Constants.DefaultPageNumber, queryModel.PageSize ?? Constants.DefaultPageSize);
 
@@ -56,7 +58,6 @@ namespace netca.Application.Common.Models
         /// <returns></returns>
         public static IQueryable<T> QueryWithoutLimit<T>(this IQueryable<T> source, QueryModel queryModel)
         {
-
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -88,6 +89,7 @@ namespace netca.Application.Common.Models
             {
                 Logger.LogWarning($"Failed to filter {e.Message}");
             }
+
             return source;
         }
 
@@ -98,22 +100,16 @@ namespace netca.Application.Common.Models
             {
                 var logic = filter[i].Logic ?? "AND";
                 string f;
+
                 if (logic.StartsWith("("))
-                {
                     f = i == 0 ? $"({Transform(logic[1..], filter[i], i)}" : $"{Transform(logic[1..] + " (", filter[i], i)}";
-                }
                 else if (logic.EndsWith(")"))
-                {
                     f = $"{Transform(logic[..^1], filter[i], i)})";
-                }
                 else
-                {
                     f = Transform(logic, filter[i], i);
-                }
+
                 if (f != null)
-                {
                     where = $"{where} {f}";
-                }
             }
 
             return where;
@@ -126,7 +122,8 @@ namespace netca.Application.Common.Models
         }
 
         private static readonly IDictionary<string, string>
-            Operators = new Dictionary<string, string> {
+            Operators = new Dictionary<string, string>
+            {
                 { "eq", "=" },
                 { "neq", "!=" },
                 { "lt", "<" },
@@ -159,18 +156,19 @@ namespace netca.Application.Common.Models
         private static string Transform(string logic, FilterQuery filter, int index)
         {
             if (filter.Value == null || string.IsNullOrEmpty(filter.Field) ||
-                string.IsNullOrEmpty(filter.Value.ToString())) return null;
+                string.IsNullOrEmpty(filter.Value.ToString()))
+                return null;
+
             try
             {
                 if (filter.Operator != null)
-                {
                     return TransformLogic(Operators[filter.Operator.ToLower()], logic, filter, index);
-                }
             }
             catch (Exception e)
             {
                 Logger.LogWarning($"Operator {filter.Operator} not part of the Dictionary {e.Message}");
             }
+
             return null;
         }
 
@@ -180,23 +178,47 @@ namespace netca.Application.Common.Models
             {
                 if (index > 0)
                 {
-                    return string.Format("{0} ({1} != null && !{1}.ToString().{2}(@{3}))", logic,
-                        filter.Field, comparison, index);
+                    return string.Format(
+                        "{0} ({1} != null && !{1}.ToString().{2}(@{3}))",
+                        logic,
+                        filter.Field,
+                        comparison,
+                        index
+                    );
                 }
-                return string.Format("({0} != null && !{0}.ToString().{1}(@{2}))",
-                    filter.Field, comparison, index);
+
+                return string.Format(
+                    "({0} != null && !{0}.ToString().{1}(@{2}))",
+                    filter.Field,
+                    comparison,
+                    index
+                );
             }
+
             if (comparison != "StartsWith" && comparison != "EndsWith" && comparison != "Contains")
-                return index > 0
-                    ? $" {logic} {filter.Field} {comparison} @{index}"
-                    : $"{filter.Field} {comparison} @{index}";
+            {
+                return index > 0 ?
+                    $" {logic} {filter.Field} {comparison} @{index}" :
+                    $"{filter.Field} {comparison} @{index}";
+            }
+
             if (index > 0)
             {
-                return string.Format("{0} ({1} != null && {1}.ToString().{2}(@{3}))", logic,
-                    filter.Field, comparison, index);
+                return string.Format(
+                    "{0} ({1} != null && {1}.ToString().{2}(@{3}))",
+                    logic,
+                    filter.Field,
+                    comparison,
+                    index
+                );
             }
-            return string.Format("({0} != null && {0}.{1}(@{2}))",
-                filter.Field, comparison, index);   
+
+            return string.Format(
+                "({0} != null && {0}.{1}(@{2}))",
+                filter.Field,
+                comparison,
+                index
+            );
         }
 
         /// <summary>
@@ -208,7 +230,9 @@ namespace netca.Application.Common.Models
         /// <returns></returns>
         private static IQueryable<T> Sort<T>(this IQueryable<T> source, IReadOnlyCollection<Sort> sort)
         {
-            if (sort == null || !sort.Any()) return source;
+            if (sort == null || !sort.Any())
+                return source;
+
             try
             {
                 var ordering = string.Join(",", sort.Select(s => $"{s.Field} {s.Direction}"));

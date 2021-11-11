@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace netca.Infrastructure.Persistence.Migrations
 {
 #pragma warning disable 1591
+    /// <summary>
+    /// Init
+    /// </summary>
     public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

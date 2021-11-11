@@ -17,7 +17,7 @@ namespace netca.Application.Common.Mappings
     public class MappingProfile : Profile
     {
         /// <summary>
-        /// MappingProfile
+        /// Initializes a new instance of the <see cref="MappingProfile"/> class.
         /// </summary>
         public MappingProfile()
         {

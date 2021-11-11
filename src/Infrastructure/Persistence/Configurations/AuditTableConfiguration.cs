@@ -13,9 +13,6 @@ namespace netca.Infrastructure.Persistence.Configurations
     /// <summary>
     /// AuditTableConfiguration
     /// </summary>
-    /// <summary>
-    /// AuditTableConfiguration
-    /// </summary>
     /// <typeparam name="TBase"></typeparam>
     public abstract class AuditTableConfiguration<TBase> : IEntityTypeConfiguration<TBase>
         where TBase : AuditTableEntity
@@ -51,9 +48,9 @@ namespace netca.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.DeletedDate)
                 .HasColumnType("datetime2");
-            
+
             builder.HasIndex(b => b.IsActive);
-            
+
             builder.HasIndex(b => b.DeletedDate);
         }
     }

@@ -16,17 +16,17 @@ namespace netca.Domain.Entities
     public class TodoList : AuditTableEntity
     {
         /// <summary>
-        /// Title
+        /// Gets or sets title
         /// </summary>
         public string Title { get; set; }
-        
+
         /// <summary>
-        /// Colour
+        /// Gets or sets colour
         /// </summary>
         public Colour Colour { get; set; } = Colour.White;
-        
+
         /// <summary>
-        /// Items
+        /// Gets items
         /// </summary>
         public IList<TodoItem> Items { get; private set; } = new List<TodoItem>();
     }

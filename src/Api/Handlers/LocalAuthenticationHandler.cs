@@ -29,15 +29,19 @@ namespace netca.Api.Handlers
         /// </summary>
         public const string AuthScheme = "LocalAuth";
 
-        private readonly Claim DefaultUserIdClaim = new(
+        private readonly Claim _defaultUserIdClaim = new(
             ClaimTypes.NameIdentifier, UserId.ToString());
 
         /// <summary>
-        /// LocalAuthenticationHandler
+        /// Initializes a new instance of the <see cref="LocalAuthenticationHandler"/> class.
         /// </summary>
+        /// <param name="options"></param>
+        /// <param name="logger"></param>
+        /// <param name="encoder"></param>
+        /// <param name="clock"></param>
         public LocalAuthenticationHandler(
-            IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, 
-            UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+            IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
+            : base(options, logger, encoder, clock)
         {
         }
 
@@ -45,10 +49,11 @@ namespace netca.Api.Handlers
         /// Marks all authentication requests as successful, and injects the
         /// default company id into the user claims.
         /// </summary>
+        /// <returns></returns>
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var authenticationTicket = new AuthenticationTicket(
-                new ClaimsPrincipal(new ClaimsIdentity(new[] { DefaultUserIdClaim }, AuthScheme)),
+                new ClaimsPrincipal(new ClaimsIdentity(new[] { _defaultUserIdClaim }, AuthScheme)),
                 new AuthenticationProperties(),
                 AuthScheme);
             return Task.FromResult(AuthenticateResult.Success(authenticationTicket));

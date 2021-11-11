@@ -19,7 +19,7 @@ namespace JsonApiSerializer.JsonApi
     /// JsonApiExtensionPaginated
     /// </summary>
     public static class JsonApiExtensionPaginated
-    { 
+    {
         /// <summary>
         /// CreateAsync
         /// </summary>
@@ -28,10 +28,9 @@ namespace JsonApiSerializer.JsonApi
         /// <param name="pageSize"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async Task<DocumentRootJson<List<T>>> CreateAsync<T>(IQueryable<T> source, int pageNumber,
-            int pageSize)
+        public static async Task<DocumentRootJson<List<T>>> CreateAsync<T>(
+            IQueryable<T> source, int pageNumber, int pageSize)
         {
-
             return await JsonApiExtensions.ToJsonApiProjectTo(source, pageNumber, pageSize);
         }
     }
@@ -76,10 +75,11 @@ namespace JsonApiSerializer.JsonApi
                 Status = new Status()
             };
         }
-        
+
         /// <summary>
-        /// ConvertToJsonApi
+        /// ToJsonApiPaginated
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <param name="totalItems"></param>
         /// <param name="pageNumber"></param>
@@ -87,22 +87,25 @@ namespace JsonApiSerializer.JsonApi
         /// <returns></returns>
         public static DocumentRootJson<T> ToJsonApiPaginated<T>(T data, int totalItems = 1, int pageNumber = 1, int pageSize = 1)
         {
-            var totalPages = totalItems > 0 ? (int)Math.Ceiling(totalItems / (double)pageSize) : 0 ;
+            var totalPages = totalItems > 0 ? (int)Math.Ceiling(totalItems / (double)pageSize) : 0;
             var hasPreviousPage = pageNumber > 1;
             var hasNextPage = pageNumber < totalPages;
-            var nextPageNumber =  hasNextPage ? pageNumber + 1 : totalPages;
+            var nextPageNumber = hasNextPage ? pageNumber + 1 : totalPages;
             var previousPageNumber = hasPreviousPage ? pageNumber - 1 : 1;
-            var meta = new Meta{
-                {"totalItems", totalItems},
-                {"pageNumber", pageNumber},
-                {"pageSize", pageSize},
-                {"totalPages", totalPages},
-                {"hasPreviousPage", hasPreviousPage},
-                {"hasNextPage", hasNextPage},
-                {"nextPageNumber", nextPageNumber},
-                {"previousPageNumber", previousPageNumber},
+            var meta = new Meta
+            {
+                { "totalItems", totalItems },
+                { "pageNumber", pageNumber },
+                { "pageSize", pageSize },
+                { "totalPages", totalPages },
+                { "hasPreviousPage", hasPreviousPage },
+                { "hasNextPage", hasNextPage },
+                { "nextPageNumber", nextPageNumber },
+                { "previousPageNumber", previousPageNumber },
             };
-            return new DocumentRootJson<T>{
+
+            return new DocumentRootJson<T>
+            {
                 Data = data,
                 Meta = meta,
                 Status = new Status()
@@ -110,8 +113,9 @@ namespace JsonApiSerializer.JsonApi
         }
 
         /// <summary>
-        /// ConvertToJsonApi
+        /// ToJsonApi
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
         public static DocumentRootJson<T> ToJsonApi<T>(T data)
@@ -125,8 +129,9 @@ namespace JsonApiSerializer.JsonApi
         }
 
         /// <summary>
-        /// ConvertToJsonApiResult
+        /// ToJsonApi
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <param name="status"></param>
         /// <returns></returns>
@@ -165,38 +170,39 @@ namespace JsonApiSerializer.JsonApi
     /// <summary>
     /// DocumentRootJson
     /// </summary>
+    /// <typeparam name="TData"></typeparam>
     public class DocumentRootJson<TData> : IDocumentRoot<TData>
     {
         /// <summary>
-        /// Data
+        /// Gets or sets data
         /// </summary>
         /// <value></value>
         [JsonProperty(Order = 2)]
         public TData Data { get; set; }
 
         /// <summary>
-        /// Included
+        /// Gets or sets included
         /// </summary>
         /// <value></value>
         [JsonProperty(Order = 3)]
         public List<JObject> Included { get; set; }
 
         /// <summary>
-        /// Meta
+        /// Gets or sets meta
         /// </summary>
         /// <value></value>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, Order = 1)]
         public Meta Meta { get; set; } = new();
 
         /// <summary>
-        /// ResponseTime in ms
+        /// Gets or sets responseTime in ms
         /// </summary>
         /// <value></value>
         [JsonProperty(Order = 1000)]
         public long ResponseTime { get; set; }
 
         /// <summary>
-        /// Status
+        /// Gets or sets status
         /// </summary>
         /// <value></value>
         [JsonProperty(Order = 10000)]
@@ -209,13 +215,13 @@ namespace JsonApiSerializer.JsonApi
     public class Status
     {
         /// <summary>
-        /// Code
+        /// Gets or sets code
         /// </summary>
         /// <value></value>
         public int Code { get; set; }
 
         /// <summary>
-        /// Desc
+        /// Gets or sets desc
         /// </summary>
         /// <value></value>
         public object Desc { get; set; }

@@ -21,20 +21,21 @@ namespace netca.Application.TodoItems.Commands.DeleteTodoItem
     public class DeleteTodoItemCommand : IRequest
     {
         /// <summary>
-        /// Id
+        /// Gets or sets id
         /// </summary>
         [BindRequired]
         public Guid Id { get; set; }
     }
-    
+
     /// <summary>
     /// DeleteTodoItemCommandHandler
     /// </summary>
     public class DeleteTodoItemCommandHandler : IRequestHandler<DeleteTodoItemCommand>
     {
         private readonly IApplicationDbContext _context;
-        
+
         /// <summary>
+        /// Initializes a new instance of the <see cref="DeleteTodoItemCommandHandler"/> class.
         /// DeleteTodoItemCommandHandler
         /// </summary>
         /// <param name="context"></param>
@@ -42,17 +43,17 @@ namespace netca.Application.TodoItems.Commands.DeleteTodoItem
         {
             _context = context;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="NotFoundException">Exception</exception>
         public async Task<Unit> Handle(DeleteTodoItemCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.TodoItems.FindAsync(new object[]{request.Id}, cancellationToken);
+            var entity = await _context.TodoItems.FindAsync(new object[] { request.Id }, cancellationToken);
 
             if (entity == null)
             {

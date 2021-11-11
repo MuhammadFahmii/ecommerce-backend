@@ -9,6 +9,7 @@
         <IsWebConfigTransformDisabled>true</IsWebConfigTransformDisabled>
         <ServerGarbageCollection>true</ServerGarbageCollection>
         <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="AspNetCore.HealthChecks.Network" Version="5.0.4" />

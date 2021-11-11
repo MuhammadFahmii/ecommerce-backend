@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Interfaces;
 using netca.Domain.Entities;
@@ -22,49 +21,50 @@ namespace netca.Application.TodoItems.Commands.UpdateTodoItem
     public class UpdateTodoItemCommand : IRequest
     {
         /// <summary>
-        /// Id
+        /// Gets or sets id
         /// </summary>
         [BindRequired]
         public Guid Id { get; set; }
-        
+
         /// <summary>
-        /// Title
+        /// Gets or sets title
         /// </summary>
         [BindRequired]
-        public string Title { get; set; }
-        
+        public string? Title { get; set; }
+
         /// <summary>
-        /// Done
+        /// Gets or sets a value indicating whether done
         /// </summary>\
         [BindRequired]
         public bool Done { get; set; }
     }
-    
+
     /// <summary>
     /// UpdateTodoItemCommandHandler
     /// </summary>
     public class UpdateTodoItemCommandHandler : IRequestHandler<UpdateTodoItemCommand>
     {
         private readonly IApplicationDbContext _context;
+
         /// <summary>
-        /// UpdateTodoItemCommandHandler
+        /// Initializes a new instance of the <see cref="UpdateTodoItemCommandHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
         public UpdateTodoItemCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
-        
+
         /// <summary>
         /// Handle
         /// </summary>
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="NotFoundException">Exception</exception>
         public async Task<Unit> Handle(UpdateTodoItemCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.TodoItems.FindAsync(new object[]{request.Id}, cancellationToken);
+            var entity = await _context.TodoItems.FindAsync(new object[] { request.Id }, cancellationToken);
 
             if (entity == null)
             {

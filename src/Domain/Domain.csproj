@@ -6,6 +6,7 @@
         <AssemblyName>netca.Domain</AssemblyName>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PreserveCompilationContext>false</PreserveCompilationContext>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
 </Project>

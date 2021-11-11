@@ -17,17 +17,17 @@ namespace netca.Application.Common.Vms
     public class TodoListVm : AuditTableVm, IMapFrom<TodoList>
     {
         /// <summary>
-        /// Title
+        /// Gets or sets title
         /// </summary>
         public string Title { get; set; }
-        
+
         /// <summary>
-        /// Colour
+        /// Gets or sets colour
         /// </summary>
         public Colour Colour { get; set; } = Colour.White;
-        
+
         /// <summary>
-        /// Items
+        /// Gets or sets items
         /// </summary>
         public IList<TodoItemVm> Items { get; set; } = new List<TodoItemVm>();
     }

@@ -14,43 +14,43 @@ namespace netca.Domain.Entities
     public class Changelog
     {
         /// <summary>
-        /// Id
+        /// Gets or sets id
         /// </summary>
         /// <value></value>
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Method
+        /// Gets or sets method
         /// </summary>
         /// <value></value>
         public string Method { get; set; }
 
         /// <summary>
-        /// TableName
+        /// Gets or sets tableName
         /// </summary>
         /// <value></value>
         public string TableName { get; set; }
 
         /// <summary>
-        /// TableName
+        /// Gets or sets tableName
         /// </summary>
         /// <value></value>
         public string KeyValues { get; set; }
 
         /// <summary>
-        /// NewValues
+        /// Gets or sets newValues
         /// </summary>
         /// <value></value>
         public string NewValues { get; set; }
 
         /// <summary>
-        /// OldValues
+        /// Gets or sets oldValues
         /// </summary>
         /// <value></value>
         public string OldValues { get; set; }
 
         /// <summary>
-        /// ChangeDate
+        /// Gets or sets changeDate
         /// </summary>
         /// <value></value>
         public DateTime ChangeDate { get; set; }

@@ -18,37 +18,37 @@ namespace netca.Application.Common.Vms
     public class TodoItemVm : AuditTableVm, IMapFrom<TodoItem>
     {
         /// <summary>
-        /// List
+        /// Gets or sets list
         /// </summary>
         public TodoListVm List { get; set; }
 
         /// <summary>
-        /// ListId
+        /// Gets or sets listId
         /// </summary>
         public Guid ListId { get; set; }
 
         /// <summary>
-        /// Title
+        /// Gets or sets title
         /// </summary>
         public string Title { get; set; }
 
         /// <summary>
-        /// Note
+        /// Gets or sets note
         /// </summary>
         public string Note { get; set; }
 
         /// <summary>
-        /// Priority
+        /// Gets or sets priority
         /// </summary>
         public PriorityLevel Priority { get; set; }
 
         /// <summary>
-        /// Reminder
+        /// Gets or sets reminder
         /// </summary>
         public DateTime? Reminder { get; set; }
 
         /// <summary>
-        /// Done
+        /// Gets or sets a value indicating whether done
         /// </summary>
         public bool Done { get; set; }
 

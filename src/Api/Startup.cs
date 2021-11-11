@@ -11,16 +11,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Models;
-using Microsoft.Extensions.Configuration;
 using netca.Api.Filters;
 using netca.Api.Handlers;
 using netca.Api.Middlewares;
 using netca.Application;
 using netca.Application.Common.Interfaces;
+using netca.Application.Common.Models;
 using netca.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -36,11 +36,11 @@ namespace netca.Api
     /// </summary>
     public class Startup
     {
-        private IServiceCollection _services;
         private readonly ILogger<Startup> _logger;
+        private IServiceCollection _services;
 
         /// <summary>
-        /// startup app
+        /// Initializes a new instance of the <see cref="Startup"/> class.
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="environment"></param>
@@ -54,13 +54,13 @@ namespace netca.Api
         }
 
         /// <summary>
-        /// get environment
+        /// Gets environment
         /// </summary>
         /// <value></value>
         private IWebHostEnvironment Environment { get; }
 
         /// <summary>
-        /// AppSetting
+        /// Gets AppSetting
         /// </summary>
         /// <value></value>
         private AppSetting AppSetting { get; }
@@ -71,28 +71,36 @@ namespace netca.Api
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+
             services.AddSingleton(AppSetting);
+
             services.AddMemoryCache();
+
             services.AddHttpContextAccessor();
+
             services.AddApplication();
+
             services.AddInfrastructure(Environment, AppSetting);
+
             services.AddScoped<ApiAuthorizeFilterAttribute>();
+
             if (Environment.EnvironmentName == "Test")
-            {
                 services.AddLocalPermissions(AppSetting);
-            }
             else
-            {
                 services.AddPermissions(AppSetting);
-            }
+
             services.AddMvcCore(options =>
             {
                 var serializerSettings = new JsonApiSerializerSettings();
                 var jsonApiFormatter = new NewtonsoftJsonOutputFormatter(serializerSettings, ArrayPool<char>.Shared, new MvcOptions());
                 options.OutputFormatters.RemoveType<NewtonsoftJsonOutputFormatter>();
                 options.OutputFormatters.Insert(0, jsonApiFormatter);
+
                 options.EnableEndpointRouting = false;
+
                 options.Filters.Add<ApiExceptionFilterAttribute>();
                 options.Filters.Add(new ProducesResponseTypeAttribute(typeof(object), (int)System.Net.HttpStatusCode.Unauthorized));
                 options.Filters.Add(new ProducesResponseTypeAttribute(typeof(object), (int)System.Net.HttpStatusCode.Forbidden));
@@ -145,7 +153,10 @@ namespace netca.Api
                     options.DefaultApiVersion = new ApiVersion(1, 0);
                 });
 
-            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             services.AddOpenApiDocument(configure =>
             {
@@ -180,7 +191,7 @@ namespace netca.Api
         }
 
         /// <summary>
-        /// Configure
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
@@ -188,7 +199,7 @@ namespace netca.Api
         {
             app.UseMigrationsHandler(AppSetting);
             app.UseCorsOriginHanlder(AppSetting);
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -199,12 +210,13 @@ namespace netca.Api
             {
                 app.UseHsts();
             }
+
             app.UseResponseCompression();
 
             var option = new RewriteOptions();
             option.AddRedirect("^$", "swagger");
             app.UseRewriter(option);
-            
+
             if (!AppSetting.IsEnableDetailError)
             {
                 _logger.LogDebug("Activate exception middleware");
@@ -215,7 +227,7 @@ namespace netca.Api
                 _logger.LogWarning("enable detail error response");
             }
 
-            if(AppSetting.IsEnableAuth)
+            if (AppSetting.IsEnableAuth)
             {
                 _logger.LogInformation("Activate auth middleware");
 
@@ -234,7 +246,7 @@ namespace netca.Api
             }
 
             app.UseOverrideRequestHandler();
-            
+
             app.UseOverrideResponseHandler();
 
             app.UseHealthCheck();
@@ -251,7 +263,9 @@ namespace netca.Api
                 settings.Path = "/swagger";
                 settings.EnableTryItOut = true;
             });
+
             app.UseMvc();
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.All

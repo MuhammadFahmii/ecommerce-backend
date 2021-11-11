@@ -1,9 +1,10 @@
 // ------------------------------------------------------------------------------------
-// HelloWorldJob.cs  2021
+// ProduceOrderJob.cs  2021
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,20 +14,20 @@ using Quartz;
 namespace netca.Infrastructure.Jobs
 {
     /// <summary>
-    /// HelloWorldJob
+    /// ProduceOrderJob
     /// </summary>
     [DisallowConcurrentExecution]
-    public class HelloWorldJob : IJob
+    public class ProduceOrderJob : IJob
     {
-        private readonly ILogger<HelloWorldJob> _logger;
+        private readonly ILogger<ProduceOrderJob> _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HelloWorldJob"/> class.
+        /// Initializes a new instance of the <see cref="ProduceOrderJob"/> class.
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="serviceScopeFactory"></param>
-        public HelloWorldJob(ILogger<HelloWorldJob> logger, IServiceScopeFactory serviceScopeFactory)
+        public ProduceOrderJob(ILogger<ProduceOrderJob> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
@@ -41,8 +42,14 @@ namespace netca.Infrastructure.Jobs
         {
             using (var scope = _serviceScopeFactory.CreateScope())
             {
+                var redisService = scope.ServiceProvider.GetRequiredService<IRedisService>();
                 var dt = scope.ServiceProvider.GetRequiredService<IDateTime>();
-                _logger.LogWarning($"Hello world! at {dt.Now}");
+                for (var index = 1; index <= 100; index++)
+                {
+                    redisService.ListLeftPushAsync("order", "{ 'order': " + index + "}");
+                    _logger.LogWarning($"{dt.Now:o} -> sending order {index}");
+                    Thread.Sleep(100);
+                }
             }
 
             return Task.CompletedTask;

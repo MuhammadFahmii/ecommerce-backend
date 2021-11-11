@@ -27,11 +27,10 @@ namespace netca.Api.Handlers
         private static readonly ILogger Logger = Log.ForContext(typeof(LogEventSinkHandler));
 
         /// <summary>
-        /// LogEventSinkHandler
+        /// Initializes a new instance of the <see cref="LogEventSinkHandler"/> class.
         /// </summary>
         /// <param name="appSetting"></param>
         /// <param name="memoryCache"></param>
-
         public LogEventSinkHandler(AppSetting appSetting, IMemoryCache memoryCache)
         {
             _appSetting = appSetting;
@@ -44,42 +43,45 @@ namespace netca.Api.Handlers
         /// <param name="logEvent"></param>
         public void Emit(LogEvent logEvent)
         {
-            if (!_appSetting.Bot.IsEnable) return;
-            if (!logEvent.Level.Equals(LogEventLevel.Error)) return;
+            if (!_appSetting.Bot.IsEnable)
+                return;
+            if (!logEvent.Level.Equals(LogEventLevel.Error))
+                return;
             var cacheMsTeam = GetCounter();
             var hours = (DateTime.UtcNow - cacheMsTeam.Date).TotalHours;
-            if (cacheMsTeam.Counter >= _appSetting.Bot.CacheMsTeam.Counter || hours >= _appSetting.Bot.CacheMsTeam.Hours) return;
-            SetCounter(cacheMsTeam); 
+            if (cacheMsTeam.Counter >= _appSetting.Bot.CacheMsTeam.Counter || hours >= _appSetting.Bot.CacheMsTeam.Hours)
+                return;
+            SetCounter(cacheMsTeam);
             var facts = new List<Fact>();
             var sections = new List<Section>();
             var serviceName = _appSetting.Bot.ServiceName;
             var serviceDomain = _appSetting.Bot.ServiceDomain;
-            facts.Add(new Fact { name = "Date", value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}" });
+            facts.Add(new Fact { Name = "Date", Value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}" });
             var app = $"[{serviceName}](http://{serviceDomain})";
             sections.Add(new Section
             {
-                activityTitle = app,
-                activitySubtitle = "Internal Server Error",
+                ActivityTitle = app,
+                ActivitySubtitle = "Internal Server Error",
                 Facts = facts,
-                activityImage = Constants.MsTeamsImageError
+                ActivityImage = Constants.MsTeamsImageError
             });
-            facts.Add(new Fact { name = "Message", value = logEvent.RenderMessage() });
+            facts.Add(new Fact { Name = "Message", Value = logEvent.RenderMessage() });
             var tmpl = new MsTeamTemplate
             {
-                sections = sections,
-                summary = $"{Constants.MsTeamsSummaryError} with {app}"
+                Sections = sections,
+                Summary = $"{Constants.MsTeamsSummaryError} with {app}"
             };
-            Logger.Debug($"Sending message to MsTeam with color {tmpl.themeColor}");
+            Logger.Debug($"Sending message to MsTeam with color {tmpl.ThemeColor}");
             SendToMsTeams.Send(_appSetting, tmpl).ConfigureAwait(false);
         }
 
         private void SetCounter(CacheMsTeam cacheMsTeam)
         {
-            var cacheEntryOptions = new MemoryCacheEntryOptions()  
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromDays(2));
             _memoryCache.Set("CacheMsTeams", cacheMsTeam, cacheEntryOptions);
         }
-        
+
         private CacheMsTeam GetCounter()
         {
             var isExist = _memoryCache.TryGetValue("CacheMsTeams", out CacheMsTeam cacheMsTeam);
@@ -88,7 +90,7 @@ namespace netca.Api.Handlers
                 return cacheMsTeam;
             }
 
-            cacheMsTeam = new CacheMsTeam{Counter = 0, Date = DateTime.UtcNow};
+            cacheMsTeam = new CacheMsTeam { Counter = 0, Date = DateTime.UtcNow };
             return cacheMsTeam;
         }
     }

@@ -15,12 +15,12 @@ namespace netca.Infrastructure.Services
     public class DateTimeService : IDateTime
     {
         /// <summary>
-        /// Now
+        /// Gets now
         /// </summary>
         public DateTime Now => DateTime.Now;
-        
+
         /// <summary>
-        /// UtcNow
+        /// Gets utcNow
         /// </summary>
         public DateTime UtcNow => DateTime.UtcNow;
     }

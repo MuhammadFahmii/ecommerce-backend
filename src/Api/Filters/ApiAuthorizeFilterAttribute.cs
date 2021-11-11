@@ -37,7 +37,6 @@ namespace netca.Api.Filters
             try
             {
                 var policy = GetPolicy(logger, appSetting, permission);
-                context.HttpContext.Items.Add("CurrentPolicyName", policy.Name);
                 if (policy is { IsCheck: true })
                 {
                     var auth = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
@@ -59,7 +58,7 @@ namespace netca.Api.Filters
             }
             catch (Exception e)
             {
-                logger.LogError($"error Checking permission {e.Message}");
+                logger.LogWarning($"error Checking permission {e.Message}");
                 context.Result = new ForbidResult();  
             }
         }

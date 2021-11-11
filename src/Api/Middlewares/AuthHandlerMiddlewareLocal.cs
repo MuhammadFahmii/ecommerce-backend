@@ -22,7 +22,7 @@ namespace netca.Api.Middlewares
         private readonly RequestDelegate _next;
 
         /// <summary>
-        /// AuthHandlerMiddlewareLocal
+        /// Initializes a new instance of the <see cref="AuthHandlerMiddlewareLocal"/> class.
         /// </summary>
         /// <param name="next"></param>
         public AuthHandlerMiddlewareLocal(RequestDelegate next)
@@ -50,7 +50,6 @@ namespace netca.Api.Middlewares
         /// UseAuthHandler
         /// </summary>
         /// <param name="builder"></param>
-        /// <returns></returns>
         public static void UseLocalAuthHandler(this IApplicationBuilder builder)
         {
             builder.UseAuthentication();
@@ -62,7 +61,6 @@ namespace netca.Api.Middlewares
         /// </summary>
         /// <param name="services"></param>
         /// <param name="appSetting"></param>
-        /// <returns></returns>
         public static void AddLocalPermissions(this IServiceCollection services, AppSetting appSetting)
         {
             services.AddAuthentication(options =>

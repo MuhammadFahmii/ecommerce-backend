@@ -21,25 +21,30 @@ namespace netca.Infrastructure.Services.Messages
     /// <summary>
     /// EHProducerService
     /// </summary>
-    public class EHProducerService : IEHProducerService
+    public class EhProducerService : IEhProducerService
     {
-        private readonly ILogger<EHProducerService> _logger;
+        private readonly ILogger<EhProducerService> _logger;
         private readonly IRedisService _redisService;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="EhProducerService"/> class.
         /// EHProducerService
         /// </summary>
         /// <param name="redisService"></param>
         /// <param name="logger"></param>
-        public EHProducerService(IRedisService redisService, ILogger<EHProducerService> logger)
+        public EhProducerService(IRedisService redisService, ILogger<EhProducerService> logger)
         {
             _logger = logger;
             _redisService = redisService;
         }
 
         /// <summary>
-        /// Send
+        /// SendAsync
         /// </summary>
+        /// <param name="az"></param>
+        /// <param name="topic"></param>
+        /// <param name="message"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<bool> SendAsync(AzureEventHub az, string topic, string message, CancellationToken cancellationToken)
         {
@@ -60,6 +65,7 @@ namespace netca.Infrastructure.Services.Messages
 
                         await producerClient.SendAsync(eventBatch, cancellationToken);
                     }
+
                     result = true;
 
                     _logger.LogDebug($"Sent to Topic: {topic} Partition: {data.PartitionKey} Offset: {data.Offset} Message: {message}");
@@ -68,9 +74,8 @@ namespace netca.Infrastructure.Services.Messages
                 {
                     _logger.LogError($"Failed to Produce Message, Saving to redis {ex.Message}");
                     var dcaEhRedisDto = new EventHubRedisDto { Name = az.Name, Value = message };
-                    await _redisService.ListLeftPushAsync
-                        (
-                            Constants.RedisSubKeyMessageProduce+topic,
+                    await _redisService.ListLeftPushAsync(
+                            Constants.RedisSubKeyMessageProduce + topic,
                             JsonConvert.SerializeObject(dcaEhRedisDto)
                         );
                 }
