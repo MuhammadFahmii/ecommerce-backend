@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Interfaces;
@@ -24,30 +23,32 @@ namespace netca.Infrastructure.Services.Cache
     {
         private readonly ILogger<RedisService> _logger;
         private readonly AppSetting _appSetting;
+
         /// <summary>
-        /// RedisVoteService
+        /// Initializes a new instance of the <see cref="RedisService"/> class.
+        /// RedisService
         /// </summary>
-        /// <returns></returns>
+        /// <param name="logger"></param>
+        /// <param name="appSetting"></param>
         public RedisService(ILogger<RedisService> logger, AppSetting appSetting)
         {
             _logger = logger;
             _appSetting = appSetting;
             ConnectionString = _appSetting.RedisServer.Server;
-
         }
-        
-        private static string ConnectionString { get; set; } 
-        private  readonly Lazy<ConnectionMultiplexer> _lazyConnection = new(() => ConnectionMultiplexer.Connect(ConnectionString));
+
+        private static string? ConnectionString { get; set; }
+        private readonly Lazy<ConnectionMultiplexer> _lazyConnection = new(() => ConnectionMultiplexer.Connect(ConnectionString));
 
         /// <summary>
-        /// Connections
+        /// Gets connections
         /// </summary>
         /// <value></value>
-        private  ConnectionMultiplexer Connections => _lazyConnection.Value;
+        private ConnectionMultiplexer Connections => _lazyConnection.Value;
 
-        private  IDatabase Database => Connections.GetDatabase(_appSetting.RedisServer.DatabaseNumber);
+        private IDatabase Database => Connections.GetDatabase(_appSetting.RedisServer.DatabaseNumber);
 
-        private  List<IServer> Servers
+        private IEnumerable<IServer> Servers
         {
             get
             {
@@ -56,7 +57,7 @@ namespace netca.Infrastructure.Services.Cache
                 return servers;
             }
         }
-        
+
         /// <summary>
         /// ListLeftPushAsync
         /// </summary>
@@ -68,7 +69,7 @@ namespace netca.Infrastructure.Services.Cache
             key += _appSetting.RedisServer.InstanceName;
             return await Database.ListLeftPushAsync(key, value);
         }
-        
+
         /// <summary>
         /// ListLeftPopAsync
         /// </summary>
@@ -81,9 +82,10 @@ namespace netca.Infrastructure.Services.Cache
         }
 
         /// <summary>
-        /// Delete
+        /// DeleteAsync
         /// </summary>
-        /// <returns></returns>
+        /// <param name="key"></param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task DeleteAsync(string key)
         {
             if (!string.IsNullOrWhiteSpace(key))
@@ -92,9 +94,11 @@ namespace netca.Infrastructure.Services.Cache
                 _logger.LogDebug($"Delete Redis with key {key}");
             }
         }
+
         /// <summary>
-        /// Get
+        /// GetAsync
         /// </summary>
+        /// <param name="key"></param>
         /// <returns></returns>
         public async Task<string> GetAsync(string key)
         {
@@ -105,6 +109,7 @@ namespace netca.Infrastructure.Services.Cache
         /// <summary>
         /// GetAllValueWithKeyAsync
         /// </summary>
+        /// <param name="key"></param>
         /// <returns></returns>
         public async Task<IEnumerable<RedisDto>> GetAllValueWithKeyAsync(string key)
         {
@@ -122,6 +127,7 @@ namespace netca.Infrastructure.Services.Cache
                         Value = value
                     });
                 }
+
                 _logger.LogTrace($"Success Get all data from Redis");
                 return data.OrderBy(o => o.Key);
             }
@@ -131,6 +137,7 @@ namespace netca.Infrastructure.Services.Cache
                 return data;
             }
         }
+
         /// <summary>
         /// SaveAsync
         /// </summary>
@@ -143,28 +150,27 @@ namespace netca.Infrastructure.Services.Cache
             var resultKey = "";
             try
             {
-                if (value != null && sub != null)
+                TimeSpan? expiry = null;
+                if (sub.ToLower().Equals(Constants.RedisSubKeyHttpRequest.ToLower()))
                 {
-                    TimeSpan? expiry = null;
-                    if (sub.ToLower().Equals(Constants.RedisSubKeyHttpRequest.ToLower()))
-                    {
-                        expiry = TimeSpan.FromMinutes(_appSetting.RedisServer.RequestExpiryInMinutes);
-                    }
-
-                    if (sub.ToLower().Equals(Constants.RedisSubKeyMessageConsume.ToLower()) || sub.ToLower().Equals(Constants.RedisSubKeyMessageProduce.ToLower()))
-                    {
-                        expiry = TimeSpan.FromDays(_appSetting.RedisServer.MessageExpiryInDays);
-                    }
-                    sub += _appSetting.RedisServer.InstanceName;
-                    resultKey = this.GenerateKey(key, sub);
-                    await Database.StringSetAsync(resultKey, value, expiry);
-                    _logger.LogDebug($"Save to Redis with key {resultKey}");
+                    expiry = TimeSpan.FromMinutes(_appSetting.RedisServer.RequestExpiryInMinutes);
                 }
+
+                if (sub.ToLower().Equals(Constants.RedisSubKeyMessageConsume.ToLower()) || sub.ToLower().Equals(Constants.RedisSubKeyMessageProduce.ToLower()))
+                {
+                    expiry = TimeSpan.FromDays(_appSetting.RedisServer.MessageExpiryInDays);
+                }
+
+                sub += _appSetting.RedisServer.InstanceName;
+                resultKey = GenerateKey(key, sub);
+                await Database.StringSetAsync(resultKey, value, expiry);
+                _logger.LogDebug($"Save to Redis with key {resultKey}");
             }
             catch
             {
                 _logger.LogError($"Failed Save to Redis, Key: {resultKey}");
             }
+
             return resultKey;
         }
     }

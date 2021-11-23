@@ -24,9 +24,9 @@ namespace netca.Infrastructure.Persistence
         /// <returns></returns>
         public static async Task SeedSampleDataAsync(ApplicationDbContext context)
         {
-            if (!context.TodoLists.IgnoreQueryFilters().Any())
+            if (!context.TodoLists!.IgnoreQueryFilters().Any())
             {
-                context.TodoLists.Add(new TodoList
+                context.TodoLists!.Add(new TodoList
                 {
                     Title = "Shopping",
                     Colour = Colour.Blue,

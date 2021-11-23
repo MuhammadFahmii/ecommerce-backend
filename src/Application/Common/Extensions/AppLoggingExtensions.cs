@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.Logging
         /// Gets or sets loggerFactory
         /// </summary>
         /// <value></value>
-        public static ILoggerFactory LoggerFactory { get; set; }
+        public static ILoggerFactory LoggerFactory { get; set; } = null!;
 
         /// <summary>
         /// CreateLogger

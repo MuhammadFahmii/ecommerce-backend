@@ -51,9 +51,9 @@ namespace netca.Api
                 {
                     var env = hostingContext.HostingEnvironment;
 
-                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                        .AddJsonFile($"appsettings.Local.json", optional: true, reloadOnChange: true);
+                    config.AddJsonFile("appsettings.json", optional: true, true)
+                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, true)
+                        .AddJsonFile($"appsettings.Local.json", optional: true, true);
 
                     config.AddEnvironmentVariables();
 
@@ -85,7 +85,7 @@ namespace netca.Api
                     appSetting = services
                         .BuildServiceProvider()
                         .GetService<IOptionsSnapshot<AppSetting>>()?.Value ?? new AppSetting();
-                    var memoryCache = services.BuildServiceProvider().GetService<IMemoryCache>();
+                    var memoryCache = services.BuildServiceProvider().GetRequiredService<IMemoryCache>();
                     var sink = new LogEventSinkHandler(appSetting, memoryCache);
                     loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration).WriteTo
                         .Sink(sink);

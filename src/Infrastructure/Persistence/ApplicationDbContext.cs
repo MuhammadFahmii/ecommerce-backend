@@ -8,10 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using netca.Application.Common.Interfaces;
 using netca.Domain.Common;
 using netca.Domain.Entities;
@@ -43,17 +45,17 @@ namespace netca.Infrastructure.Persistence
         /// <summary>
         /// Gets or sets todoItems
         /// </summary>
-        public DbSet<TodoItem> TodoItems { get; set; }
+        public DbSet<TodoItem>? TodoItems { get; set; }
 
         /// <summary>
         /// Gets or sets changelogs
         /// </summary>
-        public DbSet<Changelog> Changelogs { get; set; }
+        public DbSet<Changelog>? Changelogs { get; set; }
 
         /// <summary>
         /// Gets or sets todoLists
         /// </summary>
-        public DbSet<TodoList> TodoLists { get; set; }
+        public DbSet<TodoList>? TodoLists { get; set; }
 
         /// <summary>
         /// to prevent hard delete
@@ -94,7 +96,6 @@ namespace netca.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
             base.OnModelCreating(modelBuilder);
         }
 
@@ -125,7 +126,6 @@ namespace netca.Infrastructure.Persistence
 
                 if (domainEventEntity == null)
                     break;
-
                 domainEventEntity.IsPublished = true;
                 await _domainEventService.Publish(domainEventEntity);
             }
@@ -133,7 +133,7 @@ namespace netca.Infrastructure.Persistence
 
         private List<ChangelogEntry> OnBeforeSaveChanges()
         {
-            var ignoreTable = new List<string> { };
+            var ignoreTable = new List<string> { "xxx" };
 
             ChangeTracker.DetectChanges();
             var changelogEntries = new List<ChangelogEntry>();
@@ -146,20 +146,19 @@ namespace netca.Infrastructure.Persistence
                 var changelogEntry = new ChangelogEntry(entry)
                 {
                     ChangeDate = _dateTime.UtcNow,
-                    TableName = entry.Metadata.GetTableName()
+                    TableName = entry.Metadata.GetTableName()!
                 };
 
-                if (!ignoreTable.Contains(changelogEntry.TableName))
-                {
-                    changelogEntries.Add(changelogEntry);
+                if (ignoreTable.Contains(changelogEntry.TableName))
+                    continue;
+                changelogEntries.Add(changelogEntry);
 
-                    ChangelogEntryEvent(changelogEntry, entry);
-                }
+                ChangelogEntryEvent(changelogEntry, entry);
             }
 
             foreach (var changelogEntry in changelogEntries.Where(_ => !_.HasTemporaryProperties))
             {
-                Changelogs.Add(changelogEntry.ToAudit());
+                Changelogs!.Add(changelogEntry.ToAudit());
             }
 
             return changelogEntries
@@ -167,7 +166,45 @@ namespace netca.Infrastructure.Persistence
                 .ToList();
         }
 
-        private static void ChangelogEntryEvent(ChangelogEntry changelogEntry, EntityEntry entry)
+        private void ReplaceUnicodePostgres(PropertyEntry property)
+        {
+            var con = Database.ProviderName;
+            if (!con!.Equals("Npgsql.EntityFrameworkCore.PostgreSQL"))
+                return;
+            var type = property.Metadata.ClrType;
+            var typeName = type.ShortDisplayName();
+            if (typeName.Equals("string") && property.CurrentValue != null)
+            {
+                property.CurrentValue = Encoding.ASCII.GetString(
+                    Encoding.Convert(
+                        Encoding.UTF8,
+                        Encoding.GetEncoding(
+                            Encoding.ASCII.EncodingName,
+                            new EncoderReplacementFallback(string.Empty),
+                            new DecoderExceptionFallback()
+                        ),
+                        Encoding.UTF8.GetBytes(property.CurrentValue.ToString()!
+                        )
+                    ));
+            }
+
+            if (typeName.Equals("string") && property.OriginalValue != null)
+            {
+                property.OriginalValue = Encoding.ASCII.GetString(
+                    Encoding.Convert(
+                        Encoding.UTF8,
+                        Encoding.GetEncoding(
+                            Encoding.ASCII.EncodingName,
+                            new EncoderReplacementFallback(string.Empty),
+                            new DecoderExceptionFallback()
+                        ),
+                        Encoding.UTF8.GetBytes(property.OriginalValue.ToString()!
+                        )
+                    ));
+            }
+        }
+
+        private void ChangelogEntryEvent(ChangelogEntry changelogEntry, EntityEntry entry)
         {
             foreach (var property in entry.Properties)
             {
@@ -178,29 +215,32 @@ namespace netca.Infrastructure.Persistence
                 }
 
                 var propertyName = property.Metadata.Name;
+
                 if (property.Metadata.IsPrimaryKey())
                 {
-                    changelogEntry.KeyValues[propertyName] = property.CurrentValue;
+                    changelogEntry.KeyValues[propertyName] = property.CurrentValue!;
                     continue;
                 }
+
+                ReplaceUnicodePostgres(property);
 
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        changelogEntry.NewValues[propertyName] = property.CurrentValue;
+                        changelogEntry.NewValues[propertyName] = property.CurrentValue!;
                         changelogEntry.Method = "ADD";
                         break;
 
                     case EntityState.Deleted:
-                        changelogEntry.OldValues[propertyName] = property.OriginalValue;
+                        changelogEntry.OldValues[propertyName] = property.OriginalValue!;
                         changelogEntry.Method = "DELETE";
                         break;
 
                     case EntityState.Modified:
                         if (property.IsModified)
                         {
-                            changelogEntry.OldValues[propertyName] = property.OriginalValue;
-                            changelogEntry.NewValues[propertyName] = property.CurrentValue;
+                            changelogEntry.OldValues[propertyName] = property.OriginalValue!;
+                            changelogEntry.NewValues[propertyName] = property.CurrentValue!;
                             changelogEntry.Method = "EDIT";
                         }
 
@@ -217,7 +257,7 @@ namespace netca.Infrastructure.Persistence
 
         private Task OnAfterSaveChanges(List<ChangelogEntry> changelogEntries, CancellationToken cancellationToken)
         {
-            if (changelogEntries == null || changelogEntries.Count == 0)
+            if (changelogEntries.Count == 0)
                 return Task.CompletedTask;
 
             foreach (var changelogEntry in changelogEntries)
@@ -225,12 +265,12 @@ namespace netca.Infrastructure.Persistence
                 foreach (var prop in changelogEntry.TemporaryProperties)
                 {
                     if (prop.Metadata.IsPrimaryKey())
-                        changelogEntry.KeyValues[prop.Metadata.Name] = prop.CurrentValue;
+                        changelogEntry.KeyValues[prop.Metadata.Name] = prop.CurrentValue!;
                     else
-                        changelogEntry.NewValues[prop.Metadata.Name] = prop.CurrentValue;
+                        changelogEntry.NewValues[prop.Metadata.Name] = prop.CurrentValue!;
                 }
 
-                Changelogs.Add(changelogEntry.ToAudit());
+                Changelogs!.Add(changelogEntry.ToAudit());
             }
 
             return SaveChangesAsync(cancellationToken);
@@ -261,13 +301,13 @@ namespace netca.Infrastructure.Persistence
         /// Gets or sets method
         /// </summary>
         /// <value></value>
-        public string Method { get; set; }
+        public string Method { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets tableName
         /// </summary>
         /// <value></value>
-        public string TableName { get; set; }
+        public string TableName { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets changeDate
@@ -297,7 +337,7 @@ namespace netca.Infrastructure.Persistence
         /// Gets temporaryProperties
         /// </summary>
         /// <returns></returns>
-        public List<PropertyEntry> TemporaryProperties { get; } = new List<PropertyEntry>();
+        public List<PropertyEntry> TemporaryProperties { get; } = new();
 
         /// <summary>
         /// Gets a value indicating whether hasTemporaryProperties

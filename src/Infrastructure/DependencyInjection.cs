@@ -5,6 +5,7 @@
 // -----------------------------------------------------------------------------------
 
 using System;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ using netca.Infrastructure.Persistence;
 using netca.Infrastructure.Services;
 using netca.Infrastructure.Services.Cache;
 using Quartz;
+using Quartz.Impl.Matchers;
 
 namespace netca.Infrastructure
 {
@@ -57,7 +59,7 @@ namespace netca.Infrastructure
                 ServiceLifetime.Transient
             );
 
-            services.AddTransient<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+            services.AddTransient<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<IDomainEventService, DomainEventService>();
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
@@ -74,15 +76,24 @@ namespace netca.Infrastructure
             {
                 options.Scheduling.IgnoreDuplicates = appSetting.BackgroundJob.PersistentStore.IgnoreDuplicates;
                 options.Scheduling.OverWriteExistingData = appSetting.BackgroundJob.PersistentStore.OverWriteExistingData;
+                options.Scheduling.ScheduleTriggerRelativeToReplacedTrigger = appSetting.BackgroundJob.PersistentStore.ScheduleTriggerRelativeToReplacedTrigger;
             });
 
             services.AddQuartz(q =>
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();
+                q.UseSimpleTypeLoader();
                 if (appSetting.BackgroundJob.UsePersistentStore)
                 {
                     q.SchedulerId = appSetting.App.Title;
                     q.SchedulerName = $"{appSetting.App.Title} Scheduler";
+                    q.InterruptJobsOnShutdown = false;
+                    q.InterruptJobsOnShutdownWithWait = true;
+                    q.MaxBatchSize = 10;
+                    q.UseJobAutoInterrupt(options =>
+                    {
+                        options.DefaultMaxRunTime = TimeSpan.FromMinutes(10);
+                    });
                     q.UsePersistentStore(s =>
                     {
                         s.UseSqlServer(options =>
@@ -107,10 +118,7 @@ namespace netca.Infrastructure
 
                 q.AddJobAndTrigger<HelloWorldJob>(appSetting);
                 q.AddJobAndTrigger<ProduceOrderJob>(appSetting);
-                if (appSetting.Bot.IsEnable)
-                {
-                    q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
-                }
+                q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
             });
 
             services.AddQuartzHostedService(

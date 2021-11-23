@@ -23,7 +23,7 @@ namespace netca.Application.Common.Vms
         /// Gets or sets createdBy
         /// </summary>
         /// <value></value>
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets createdDate
@@ -35,7 +35,7 @@ namespace netca.Application.Common.Vms
         /// Gets or sets updatedBy
         /// </summary>
         /// <value></value>
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets updatedDate

@@ -66,7 +66,7 @@ namespace netca.Api.Middlewares
                     {
                         int statusCode;
                         string responseBody;
-                        var policyName = "";
+                        string policyName;
                         await using (var memStream = new MemoryStream())
                         {
                             context.Response.Body = memStream;

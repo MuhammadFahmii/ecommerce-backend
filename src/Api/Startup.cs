@@ -37,7 +37,7 @@ namespace netca.Api
     public class Startup
     {
         private readonly ILogger<Startup> _logger;
-        private IServiceCollection _services;
+        private IServiceCollection _services = null!;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Startup"/> class.
@@ -88,9 +88,13 @@ namespace netca.Api
             services.AddScoped<ApiAuthorizeFilterAttribute>();
 
             if (Environment.EnvironmentName == "Test")
+            {
                 services.AddLocalPermissions(AppSetting);
+            }
             else
+            {
                 services.AddPermissions(AppSetting);
+            }
 
             services.AddMvcCore(options =>
             {
@@ -198,13 +202,16 @@ namespace netca.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMigrationsHandler(AppSetting);
-            app.UseCorsOriginHanlder(AppSetting);
+            app.UseCorsOriginHandler(AppSetting);
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
                 RegisteredServicesPage(app);
+                var option = new RewriteOptions();
+                option.AddRedirect("^$", "swagger");
+                app.UseRewriter(option);
             }
             else if (env.IsProduction())
             {
@@ -212,10 +219,6 @@ namespace netca.Api
             }
 
             app.UseResponseCompression();
-
-            var option = new RewriteOptions();
-            option.AddRedirect("^$", "swagger");
-            app.UseRewriter(option);
 
             if (!AppSetting.IsEnableDetailError)
             {

@@ -19,7 +19,7 @@ namespace netca.Application.Common.Models
         /// GetUserAttribute
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string, List<string>> GetUserAttribute()
+        public static Dictionary<string, List<string>>? GetUserAttribute()
         {
             var result = new Dictionary<string, List<string>>();
             var plants = new List<string>();
@@ -92,9 +92,9 @@ namespace netca.Application.Common.Models
         /// GetAuthorizedUser
         /// </summary>
         /// <returns></returns>
-        public static List<UserMangementUser> GetListMechanics()
+        public static List<UserManagementUser> GetListMechanics()
         {
-            var result = new List<UserMangementUser>()
+            var result = new List<UserManagementUser>()
             {
                 new()
                 {

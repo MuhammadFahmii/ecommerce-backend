@@ -19,7 +19,7 @@ namespace netca.Application.Common.Models
     public static class Queryable
     {
         private static readonly ILogger Logger = AppLoggingExtensions.CreateLogger("Queryable");
-        private static Type _type;
+        private static Type _type = null!;
 
         /// <summary>
         /// Query
@@ -35,7 +35,7 @@ namespace netca.Application.Common.Models
 
             _type = typeof(T);
 
-            source = Filter(source, queryModel.GetFiltersParsed() ?? new List<FilterQuery>());
+            source = Filter(source, queryModel.GetFiltersParsed());
 
             source = Sort(source, queryModel.GetSortsParsed());
 
@@ -63,7 +63,7 @@ namespace netca.Application.Common.Models
 
             _type = typeof(T);
 
-            source = Filter(source, queryModel.GetFiltersParsed() ?? new List<FilterQuery>());
+            source = Filter(source, queryModel.GetFiltersParsed());
 
             source = Sort(source, queryModel.GetSortsParsed());
 
@@ -74,7 +74,7 @@ namespace netca.Application.Common.Models
         {
             try
             {
-                if (filter != null && filter.Any())
+                if (filter.Any())
                 {
                     var where = SwitchLogic(filter);
                     if (!string.IsNullOrEmpty(where))
@@ -95,7 +95,7 @@ namespace netca.Application.Common.Models
 
         private static string SwitchLogic(IList<FilterQuery> filter)
         {
-            string where = null;
+            string where = null!;
             for (var i = 0; i < filter.Count; i++)
             {
                 var logic = filter[i].Logic ?? "AND";
@@ -108,8 +108,7 @@ namespace netca.Application.Common.Models
                 else
                     f = Transform(logic, filter[i], i);
 
-                if (f != null)
-                    where = $"{where} {f}";
+                @where = $"{@where} {f}";
             }
 
             return where;
@@ -157,7 +156,7 @@ namespace netca.Application.Common.Models
         {
             if (filter.Value == null || string.IsNullOrEmpty(filter.Field) ||
                 string.IsNullOrEmpty(filter.Value.ToString()))
-                return null;
+                return null!;
 
             try
             {
@@ -169,7 +168,7 @@ namespace netca.Application.Common.Models
                 Logger.LogWarning($"Operator {filter.Operator} not part of the Dictionary {e.Message}");
             }
 
-            return null;
+            return null!;
         }
 
         private static string TransformLogic(string comparison, string logic, FilterQuery filter, int index)
@@ -179,7 +178,7 @@ namespace netca.Application.Common.Models
                 if (index > 0)
                 {
                     return string.Format(
-                        "{0} ({1} != null && !{1}.ToString().{2}(@{3}))",
+                        "{0} ({1} != null && !{1}.{2}(@{3}))",
                         logic,
                         filter.Field,
                         comparison,
@@ -188,7 +187,7 @@ namespace netca.Application.Common.Models
                 }
 
                 return string.Format(
-                    "({0} != null && !{0}.ToString().{1}(@{2}))",
+                    "({0} != null && !{0}.{1}(@{2}))",
                     filter.Field,
                     comparison,
                     index
@@ -205,7 +204,7 @@ namespace netca.Application.Common.Models
             if (index > 0)
             {
                 return string.Format(
-                    "{0} ({1} != null && {1}.ToString().{2}(@{3}))",
+                    "{0} ({1} != null && {1}.{2}(@{3}))",
                     logic,
                     filter.Field,
                     comparison,
@@ -230,7 +229,7 @@ namespace netca.Application.Common.Models
         /// <returns></returns>
         private static IQueryable<T> Sort<T>(this IQueryable<T> source, IReadOnlyCollection<Sort> sort)
         {
-            if (sort == null || !sort.Any())
+            if (!sort.Any())
                 return source;
 
             try

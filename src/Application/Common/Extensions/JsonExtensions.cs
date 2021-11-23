@@ -36,7 +36,7 @@ namespace Newtonsoft.Json.Serialization
         /// </summary>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static JsonSerializerSettings SerializerSettings(ILogger logger = null)
+        public static JsonSerializerSettings SerializerSettings(ILogger logger)
         {
             return new JsonSerializerSettings
             {
@@ -52,7 +52,7 @@ namespace Newtonsoft.Json.Serialization
         /// </summary>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static JsonSerializerSettings SyncSerializerSettings(ILogger logger = null)
+        public static JsonSerializerSettings SyncSerializerSettings(ILogger logger)
         {
             return new JsonSerializerSettings
             {
@@ -67,14 +67,13 @@ namespace Newtonsoft.Json.Serialization
         /// </summary>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static EventHandler<ErrorEventArgs> HandleDeserializationError(ILogger logger = null)
+        public static EventHandler<ErrorEventArgs> HandleDeserializationError(ILogger logger)
         {
-            void HandleErrorParsing(object sender, ErrorEventArgs errorArgs)
+            void HandleErrorParsing(object? sender, ErrorEventArgs errorArgs)
             {
                 var currentError = errorArgs.ErrorContext.Error.Message;
 
-                if (logger != null)
-                    logger.LogWarning($"Error when serialize value: {currentError}");
+                logger.LogWarning($"Error when serialize value: {currentError}");
 
                 errorArgs.ErrorContext.Handled = true;
             }

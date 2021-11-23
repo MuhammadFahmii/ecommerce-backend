@@ -118,8 +118,7 @@ namespace netca.Api.Middlewares
                     }
                 ),
                 JsonExtensions.ErrorSerializerSettings());
-            logger.LogError($"Internal Server Error: {exception.Source} {exception.Message}");
-
+            logger.LogWarning($"Internal Server Error: {exception.Source} {exception.Message}");
             return context.Response.WriteAsync(result);
         }
     }

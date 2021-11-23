@@ -28,13 +28,13 @@ namespace netca.Infrastructure.Services
     /// </summary>
     public class UserAuthorizationService : IUserAuthorizationService
     {
-        private readonly ClaimsPrincipal _user;
+        private readonly ClaimsPrincipal? _user;
         private readonly AppSetting _appSetting;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<UserAuthorizationService> _logger;
         private readonly HttpClient _httpClient;
         private readonly bool _isAuthenticated;
-        private readonly string _permissionName;
+        private readonly string? _permissionName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserAuthorizationService"/> class.
@@ -48,10 +48,10 @@ namespace netca.Infrastructure.Services
         {
             _logger = logger;
             _httpClient = new HttpClient(new HttpHandler(new HttpClientHandler()));
-            _user = httpContextAccessor?.HttpContext?.User;
+            _user = httpContextAccessor.HttpContext?.User;
             _appSetting = appSetting;
             _environment = environment;
-            _permissionName = (string)httpContextAccessor?.HttpContext?.Items["CurrentPolicyName"];
+            _permissionName = (string)httpContextAccessor?.HttpContext?.Items["CurrentPolicyName"]!;
 
             if (httpContextAccessor != null)
                 _isAuthenticated = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) != null;
@@ -75,7 +75,7 @@ namespace netca.Infrastructure.Services
             if (!IsProd() && !_isAuthenticated)
                 return Guid.NewGuid();
 
-            var userId = _user.Claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userId = _user!.Claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value;
             return new Guid(userId ?? string.Empty);
         }
 
@@ -83,36 +83,36 @@ namespace netca.Infrastructure.Services
         /// GetUserName
         /// </summary>
         /// <returns></returns>
-        public string GetUserName()
+        public string? GetUserName()
         {
             if (!IsProd() && !_isAuthenticated)
                 return Constants.SystemEmail;
 
-            return _user.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Name)?.Value;
+            return _user!.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Name)?.Value;
         }
 
         /// <summary>
         /// GetCustomerCode
         /// </summary>
         /// <returns></returns>
-        public string GetCustomerCode()
+        public string? GetCustomerCode()
         {
             if (!IsProd() && !_isAuthenticated)
                 return Constants.SystemCustomerName;
 
-            return _user.Claims.FirstOrDefault(i => i.Type == Constants.CustomerCode)?.Value;
+            return _user!.Claims.FirstOrDefault(i => i.Type == Constants.CustomerCode)?.Value;
         }
 
         /// <summary>
         /// GetClientId
         /// </summary>
         /// <returns></returns>
-        public string GetClientId()
+        public string? GetClientId()
         {
             if (!IsProd() && !_isAuthenticated)
                 return Constants.SystemClientId;
 
-            return _user.Claims.FirstOrDefault(i => i.Type == Constants.ClientId)?.Value;
+            return _user!.Claims.FirstOrDefault(i => i.Type == Constants.ClientId)?.Value;
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace netca.Infrastructure.Services
                     UserId = GetUserId(),
                     UserName = StringExtensions.Truncate(GetUserName(), 50),
                     UserFullName = StringExtensions.Truncate(
-                        $"{_user.Claims.FirstOrDefault(i => i.Type == ClaimTypes.GivenName)?.Value} {_user.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Surname)?.Value}",
+                        $"{_user!.Claims.FirstOrDefault(i => i.Type == ClaimTypes.GivenName)?.Value} {_user.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Surname)?.Value}",
                         50),
                     CustomerCode = GetCustomerCode(),
                     ClientId = GetClientId()
@@ -148,9 +148,9 @@ namespace netca.Infrastructure.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Dictionary<string, List<string>>> GetUserAttributesAsync(CancellationToken cancellationToken)
+        public async Task<Dictionary<string, List<string>>?> GetUserAttributesAsync(CancellationToken cancellationToken)
         {
-            Dictionary<string, List<string>> result = null;
+            Dictionary<string, List<string>>? result = null;
             if (!IsProd() && !_isAuthenticated)
                 return MockData.GetUserAttribute();
 
@@ -232,7 +232,7 @@ namespace netca.Infrastructure.Services
                 _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
             }
 
-            return result;
+            return result!;
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace netca.Infrastructure.Services
                 _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
             }
 
-            return result;
+            return result!;
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace netca.Infrastructure.Services
                 _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
             }
 
-            return result;
+            return result!;
         }
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace netca.Infrastructure.Services
                 _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
             }
 
-            return result;
+            return result!;
         }
 
         /// <summary>
@@ -394,7 +394,7 @@ namespace netca.Infrastructure.Services
                 _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
             }
 
-            return result;
+            return result!;
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace netca.Infrastructure.Services
                 _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
             }
 
-            return result;
+            return result!;
         }
 
         /// <summary>
@@ -450,9 +450,9 @@ namespace netca.Infrastructure.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<UserMangementUser>> GetUserListAsync(CancellationToken cancellationToken)
+        public async Task<List<UserManagementUser>> GetUserListAsync(CancellationToken cancellationToken)
         {
-            var result = new List<UserMangementUser>();
+            var result = new List<UserManagementUser>();
 
             if (IsTest())
                 return MockData.GetListMechanics();
@@ -474,14 +474,14 @@ namespace netca.Infrastructure.Services
 
             try
             {
-                result = JsonConvert.DeserializeObject<List<UserMangementUser>>(responseString);
+                result = JsonConvert.DeserializeObject<List<UserManagementUser>>(responseString);
             }
             catch (Exception e)
             {
                 _logger.LogError($"Failed HTTP request status {response.StatusCode}: {responseString} \n {e.Message}");
             }
 
-            return result;
+            return result!;
         }
 
         /// <summary>

@@ -20,7 +20,7 @@ namespace netca.Domain.Entities
         /// <summary>
         /// Gets or sets list
         /// </summary>
-        public TodoList List { get; set; }
+        public TodoList? List { get; set; }
 
         /// <summary>
         /// Gets or sets listId
@@ -35,7 +35,7 @@ namespace netca.Domain.Entities
         /// <summary>
         /// Gets or sets note
         /// </summary>
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         /// <summary>
         /// Gets or sets priority

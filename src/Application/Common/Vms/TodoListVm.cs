@@ -19,7 +19,7 @@ namespace netca.Application.Common.Vms
         /// <summary>
         /// Gets or sets title
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Gets or sets colour

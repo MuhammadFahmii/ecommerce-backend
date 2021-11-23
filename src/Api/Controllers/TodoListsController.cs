@@ -71,7 +71,7 @@ namespace netca.Api.Controllers
         {
             var vm = await Mediator.Send(new ExportTodosQuery { ListId = id }, cancellationToken);
 
-            return File(vm.Content, vm.ContentType, vm.FileName);
+            return File(vm.Content!, vm.ContentType!, vm.FileName);
         }
     }
 }

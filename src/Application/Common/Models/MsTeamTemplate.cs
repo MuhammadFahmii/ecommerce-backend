@@ -27,7 +27,7 @@ namespace netca.Application.Common.Models
         /// <summary>
         /// Gets or sets sections
         /// </summary>
-        public List<Section> Sections { get; set; }
+        public List<Section>? Sections { get; set; }
     }
 
     /// <summary>
@@ -39,25 +39,25 @@ namespace netca.Application.Common.Models
         /// Gets or sets activityTitle
         /// </summary>
         /// <value></value>
-        public string ActivityTitle { get; set; }
+        public string? ActivityTitle { get; set; }
 
         /// <summary>
         /// Gets or sets activitySubtitle
         /// </summary>
         /// <value></value>
-        public string ActivitySubtitle { get; set; }
+        public string? ActivitySubtitle { get; set; }
 
         /// <summary>
         /// Gets or sets activityImage
         /// </summary>
         /// <value></value>
-        public string ActivityImage { get; set; }
+        public string? ActivityImage { get; set; }
 
         /// <summary>
         /// Gets or sets facts
         /// </summary>
         /// <value></value>
-        public List<Fact> Facts { get; set; }
+        public List<Fact>? Facts { get; set; }
     }
 
     /// <summary>
@@ -69,13 +69,13 @@ namespace netca.Application.Common.Models
         /// Gets or sets name
         /// </summary>
         /// <value></value>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Gets or sets value
         /// </summary>
         /// <value></value>
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 
     /// <summary>

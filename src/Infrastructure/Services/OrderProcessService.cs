@@ -5,7 +5,6 @@
 // -----------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -38,7 +37,7 @@ namespace netca.Infrastructure.Services
         /// </summary>
         /// <param name="stoppingToken"></param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task? ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation($"EHConsumerService is running");
             await RunJob(stoppingToken);
@@ -48,22 +47,20 @@ namespace netca.Infrastructure.Services
         {
             return Task.Run(
                 () =>
-            {
-                var tasks = new List<Task>();
-                var t = Task.Run(
-                    async () =>
                 {
-                    try
-                    {
-                        await OrderProcessing(cancellationToken);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError($"Error when processing order : {e.Message}.");
-                    }
+                    Task.Run(
+                        async () =>
+                        {
+                            try
+                            {
+                                await OrderProcessing(cancellationToken);
+                            }
+                            catch (Exception e)
+                            {
+                                _logger.LogError($"Error when processing order : {e.Message}.");
+                            }
+                        }, cancellationToken);
                 }, cancellationToken);
-                tasks.Add(t);
-            }, cancellationToken);
         }
 
         /// <summary>
@@ -71,7 +68,7 @@ namespace netca.Infrastructure.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private async Task OrderProcessing( CancellationToken cancellationToken)
+        private async Task OrderProcessing(CancellationToken cancellationToken)
         {
             do
             {
@@ -80,7 +77,8 @@ namespace netca.Infrastructure.Services
                     continue;
                 _logger.LogInformation($"{DateTime.UtcNow:o} -> receiving order {data}");
                 Thread.Sleep(100);
-            } while (!cancellationToken.IsCancellationRequested);
+            }
+            while (!cancellationToken.IsCancellationRequested);
         }
     }
 }

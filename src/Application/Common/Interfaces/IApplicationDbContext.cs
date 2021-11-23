@@ -20,17 +20,17 @@ namespace netca.Application.Common.Interfaces
         /// <summary>
         /// Gets or sets todoLists
         /// </summary>
-        DbSet<TodoList> TodoLists { get; set; }
+        DbSet<TodoList>? TodoLists { get; set; }
 
         /// <summary>
         /// Gets or sets todoItems
         /// </summary>
-        DbSet<TodoItem> TodoItems { get; set; }
+        DbSet<TodoItem>? TodoItems { get; set; }
 
         /// <summary>
         /// Gets or sets changelogs
         /// </summary>
-        DbSet<Changelog> Changelogs { get; set; }
+        DbSet<Changelog>? Changelogs { get; set; }
 
         /// <summary>
         /// Gets database

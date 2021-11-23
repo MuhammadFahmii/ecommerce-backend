@@ -15,12 +15,12 @@ namespace netca.Application.Dtos
         /// Gets or sets code
         /// </summary>
         /// <value></value>
-        public string Key { get; set; }
+        public string? Key { get; set; }
 
         /// <summary>
         /// Gets or sets desc
         /// </summary>
         /// <value></value>
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }

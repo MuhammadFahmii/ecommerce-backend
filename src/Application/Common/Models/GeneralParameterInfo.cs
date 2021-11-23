@@ -14,6 +14,23 @@ namespace netca.Application.Common.Models
     public class GeneralParameterInfo
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="GeneralParameterInfo"/> class.
+        /// </summary>
+        public GeneralParameterInfo()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeneralParameterInfo"/> class.
+        /// GeneralParameterInfo
+        /// </summary>
+        /// <param name="generalParameterValue3"></param>
+        public GeneralParameterInfo(string generalParameterValue3)
+        {
+            GeneralParameterValue3 = generalParameterValue3;
+        }
+
+        /// <summary>
         /// Gets or sets generalParameterId
         /// </summary>
         /// <value></value>
@@ -23,37 +40,37 @@ namespace netca.Application.Common.Models
         /// Gets or sets generalParameterCode
         /// </summary>
         /// <value></value>
-        public string GeneralParameterCode { get; set; }
+        public string? GeneralParameterCode { get; set; }
 
         /// <summary>
         /// Gets or sets generalParameterValue1
         /// </summary>
         /// <value></value>
-        public string GeneralParameterValue1 { get; set; }
+        public string? GeneralParameterValue1 { get; set; }
 
         /// <summary>
         /// Gets or sets generalParameterValue2
         /// </summary>
         /// <value></value>
-        public string GeneralParameterValue2 { get; set; }
+        public string? GeneralParameterValue2 { get; set; }
 
         /// <summary>
         /// Gets or sets generalParameterValue3
         /// </summary>
         /// <value></value>
-        public string GeneralParameterValue3 { get; set; }
+        public string? GeneralParameterValue3 { get; set; }
 
         /// <summary>
         /// Gets or sets generalParameterValue4
         /// </summary>
         /// <value></value>
-        public string GeneralParameterValue4 { get; set; }
+        public string? GeneralParameterValue4 { get; set; }
 
         /// <summary>
         /// Gets or sets generalParameterValue5
         /// </summary>
         /// <value></value>
-        public string GeneralParameterValue5 { get; set; }
+        public string? GeneralParameterValue5 { get; set; }
     }
 
     /// <summary>
@@ -65,19 +82,19 @@ namespace netca.Application.Common.Models
         /// Gets or sets deviceId
         /// </summary>
         /// <value></value>
-        public string DeviceId { get; set; }
+        public string? DeviceId { get; set; }
 
         /// <summary>
         /// Gets or sets appVersion
         /// </summary>
         /// <value></value>
-        public string AppVersion { get; set; }
+        public string? AppVersion { get; set; }
 
         /// <summary>
         /// Gets or sets osVersion
         /// </summary>
         /// <value></value>
-        public string OsVersion { get; set; }
+        public string? OsVersion { get; set; }
     }
 
     /// <summary>
@@ -89,19 +106,19 @@ namespace netca.Application.Common.Models
         /// Gets or sets email
         /// </summary>
         /// <value></value>
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         /// <summary>
         /// Gets or sets firstName
         /// </summary>
         /// <value></value>
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets lastName
         /// </summary>
         /// <value></value>
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
     }
 
     /// <summary>
@@ -119,7 +136,7 @@ namespace netca.Application.Common.Models
         /// Gets or sets clientId
         /// </summary>
         /// <value></value>
-        public string ClientId { get; set; }
+        public string? ClientId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether isCustomer
@@ -129,9 +146,9 @@ namespace netca.Application.Common.Models
     }
 
     /// <summary>
-    /// UserMangementUser
+    /// UserManagementUser
     /// </summary>
-    public class UserMangementUser
+    public class UserManagementUser
     {
         /// <summary>
         /// Gets or sets userId
@@ -143,43 +160,43 @@ namespace netca.Application.Common.Models
         /// Gets or sets userName
         /// </summary>
         /// <value></value>
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         /// <summary>
         /// Gets or sets email
         /// </summary>
         /// <value></value>
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         /// <summary>
         /// Gets or sets firstName
         /// </summary>
         /// <value></value>
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets lastName
         /// </summary>
         /// <value></value>
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         /// <summary>
         /// Gets or sets customerCode
         /// </summary>
         /// <value></value>
-        public string CustomerCode { get; set; }
+        public string? CustomerCode { get; set; }
 
         /// <summary>
         /// Gets or sets contactNumber
         /// </summary>
         /// <value></value>
-        public string ContactNumber { get; set; }
+        public string? ContactNumber { get; set; }
 
         /// <summary>
         /// Gets or sets createdBy
         /// </summary>
         /// <value></value>
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets createdDate
@@ -191,7 +208,7 @@ namespace netca.Application.Common.Models
         /// Gets or sets updatedBy
         /// </summary>
         /// <value></value>
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets updatedDate
@@ -203,13 +220,13 @@ namespace netca.Application.Common.Models
         /// Gets or sets forgotPasswordToken
         /// </summary>
         /// <value></value>
-        public string ForgotPasswordToken { get; set; }
+        public string? ForgotPasswordToken { get; set; }
 
         /// <summary>
         /// Gets or sets forgotPasswordTokenExpiryDate
         /// </summary>
         /// <value></value>
-        public string ForgotPasswordTokenExpiryDate { get; set; }
+        public string? ForgotPasswordTokenExpiryDate { get; set; }
     }
 
     /// <summary>
@@ -227,25 +244,25 @@ namespace netca.Application.Common.Models
         /// Gets or sets userName
         /// </summary>
         /// <value></value>
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         /// <summary>
         /// Gets or sets UserFullName
         /// </summary>
         /// <value></value>
-        public string UserFullName { get; set; }
+        public string? UserFullName { get; set; }
 
         /// <summary>
         /// Gets or sets customerCode
         /// </summary>
         /// <value></value>
-        public string CustomerCode { get; set; }
+        public string? CustomerCode { get; set; }
 
         /// <summary>
         /// Gets or sets clientId
         /// </summary>
         /// <value></value>
-        public string ClientId { get; set; }
+        public string? ClientId { get; set; }
 
         /// <summary>
         /// Gets or sets roleLevel

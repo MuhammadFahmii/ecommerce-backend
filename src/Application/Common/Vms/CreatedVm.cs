@@ -17,6 +17,6 @@ namespace netca.Application.Common.Vms
         /// Gets or sets id
         /// </summary>
         /// <value></value>
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
     }
 }

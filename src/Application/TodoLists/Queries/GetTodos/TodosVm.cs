@@ -25,11 +25,11 @@ namespace netca.Application.TodoLists.Queries.GetTodos
         /// <summary>
         /// Gets or sets priorityLevels
         /// </summary>
-        public IList<PriorityLevelVm> PriorityLevels { get; set; }
+        public IList<PriorityLevelVm>? PriorityLevels { get; set; }
 
         /// <summary>
         /// Gets or sets lists
         /// </summary>
-        public IList<TodoListVm> Lists { get; set; }
+        public IList<TodoListVm>? Lists { get; set; }
     }
 }

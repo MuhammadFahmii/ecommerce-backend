@@ -88,8 +88,7 @@ namespace netca.Infrastructure.Services
                 select sc.GetTrigger(triggerKey).Result).ToList();
             var hostname = Environment.GetEnvironmentVariable("hostname");
             var jobs = triggers.Where(x => x!.JobKey.Name.Contains(hostname!)).Select(x => x!.JobKey ).ToList();
-            var xj = new ReadOnlyCollection<JobKey>(jobs);
-            sc.DeleteJobs(xj);
+            sc.DeleteJobs(jobs);
         }
 
         private void OnStarted()

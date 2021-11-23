@@ -4,7 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -47,9 +46,7 @@ namespace netca.Api.Middlewares
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            var whitelistPathSegment = _appSetting.AuthorizationServer.WhiteListPathSegment != null ?
-                                       _appSetting.AuthorizationServer.WhiteListPathSegment.Split(",").ToList()
-                                       : new List<string>();
+            var whitelistPathSegment = _appSetting.AuthorizationServer.WhiteListPathSegment.Split(",").ToList();
             var requiredCheck = !whitelistPathSegment.Any(item => context.Request.Path.StartsWithSegments(item));
 
             if (requiredCheck)
@@ -110,10 +107,11 @@ namespace netca.Api.Middlewares
 
             services.AddAuthorization(options =>
             {
-                var policy = appSetting.AuthorizationServer.Policy ?? new List<Policy>();
+                var policy = appSetting.AuthorizationServer.Policy;
                 policy.ForEach(p =>
                 {
-                    options.AddPolicy(p.Name, pol => pol.Requirements.Add(new Permission(p.Name)));
+                    if (p != null)
+                        options.AddPolicy(p.Name, pol => pol.Requirements.Add(new Permission(p.Name)));
                 });
             });
         }

@@ -1,4 +1,5 @@
 # Ignore everything
 **
 # Allow files and directories
+!subut.cer
 !/publish/**

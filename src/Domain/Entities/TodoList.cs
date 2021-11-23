@@ -18,7 +18,7 @@ namespace netca.Domain.Entities
         /// <summary>
         /// Gets or sets title
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Gets or sets colour

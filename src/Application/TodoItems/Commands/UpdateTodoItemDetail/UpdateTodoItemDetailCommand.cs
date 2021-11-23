@@ -38,7 +38,7 @@ namespace netca.Application.TodoItems.Commands.UpdateTodoItemDetail
         /// <summary>
         /// Gets or sets note
         /// </summary>
-        public string Note { get; set; }
+        public string? Note { get; set; }
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ namespace netca.Application.TodoItems.Commands.UpdateTodoItemDetail
         /// <exception cref="NotFoundException">Exception</exception>
         public async Task<Unit> Handle(UpdateTodoItemDetailCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.TodoItems.FindAsync(new object[] { request.Id }, cancellationToken);
+            var entity = await _context.TodoItems!.FindAsync(new object[] { request.Id }, cancellationToken);
 
             if (entity == null)
             {

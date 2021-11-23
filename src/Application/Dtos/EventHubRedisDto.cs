@@ -15,12 +15,12 @@ namespace netca.Application.Dtos
         /// Gets or sets eventHubName
         /// </summary>
         /// <value></value>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Gets or sets value
         /// </summary>
         /// <value></value>
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }

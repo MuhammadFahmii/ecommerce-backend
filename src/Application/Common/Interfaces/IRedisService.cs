@@ -16,18 +16,26 @@ namespace netca.Application.Common.Interfaces
     public interface IRedisService
     {
         /// <summary>
-        /// Get
+        /// GetAsync
         /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         Task<string> GetAsync(string key);
 
         /// <summary>
         /// SaveAsync
         /// </summary>
+        /// <param name="key"></param>
+        /// <param name="sub"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         Task<string> SaveAsync(string key, string sub, string value);
 
         /// <summary>
         /// GetAllValueWithKeyAsync
         /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         Task<IEnumerable<RedisDto>> GetAllValueWithKeyAsync(string key);
 
         /// <summary>
@@ -37,16 +45,19 @@ namespace netca.Application.Common.Interfaces
         /// <param name="value"></param>
         /// <returns></returns>
         Task<long> ListLeftPushAsync(string key, string value);
-        
+
         /// <summary>
         /// ListLeftPopAsync
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
         Task<string> ListLeftPopAsync(string key);
+
         /// <summary>
-        /// Delete
+        /// DeleteAsync
         /// </summary>
-        Task DeleteAsync(string key); 
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Task DeleteAsync(string key);
     }
 }

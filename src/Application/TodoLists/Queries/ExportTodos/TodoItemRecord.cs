@@ -17,7 +17,7 @@ namespace netca.Application.TodoLists.Queries.ExportTodos
         /// <summary>
         /// Gets or sets title
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether done

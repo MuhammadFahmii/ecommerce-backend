@@ -54,7 +54,7 @@ namespace netca.Application.TodoLists.Commands.DeleteTodoList
         /// <exception cref="NotFoundException">Exception</exception>
         public async Task<Unit> Handle(DeleteTodoListCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.TodoLists
+            var entity = await _context.TodoLists!
                 .Where(l => l.Id == request.Id)
                 .SingleOrDefaultAsync(cancellationToken);
 
@@ -63,7 +63,7 @@ namespace netca.Application.TodoLists.Commands.DeleteTodoList
                 throw new NotFoundException(nameof(TodoList), request.Id);
             }
 
-            _context.TodoLists.Remove(entity);
+            _context.TodoLists!.Remove(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
 

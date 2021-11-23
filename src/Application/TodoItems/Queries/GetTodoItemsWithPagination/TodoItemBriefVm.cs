@@ -24,7 +24,7 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
         /// <summary>
         /// Gets or sets title
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether done

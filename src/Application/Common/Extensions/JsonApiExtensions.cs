@@ -178,14 +178,14 @@ namespace JsonApiSerializer.JsonApi
         /// </summary>
         /// <value></value>
         [JsonProperty(Order = 2)]
-        public TData Data { get; set; }
+        public TData? Data { get; set; }
 
         /// <summary>
         /// Gets or sets included
         /// </summary>
         /// <value></value>
         [JsonProperty(Order = 3)]
-        public List<JObject> Included { get; set; }
+        public List<JObject>? Included { get; set; }
 
         /// <summary>
         /// Gets or sets meta
@@ -206,7 +206,7 @@ namespace JsonApiSerializer.JsonApi
         /// </summary>
         /// <value></value>
         [JsonProperty(Order = 10000)]
-        public Status Status { get; set; }
+        public Status? Status { get; set; }
     }
 
     /// <summary>
@@ -224,6 +224,6 @@ namespace JsonApiSerializer.JsonApi
         /// Gets or sets desc
         /// </summary>
         /// <value></value>
-        public object Desc { get; set; }
+        public object? Desc { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace netca.Application.Common.Models
                 () =>
                 {
                     action(appSetting, tmpl);
-                    return null;
+                    return null!;
                 },
                 retryInterval,
                 maxAttemptCount

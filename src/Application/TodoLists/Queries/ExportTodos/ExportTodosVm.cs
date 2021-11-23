@@ -14,16 +14,16 @@ namespace netca.Application.TodoLists.Queries.ExportTodos
         /// <summary>
         /// Gets or sets fileName
         /// </summary>
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
 
         /// <summary>
         /// Gets or sets contentType
         /// </summary>
-        public string ContentType { get; set; }
+        public string? ContentType { get; set; }
 
         /// <summary>
         /// Gets or sets content
         /// </summary>
-        public byte[] Content { get; set; }
+        public byte[]? Content { get; set; }
     }
 }

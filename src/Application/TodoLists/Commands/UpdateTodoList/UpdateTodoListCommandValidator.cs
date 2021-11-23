@@ -36,7 +36,7 @@ namespace netca.Application.TodoLists.Commands.UpdateTodoList
 
         private async Task<bool> BeUniqueTitle(UpdateTodoListCommand model, string title, CancellationToken cancellationToken)
         {
-            return await _context.TodoLists
+            return await _context.TodoLists!
                 .Where(l => l.Id != model.Id)
                 .AllAsync(l => l.Title != title, cancellationToken);
         }

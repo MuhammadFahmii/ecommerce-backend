@@ -32,16 +32,16 @@ namespace netca.Api.Handlers
     }
 
     /// <summary>
-    /// UseCorsOriginHanlderextension
+    /// UseCorsOriginHandlerExtension
     /// </summary>
-    public static class UseCorsOriginHanldereextension
+    public static class UseCorsOriginHandlerExtension
     {
         /// <summary>
-        /// UseCorsOriginHanlder
+        /// UseCorsOriginHandler
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="appSetting"></param>
-        public static void UseCorsOriginHanlder(this IApplicationBuilder builder, AppSetting appSetting)
+        public static void UseCorsOriginHandler(this IApplicationBuilder builder, AppSetting appSetting)
         {
             CorsOriginHandler.ApplyCorsOrigin(builder, appSetting);
         }

@@ -31,6 +31,6 @@ namespace netca.Application.WeatherForecasts.Queries.GetWeatherForecasts
         /// <summary>
         /// Gets or sets summary
         /// </summary>
-        public string Summary { get; set; }
+        public string? Summary { get; set; }
     }
 }

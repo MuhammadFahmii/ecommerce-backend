@@ -16,8 +16,13 @@ namespace netca.Infrastructure.Services
     /// </summary>
     public abstract class BaseWorkerService : IHostedService, IDisposable
     {
-        private Task _executingTask;
+        private Task? _executingTask;
         private readonly CancellationTokenSource _stoppingCts = new();
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="BaseWorkerService"/> class.
+        /// BaseWorkerService
+        /// </summary>
         ~BaseWorkerService()
         {
             Dispose(false);
@@ -28,7 +33,7 @@ namespace netca.Infrastructure.Services
         /// </summary>
         /// <param name="stoppingToken"></param>
         /// <returns></returns>
-        protected abstract Task ExecuteAsync(CancellationToken stoppingToken);
+        protected abstract Task? ExecuteAsync(CancellationToken stoppingToken);
 
         /// <summary>
         /// StartAsync
@@ -38,7 +43,7 @@ namespace netca.Infrastructure.Services
         public virtual Task StartAsync(CancellationToken cancellationToken)
         {
             _executingTask = ExecuteAsync(_stoppingCts.Token);
-            return _executingTask.IsCompleted ? _executingTask : Task.CompletedTask;
+            return _executingTask!.IsCompleted ? _executingTask : Task.CompletedTask;
         }
 
         /// <summary>
@@ -54,7 +59,7 @@ namespace netca.Infrastructure.Services
             }
             finally
             {
-                await Task.WhenAny(_executingTask, Task.Delay(Timeout.Infinite, cancellationToken));
+                await Task.WhenAny(_executingTask!, Task.Delay(Timeout.Infinite, cancellationToken));
             }
         }
 

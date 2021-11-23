@@ -33,7 +33,7 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem
         /// Gets or sets title
         /// </summary>
         [BindRequired]
-        public string Title { get; set; }
+        public string? Title { get; set; }
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem
 
             entity.DomainEvents.Add(new TodoItemCreatedEvent(entity));
 
-            _context.TodoItems.Add(entity);
+            _context.TodoItems!.Add(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
 

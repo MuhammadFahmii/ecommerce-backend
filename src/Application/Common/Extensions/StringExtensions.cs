@@ -34,11 +34,9 @@ namespace netca.Application.Common.Extensions
         /// <param name="s"></param>
         /// <param name="maxChars"></param>
         /// <returns></returns>
-        public static string Truncate(string s, int maxChars)
+        public static string? Truncate(string? s, int maxChars)
         {
-            if (s == null)
-                return null;
-            return s.Length <= maxChars ? s : s[..maxChars];
+            return s!.Length <= maxChars ? s : s[..maxChars];
         }
 
         /// <summary>
@@ -80,15 +78,8 @@ namespace netca.Application.Common.Extensions
         /// <returns></returns>
         public static string JsonRepair(string value, string regex)
         {
-            var result = value;
-            var regexs = regex != null ? regex.Split(",").ToList() : new List<string>();
-            foreach (var item in regexs)
-            {
-                var regexReplace = Regex.Escape($@"{item}");
-                result = Regex.Replace(result, regexReplace, "");
-            }
-
-            return result;
+            var regexs = regex.Split(",").ToList();
+            return regexs.Select(item => Regex.Escape($@"{item}")).Aggregate(value, (current, regexReplace) => Regex.Replace(current, regexReplace, ""));
         }
 
         /// <summary>
@@ -100,13 +91,13 @@ namespace netca.Application.Common.Extensions
         /// <returns></returns>
         public static string ReplaceLast(string find, string replace, string str)
         {
-            int lastIndex = str.LastIndexOf(find);
+            var lastIndex = str.LastIndexOf(find, StringComparison.Ordinal);
 
             if (lastIndex == -1)
                 return str;
 
-            string beginString = str.Substring(0, lastIndex);
-            string endString = str.Substring(lastIndex + find.Length);
+            string beginString = str[..lastIndex];
+            string endString = str[(lastIndex + find.Length)..];
 
             return beginString + replace + endString;
         }
@@ -119,31 +110,6 @@ namespace netca.Application.Common.Extensions
         public static string ToCamelCase(this string value)
         {
             return char.ToLowerInvariant(value[0]) + value.Substring(1);
-        }
-
-        /// <summary>
-        /// ToPolicyNameFormat
-        /// </summary>
-        /// <param name="serviceName"></param>
-        /// <param name="httpMethod"></param>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static string ToPolicyNameFormat(string serviceName = "", string httpMethod = "", List<string> path = null)
-        {
-            var policy = "";
-            if (path is not { Count: > 3 })
-                return policy;
-
-            try
-            {
-                policy = serviceName + ":" + httpMethod + ":" + path[3] + "_" + string.Join("_", path.Skip(4));
-            }
-            catch
-            {
-                // ignored
-            }
-
-            return policy;
         }
 
         /// <summary>
@@ -163,20 +129,20 @@ namespace netca.Application.Common.Extensions
                 .Select(x => x.Key)
                 .ToList();
 
-            var ienumerableProperties = new List<string>();
+            var p = new List<string>();
 
             foreach (var key in propertyNames)
             {
-                var valueType = properties[key].GetType();
-                var valueElemType = valueType.IsGenericType
-                                        ? valueType.GetGenericArguments()[0]
-                                        : valueType.GetElementType();
-                if (valueElemType.IsPrimitive || valueElemType == typeof(string))
+                var valueType = properties[key]?.GetType();
+                if (valueType != null)
                 {
-                    var enumerable = properties[key] as IEnumerable;
-                    foreach (var item in enumerable)
+                    var valueElemType = valueType is { IsGenericType: true }
+                        ? valueType.GetGenericArguments()[0]
+                        : valueType.GetElementType();
+                    if (valueElemType != null && (valueElemType.IsPrimitive || valueElemType == typeof(string)))
                     {
-                        ienumerableProperties.Add(key + "=" + item.ToString());
+                        var enumerable = properties[key] as IEnumerable;
+                        p.AddRange(from object? item in enumerable select key + "=" + item);
                     }
                 }
 
@@ -185,12 +151,21 @@ namespace netca.Application.Common.Extensions
 
             return url + "?" +
                 string.Join("&", properties
-                    .Select(x => string.Concat(
-                        Uri.EscapeDataString(x.Key),
-                        "=",
-                        Uri.EscapeDataString(x.Value.ToString())))
+                    .Select(x =>
+                    {
+                        var (key, value) = x;
+                        if (value != null)
+                        {
+                            return string.Concat(
+                                Uri.EscapeDataString(key),
+                                "=",
+                                Uri.EscapeDataString(value.ToString() ?? string.Empty));
+                        }
+
+                        return null;
+                    })
                     ) +
-                string.Join("&", ienumerableProperties);
+                string.Join("&", p);
         }
 
         /// <summary>
@@ -201,10 +176,7 @@ namespace netca.Application.Common.Extensions
         /// <returns></returns>
         public static List<string> GetAttribute(this Dictionary<string, List<string>> dict, string key)
         {
-            if (dict == null || !dict.ContainsKey(key))
-                return new List<string>();
-
-            return dict[key].Distinct().ToList();
+            return !dict.ContainsKey(key) ? new List<string>() : dict[key].Distinct().ToList();
         }
 
         /// <summary>
@@ -214,9 +186,6 @@ namespace netca.Application.Common.Extensions
         /// <returns></returns>
         public static string NullSafeToLower(this string value)
         {
-            if (value == null)
-                return value;
-
             return value.ToLower();
         }
     }

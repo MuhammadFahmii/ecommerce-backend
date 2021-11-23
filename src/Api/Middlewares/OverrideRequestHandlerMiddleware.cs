@@ -53,7 +53,7 @@ namespace netca.Api.Middlewares
                 if (!string.IsNullOrEmpty(requestIfNoneMatch))
                 {
                     var encodedEntity = await _redisService.GetAsync(requestIfNoneMatch);
-                    if (encodedEntity != null)
+                    if (!string.IsNullOrEmpty(encodedEntity))
                     {
                         const int code = (int)HttpStatusCode.NotModified;
                         context.Response.StatusCode = code;

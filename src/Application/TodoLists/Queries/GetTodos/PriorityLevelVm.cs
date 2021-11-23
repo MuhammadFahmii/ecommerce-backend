@@ -19,6 +19,6 @@ namespace netca.Application.TodoLists.Queries.GetTodos
         /// <summary>
         /// Gets or sets name
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }

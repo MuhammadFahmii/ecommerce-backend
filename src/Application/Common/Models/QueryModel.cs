@@ -22,12 +22,12 @@ namespace netca.Application.Common.Models
         /// <summary>
         /// Gets or sets filters
         /// </summary>
-        public string Filters { get; set; }
+        public string? Filters { get; set; }
 
         /// <summary>
         /// Gets or sets sorts
         /// </summary>
-        public string Sorts { get; set; }
+        public string? Sorts { get; set; }
 
         /// <summary>
         /// Gets or sets number of req page
@@ -200,13 +200,13 @@ namespace netca.Application.Common.Models
         /// Gets or sets field
         /// </summary>
         /// <value></value>
-        public string Field { get; set; }
+        public string? Field { get; set; }
 
         /// <summary>
         /// Gets or sets direction
         /// </summary>
         /// <value></value>
-        public string Direction { get; set; }
+        public string? Direction { get; set; }
     }
 
     /// <summary>
@@ -219,7 +219,6 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value>Field name to filter</value>
         /// <example>CreatedBy</example>
-#nullable enable
         public string? Field { get; set; }
 
         /// <summary>
@@ -227,7 +226,6 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value>logical operator</value>
         /// <example>eq</example>
-#nullable enable
         public string? Operator { get; set; }
 
         /// <summary>
@@ -235,7 +233,6 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value>value to search</value>
         /// <example>xx</example>
-#nullable enable
         public object? Value { get; set; }
 
         /// <summary>
@@ -243,7 +240,6 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value>logical operator</value>
         /// <example>AND</example>
-#nullable enable
         public string? Logic { get; set; }
     }
 }

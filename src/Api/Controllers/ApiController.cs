@@ -18,7 +18,7 @@ namespace netca.Api.Controllers
     [ApiController]
     public abstract class ApiControllerBase<T> : ControllerBase
     {
-        private IMediator _mediator;
+        private IMediator? _mediator;
 
         /// <summary>
         /// Protected variable to perform logging.
@@ -29,7 +29,7 @@ namespace netca.Api.Controllers
         /// Gets protected variable to encapsulate request/response and publishing interaction patterns.
         /// </summary>
         /// <returns></returns>
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<IMediator>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiControllerBase{T}"/> class.

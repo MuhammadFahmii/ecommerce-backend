@@ -20,7 +20,7 @@ namespace netca.Application.Common.Vms
         /// <summary>
         /// Gets or sets list
         /// </summary>
-        public TodoListVm List { get; set; }
+        public TodoListVm? List { get; set; }
 
         /// <summary>
         /// Gets or sets listId
@@ -30,12 +30,12 @@ namespace netca.Application.Common.Vms
         /// <summary>
         /// Gets or sets title
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Gets or sets note
         /// </summary>
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         /// <summary>
         /// Gets or sets priority

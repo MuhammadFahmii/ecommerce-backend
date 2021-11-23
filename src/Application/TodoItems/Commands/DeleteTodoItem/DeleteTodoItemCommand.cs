@@ -53,7 +53,7 @@ namespace netca.Application.TodoItems.Commands.DeleteTodoItem
         /// <exception cref="NotFoundException">Exception</exception>
         public async Task<Unit> Handle(DeleteTodoItemCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.TodoItems.FindAsync(new object[] { request.Id }, cancellationToken);
+            var entity = await _context.TodoItems!.FindAsync(new object[] { request.Id }, cancellationToken);
 
             if (entity == null)
             {

@@ -24,7 +24,7 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
         /// Gets or sets title
         /// </summary>
         [BindRequired]
-        public string Title { get; set; }
+        public string? Title { get; set; }
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
                 Title = request.Title
             };
 
-            _context.TodoLists.Add(entity);
+            _context.TodoLists!.Add(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
 

@@ -5,6 +5,7 @@
 // -----------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -26,13 +27,14 @@ namespace netca.Api.Filters
         /// </summary>
         /// <param name="context"></param>
         /// <param name="next"></param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ApiAuthorizeFilterAttribute>>();
             var appSetting = context.HttpContext.RequestServices.GetRequiredService<AppSetting>();
             var actionDescriptor = context.ActionDescriptor;
-            var ctrl = actionDescriptor.RouteValues["controller"].ToLower();
-            var action = actionDescriptor.RouteValues["action"].ToLower();
+            var ctrl = actionDescriptor.RouteValues["controller"]?.ToLower();
+            var action = actionDescriptor.RouteValues["action"]!.ToLower();
             var permission = $"{appSetting.AuthorizationServer.Service}:{context.HttpContext.Request.Method}:{ctrl}_{action}";
             try
             {
@@ -41,10 +43,10 @@ namespace netca.Api.Filters
                 {
                     var auth = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
                     logger.LogDebug($"Checking permission {policy.Name}");
-                    var permissionChek=  auth.AuthorizeAsync(context.HttpContext.User, null, policy.Name).Result;
+                    var permissionChek = await auth.AuthorizeAsync(context.HttpContext.User, null, policy.Name);
                     if (!permissionChek.Succeeded)
                     {
-                        context.Result = new ForbidResult();  
+                        context.Result = new ForbidResult();
                     }
                     else
                     {
@@ -59,14 +61,15 @@ namespace netca.Api.Filters
             catch (Exception e)
             {
                 logger.LogWarning($"error Checking permission {e.Message}");
-                context.Result = new ForbidResult();  
+                context.Result = new ForbidResult();
             }
         }
-        private static Policy GetPolicy(ILogger logger, AppSetting appSetting, string policy)
+
+        private static Policy? GetPolicy(ILogger logger, AppSetting appSetting, string policy)
         {
             logger.LogDebug($"Get Policy {policy} if exists");
             var policyList = appSetting.AuthorizationServer.Policy;
-            return policyList.Count.Equals(0) ? null : policyList.FirstOrDefault(x => x.Name.ToLower().Equals(policy.ToLower()));
+            return policyList.Count.Equals(0) ? null : policyList.FirstOrDefault(x => x!.Name.ToLower().Equals(policy.ToLower()));
         }
     }
 }

@@ -27,19 +27,19 @@ namespace netca.Application.Common.Interfaces
         /// GetUserName
         /// </summary>
         /// <returns></returns>
-        string GetUserName();
+        string? GetUserName();
 
         /// <summary>
         /// GetCustomerCode
         /// </summary>
         /// <returns></returns>
-        string GetCustomerCode();
+        string? GetCustomerCode();
 
         /// <summary>
         /// GetClientId
         /// </summary>
         /// <returns></returns>
-        string GetClientId();
+        string? GetClientId();
 
         /// <summary>
         /// GetAuthorizedUser
@@ -52,7 +52,7 @@ namespace netca.Application.Common.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Dictionary<string, List<string>>> GetUserAttributesAsync(CancellationToken cancellationToken);
+        Task<Dictionary<string, List<string>>?> GetUserAttributesAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// GetUsersByAttributes
@@ -120,7 +120,7 @@ namespace netca.Application.Common.Interfaces
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<UserMangementUser>> GetUserListAsync(CancellationToken cancellationToken);
+        Task<List<UserManagementUser>> GetUserListAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// DeleteDeviceIdAsync

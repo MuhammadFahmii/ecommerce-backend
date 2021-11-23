@@ -54,7 +54,7 @@ namespace netca.Application.TodoLists.Queries.GetTodos
         /// <returns></returns>
         public async Task<DocumentRootJson<TodosVm>> Handle(GetTodosQuery request, CancellationToken cancellationToken)
         {
-            var countEntity = await _context.TodoLists
+            var countEntity = await _context.TodoLists!
                 .AsNoTracking()
                 .QueryWithoutLimit(request)
                 .Select(x => x.Id)

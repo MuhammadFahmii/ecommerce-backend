@@ -23,31 +23,31 @@ namespace netca.Domain.Entities
         /// Gets or sets method
         /// </summary>
         /// <value></value>
-        public string Method { get; set; }
+        public string? Method { get; set; }
 
         /// <summary>
         /// Gets or sets tableName
         /// </summary>
         /// <value></value>
-        public string TableName { get; set; }
+        public string? TableName { get; set; }
 
         /// <summary>
         /// Gets or sets tableName
         /// </summary>
         /// <value></value>
-        public string KeyValues { get; set; }
+        public string? KeyValues { get; set; }
 
         /// <summary>
         /// Gets or sets newValues
         /// </summary>
         /// <value></value>
-        public string NewValues { get; set; }
+        public string? NewValues { get; set; }
 
         /// <summary>
         /// Gets or sets oldValues
         /// </summary>
         /// <value></value>
-        public string OldValues { get; set; }
+        public string? OldValues { get; set; }
 
         /// <summary>
         /// Gets or sets changeDate

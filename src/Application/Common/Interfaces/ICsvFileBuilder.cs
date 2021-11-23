@@ -19,6 +19,6 @@ namespace netca.Application.Common.Interfaces
         /// </summary>
         /// <param name="records"></param>
         /// <returns></returns>
-        byte[] BuildTodoItemsFile(IEnumerable<TodoItemRecord> records);
+        byte[]? BuildTodoItemsFile(IEnumerable<TodoItemRecord> records);
     }
 }

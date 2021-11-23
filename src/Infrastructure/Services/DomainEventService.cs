@@ -52,7 +52,7 @@ namespace netca.Infrastructure.Services
         private static INotification GetNotificationCorrespondingToDomainEvent(DomainEvent domainEvent)
         {
             return (INotification)Activator.CreateInstance(
-                typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);
+                typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent)!;
         }
     }
 }
