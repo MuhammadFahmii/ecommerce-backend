@@ -34,18 +34,20 @@ namespace netca.Infrastructure.Services
 
             if (job == null || string.IsNullOrEmpty(job.Schedule))
                 throw new ArgumentNullException($"No Quartz.NET Cron schedule found for {jobName} in configuration");
-
-            if (job.IsParallel)
+            var group = jobName + "Group";
+            if (job.IsParallel && appSetting.BackgroundJob.UsePersistentStore)
+            {
                 jobName += Environment.GetEnvironmentVariable("hostname");
+            }
 
-            var jobKey = new JobKey(jobName, "Group");
+            var jobKey = new JobKey(jobName, group);
 
             quartz.AddJob<T>(opts => opts.WithIdentity(jobKey));
 
             quartz.AddTrigger(opts => opts
                 .ForJob(jobKey)
                 .WithDescription(job.Description)
-                .WithIdentity(jobName + "trigger", jobName + "Group")
+                .WithIdentity(jobName + "trigger", group)
                 .WithCronSchedule(job.Schedule));
         }
     }
