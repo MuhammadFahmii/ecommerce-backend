@@ -4,7 +4,7 @@ WORKDIR /app
 EXPOSE 8080
 
 COPY publish .
-COPY subut.cer /usr/local/share/ca-certificates/
+COPY subut.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
 
 ENTRYPOINT ["dotnet", "netca.Api.dll"]

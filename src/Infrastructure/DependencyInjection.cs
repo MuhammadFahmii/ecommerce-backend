@@ -116,7 +116,7 @@ namespace netca.Infrastructure
                     });
                 }
 
-                q.AddJobAndTrigger<HelloWorldJob>(appSetting);
+                q.AddJobAndTrigger<DeleteChangelogJob>(appSetting);
                 q.AddJobAndTrigger<ProduceOrderJob>(appSetting);
                 q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
             });

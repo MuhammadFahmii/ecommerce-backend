@@ -74,6 +74,12 @@ namespace netca.Application.Common.Models
         public DatabaseSettings DatabaseSettings { get; set; } = new();
 
         /// <summary>
+        /// Gets or sets dataLifetime
+        /// </summary>
+        /// <returns></returns>
+        public DataLifetime DataLifetime { get; set; } = new();
+
+        /// <summary>
         /// Gets or sets app
         /// </summary>
         /// <returns></returns>
@@ -196,6 +202,18 @@ namespace netca.Application.Common.Models
         /// </summary>
         /// <value></value>
         public bool SeedData { get; set; } = false;
+    }
+
+    /// <summary>
+    /// DataLifetime
+    /// </summary>
+    public record DataLifetime
+    {
+        /// <summary>
+        /// Gets or sets changelog
+        /// </summary>
+        /// <value></value>
+        public int Changelog { get; set; } = 180;
     }
 
     /// <summary>
