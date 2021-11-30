@@ -51,7 +51,7 @@ namespace netca.Api.Middlewares
 
             if (requiredCheck)
             {
-                _logger.LogDebug($"Authenticating");
+                _logger.LogDebug("Authenticating");
                 var auth = await CheckAuthAsync(context);
                 if (!auth.Succeeded)
                 {

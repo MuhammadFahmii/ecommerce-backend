@@ -104,7 +104,7 @@ namespace netca.Api.Middlewares
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogCritical($"Error Overriding Response {ex.Message}");
+                        _logger.LogCritical("Error Overriding Response {ex}", ex.Message);
                         throw;
                     }
                 }

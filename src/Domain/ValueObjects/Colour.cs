@@ -89,7 +89,7 @@ namespace netca.Domain.ValueObjects
         /// <summary>
         /// Gets code
         /// </summary>
-        public string Code { get; private set; }
+        public string Code { get; private set; } = null!;
 
         /// <summary>
         /// string

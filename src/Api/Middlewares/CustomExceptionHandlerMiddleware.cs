@@ -49,7 +49,7 @@ namespace netca.Api.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogDebug($"Something went wrong: {ex.Source} {ex.Message}");
+                _logger.LogDebug("Something went wrong:{ex} {msg}", ex.Source, ex.Message);
                 await HandleExceptionAsync(httpContext, _logger, ex);
             }
         }
@@ -118,7 +118,7 @@ namespace netca.Api.Middlewares
                     }
                 ),
                 JsonExtensions.ErrorSerializerSettings());
-            logger.LogWarning($"Internal Server Error: {exception.Source} {exception.Message}");
+            logger.LogWarning("Internal Server Error:{ex} {msg}", exception.Source, exception.Message);
             return context.Response.WriteAsync(result);
         }
     }

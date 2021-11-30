@@ -51,7 +51,7 @@ namespace netca.Infrastructure.Services.Messages
             var result = false;
             if (string.IsNullOrEmpty(message))
             {
-                _logger.LogWarning($"Failed to Produce Message, message Null");
+                _logger.LogWarning("Failed to Produce Message, message Null");
             }
             else
             {
@@ -68,11 +68,11 @@ namespace netca.Infrastructure.Services.Messages
 
                     result = true;
 
-                    _logger.LogDebug($"Sent to Topic: {topic} Partition: {data.PartitionKey} Offset: {data.Offset} Message: {message}");
+                    _logger.LogDebug("Sent to Topic: {Topic} Partition: {Partition} Offset: {Offset} Message: {Message}", topic, data.PartitionKey, data.Offset, message);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Failed to Produce Message, Saving to redis {ex.Message}");
+                    _logger.LogError("Failed to Produce Message, Saving to redis {Message}", ex.Message);
                     var dcaEhRedisDto = new EventHubRedisDto { Name = az.Name, Value = message };
                     await _redisService.ListLeftPushAsync(
                             Constants.RedisSubKeyMessageProduce + topic,

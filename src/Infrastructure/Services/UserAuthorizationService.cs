@@ -168,7 +168,7 @@ namespace netca.Infrastructure.Services
             var response = await _httpClient.GetAsync(url, cancellationToken);
 
             _logger.LogDebug("Response:");
-            _logger.LogDebug(response.ToString());
+            _logger.LogDebug("{m}", response.ToString());
 
             if (!response.IsSuccessStatusCode)
                 return null;
@@ -181,7 +181,7 @@ namespace netca.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
+                _logger.LogError(e, "Failed HTTP request status {status} {response}", response.StatusCode, responseString);
             }
 
             return result;
@@ -216,7 +216,7 @@ namespace netca.Infrastructure.Services
             );
 
             _logger.LogDebug("Response:");
-            _logger.LogDebug(response.ToString());
+            _logger.LogDebug("{m}", response.ToString());
 
             if (!response.IsSuccessStatusCode)
                 return result;
@@ -229,7 +229,7 @@ namespace netca.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
+                _logger.LogError(e, "Failed HTTP request status {status} {response}", response.StatusCode, responseString);
             }
 
             return result!;
@@ -266,7 +266,7 @@ namespace netca.Infrastructure.Services
             );
 
             _logger.LogDebug("Response:");
-            _logger.LogDebug(response.ToString());
+            _logger.LogDebug("{m}", response.ToString());
 
             if (!response.IsSuccessStatusCode)
                 return result;
@@ -279,7 +279,7 @@ namespace netca.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
+                _logger.LogError(e, "Failed HTTP request status {status} {response}", response.StatusCode, responseString);
             }
 
             return result!;
@@ -304,7 +304,7 @@ namespace netca.Infrastructure.Services
             var response = await _httpClient.GetAsync(url, cancellationToken);
 
             _logger.LogDebug("Response:");
-            _logger.LogDebug(response.ToString());
+            _logger.LogDebug("{m}", response.ToString());
 
             if (!response.IsSuccessStatusCode)
                 return result;
@@ -317,7 +317,7 @@ namespace netca.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
+                _logger.LogError(e, "Failed HTTP request status {status} {response}", response.StatusCode, responseString);
             }
 
             return result!;
@@ -340,7 +340,7 @@ namespace netca.Infrastructure.Services
             var response = await _httpClient.GetAsync(url, cancellationToken);
 
             _logger.LogDebug("Response:");
-            _logger.LogDebug(response.ToString());
+            _logger.LogDebug("{m}", response.ToString());
 
             if (!response.IsSuccessStatusCode)
                 return result;
@@ -353,7 +353,7 @@ namespace netca.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
+                _logger.LogError(e, "Failed HTTP request status {status} {response}", response.StatusCode, responseString);
             }
 
             return result!;
@@ -378,7 +378,7 @@ namespace netca.Infrastructure.Services
             var response = await _httpClient.GetAsync(url, cancellationToken);
 
             _logger.LogDebug("Response:");
-            _logger.LogDebug(response.ToString());
+            _logger.LogDebug("{m}", response.ToString());
 
             if (!response.IsSuccessStatusCode)
                 return result;
@@ -391,7 +391,7 @@ namespace netca.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
+                _logger.LogError(e, "Failed HTTP request status {status} {response}", response.StatusCode, responseString);
             }
 
             return result!;
@@ -426,7 +426,7 @@ namespace netca.Infrastructure.Services
             var response = await _httpClient.GetAsync(url, cancellationToken);
 
             _logger.LogDebug("Response:");
-            _logger.LogDebug(response.ToString());
+            _logger.LogDebug("{m}", response.ToString());
 
             if (!response.IsSuccessStatusCode)
                 return result;
@@ -439,7 +439,7 @@ namespace netca.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed HTTP request status {response.StatusCode}: {responseString}");
+                _logger.LogError(e, "Failed HTTP request status {status} {response}", response.StatusCode, responseString);
             }
 
             return result!;
@@ -465,7 +465,7 @@ namespace netca.Infrastructure.Services
             var response = await _httpClient.GetAsync(url, cancellationToken);
 
             _logger.LogDebug("Response:");
-            _logger.LogDebug(response.ToString());
+            _logger.LogDebug("{m}", response.ToString());
 
             if (!response.IsSuccessStatusCode)
                 return result;
@@ -478,7 +478,7 @@ namespace netca.Infrastructure.Services
             }
             catch (Exception e)
             {
-                _logger.LogError($"Failed HTTP request status {response.StatusCode}: {responseString} \n {e.Message}");
+                _logger.LogError(e, "Failed HTTP request status {status} {response}", response.StatusCode, responseString);
             }
 
             return result!;

@@ -5,7 +5,6 @@
 // -----------------------------------------------------------------------------------
 
 using System;
-using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +18,6 @@ using netca.Infrastructure.Persistence;
 using netca.Infrastructure.Services;
 using netca.Infrastructure.Services.Cache;
 using Quartz;
-using Quartz.Impl.Matchers;
 
 namespace netca.Infrastructure
 {

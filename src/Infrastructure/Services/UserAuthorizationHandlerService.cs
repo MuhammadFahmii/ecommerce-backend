@@ -56,7 +56,7 @@ namespace netca.Infrastructure.Services
             var url = new Uri(_appSetting.AuthorizationServer.Gateway + $"/api/authorize/{userId}/{clientId}/{requirement.PermissionName}");
             var response = await _httpClient.GetAsync(url);
             _logger.LogDebug("Response:");
-            _logger.LogDebug(response.ToString());
+            _logger.LogDebug("{m}", response.ToString());
             if (response.IsSuccessStatusCode)
             {
                 context.Succeed(requirement);

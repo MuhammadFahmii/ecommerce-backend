@@ -36,7 +36,7 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
         private async Task<bool> BeUniqueTitle(string title, CancellationToken cancellationToken)
         {
             return await _context.TodoLists!
-                .AllAsync(l => l.Title != title, cancellationToken: cancellationToken);
+                .AllAsync(l => l.Title != title, cancellationToken);
         }
     }
 }

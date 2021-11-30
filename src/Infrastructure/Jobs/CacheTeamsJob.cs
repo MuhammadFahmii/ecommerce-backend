@@ -50,7 +50,7 @@ namespace netca.Infrastructure.Jobs
                 var hours = (DateTime.UtcNow - ctm.Date).TotalHours;
                 if (hours < appSet.Bot.CacheMsTeam.Hours)
                     return Task.CompletedTask;
-                _logger.LogWarning($"Resetting CacheMSTeams");
+                _logger.LogWarning("Resetting CacheMSTeams");
                 ctm.Counter = 0;
                 ctm.Date = DateTime.UtcNow;
                 SetCounter(ctm, ch);

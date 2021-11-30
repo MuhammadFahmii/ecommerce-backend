@@ -47,7 +47,7 @@ namespace netca.Infrastructure.Jobs
                 for (var index = 1; index <= 100; index++)
                 {
                     redisService.ListLeftPushAsync("order", "{ 'order': " + index + "}");
-                    _logger.LogWarning($"{dt.Now:o} -> sending order {index}");
+                    _logger.LogWarning("{now} -> sending order {i}", dt.Now, index);
                     Thread.Sleep(100);
                 }
             }

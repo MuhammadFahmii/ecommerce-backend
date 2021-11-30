@@ -62,7 +62,7 @@ namespace netca.Application.Changelogs.Commands.DeleteChangelog
                 {
                     _logger.LogDebug("deleting changelog");
                     var lifeTime = _appSetting.DataLifetime.Changelog;
-                    await _context.Changelogs!.Where(x => DateTime.Now.AddDays(-lifeTime) > x.ChangeDate).DeleteFromQueryAsync(cancellationToken);
+                    await _context.Changelogs!.Where(x => DateTime.Now.AddDays(-lifeTime) > x.ChangeDate).DeleteAsync(x => x.BatchSize = 1000, cancellationToken);
                 }
                 catch (Exception e)
                 {

@@ -50,12 +50,12 @@ namespace netca.Application.Common.Behaviours
 
                 if (requestType.EndsWith("Command"))
                 {
-                    _logger.LogDebug($"Command Request: {request}");
+                    _logger.LogDebug("Command Request: {r}", request);
                 }
                 else if (requestType.EndsWith("Query"))
                 {
-                    _logger.LogDebug($"Query Request: {request}");
-                    _logger.LogDebug($"Query Response: {response}");
+                    _logger.LogDebug("Query Request: {r}", request);
+                    _logger.LogDebug("Query Response: {r}", request);
                 }
                 else
                 {

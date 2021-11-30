@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -154,7 +153,7 @@ namespace netca.Infrastructure.Services
 
         private void Send()
         {
-            _logger.LogDebug($"Sending message to MsTeam with color {_tmpl.ThemeColor}");
+            _logger.LogDebug("Sending message to MsTeam with color {color}", _tmpl.ThemeColor);
             SendToMsTeams.Send(_appSetting, _tmpl).ConfigureAwait(false);
         }
     }

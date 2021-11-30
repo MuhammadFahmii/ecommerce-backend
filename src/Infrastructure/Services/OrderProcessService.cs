@@ -39,7 +39,7 @@ namespace netca.Infrastructure.Services
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         protected override async Task? ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation($"EHConsumerService is running");
+            _logger.LogInformation("EHConsumerService is running");
             await RunJob(stoppingToken);
         }
 
@@ -57,7 +57,7 @@ namespace netca.Infrastructure.Services
                             }
                             catch (Exception e)
                             {
-                                _logger.LogError($"Error when processing order : {e.Message}.");
+                                _logger.LogError("Error when processing order : {Message}.", e.Message);
                             }
                         }, cancellationToken);
                 }, cancellationToken);
@@ -75,7 +75,7 @@ namespace netca.Infrastructure.Services
                 var data = await _redisService.ListLeftPopAsync("order");
                 if (string.IsNullOrEmpty(data))
                     continue;
-                _logger.LogInformation($"{DateTime.UtcNow:o} -> receiving order {data}");
+                _logger.LogInformation("{date} -> receiving order {d}", DateTime.UtcNow, data);
                 Thread.Sleep(100);
             }
             while (!cancellationToken.IsCancellationRequested);

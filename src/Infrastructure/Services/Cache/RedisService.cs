@@ -91,7 +91,7 @@ namespace netca.Infrastructure.Services.Cache
             if (!string.IsNullOrWhiteSpace(key))
             {
                 await Database.KeyDeleteAsync(key);
-                _logger.LogDebug($"Delete Redis with key {key}");
+                _logger.LogDebug("Delete Redis with key {k}", key);
             }
         }
 
@@ -102,7 +102,7 @@ namespace netca.Infrastructure.Services.Cache
         /// <returns></returns>
         public async Task<string> GetAsync(string key)
         {
-            _logger.LogDebug($"Process Redis key : {key}");
+            _logger.LogDebug("Process Redis key : {k}", key);
             return await Database.StringGetAsync(key);
         }
 
@@ -116,7 +116,7 @@ namespace netca.Infrastructure.Services.Cache
             var data = new List<RedisDto>();
             try
             {
-                _logger.LogTrace($"Process Get all data from Redis");
+                _logger.LogTrace("Process Get all data from Redis");
 
                 foreach (var k in Servers.SelectMany(redisServer => redisServer.Keys(pattern: key)))
                 {
@@ -128,12 +128,12 @@ namespace netca.Infrastructure.Services.Cache
                     });
                 }
 
-                _logger.LogTrace($"Success Get all data from Redis");
+                _logger.LogTrace("Success Get all data from Redis");
                 return data.OrderBy(o => o.Key);
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error Get all from Redis {e.Message}");
+                _logger.LogError("Error Get all from Redis {m}", e.Message);
                 return data;
             }
         }
@@ -164,11 +164,11 @@ namespace netca.Infrastructure.Services.Cache
                 sub += _appSetting.RedisServer.InstanceName;
                 resultKey = GenerateKey(key, sub);
                 await Database.StringSetAsync(resultKey, value, expiry);
-                _logger.LogDebug($"Save to Redis with key {resultKey}");
+                _logger.LogDebug("Save to Redis with key {key}", resultKey);
             }
             catch
             {
-                _logger.LogError($"Failed Save to Redis, Key: {resultKey}");
+                _logger.LogError("Failed Save to Redis, key: {key}", resultKey);
             }
 
             return resultKey;
