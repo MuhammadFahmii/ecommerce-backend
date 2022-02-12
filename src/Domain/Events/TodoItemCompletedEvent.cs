@@ -7,26 +7,25 @@
 using netca.Domain.Common;
 using netca.Domain.Entities;
 
-namespace netca.Domain.Events
+namespace netca.Domain.Events;
+
+/// <summary>
+/// TodoItemCompletedEvent
+/// </summary>
+public class TodoItemCompletedEvent : DomainEvent
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="TodoItemCompletedEvent"/> class.
     /// TodoItemCompletedEvent
     /// </summary>
-    public class TodoItemCompletedEvent : DomainEvent
+    /// <param name="item"></param>
+    public TodoItemCompletedEvent(TodoItem item)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TodoItemCompletedEvent"/> class.
-        /// TodoItemCompletedEvent
-        /// </summary>
-        /// <param name="item"></param>
-        public TodoItemCompletedEvent(TodoItem item)
-        {
-            Item = item;
-        }
-
-        /// <summary>
-        /// Gets todoItem
-        /// </summary>
-        public TodoItem Item { get; }
+        Item = item;
     }
+
+    /// <summary>
+    /// Gets todoItem
+    /// </summary>
+    public TodoItem Item { get; }
 }
