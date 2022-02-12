@@ -8,26 +8,25 @@ using System.Collections.Generic;
 using netca.Domain.Common;
 using netca.Domain.ValueObjects;
 
-namespace netca.Domain.Entities
+namespace netca.Domain.Entities;
+
+/// <summary>
+/// TodoList
+/// </summary>
+public class TodoList : AuditTableEntity
 {
     /// <summary>
-    /// TodoList
+    /// Gets or sets title
     /// </summary>
-    public class TodoList : AuditTableEntity
-    {
-        /// <summary>
-        /// Gets or sets title
-        /// </summary>
-        public string? Title { get; set; }
+    public string? Title { get; set; }
 
-        /// <summary>
-        /// Gets or sets colour
-        /// </summary>
-        public Colour Colour { get; set; } = Colour.White;
+    /// <summary>
+    /// Gets or sets colour
+    /// </summary>
+    public Colour Colour { get; set; } = Colour.White;
 
-        /// <summary>
-        /// Gets items
-        /// </summary>
-        public IList<TodoItem> Items { get; private set; } = new List<TodoItem>();
-    }
+    /// <summary>
+    /// Gets items
+    /// </summary>
+    public IList<TodoItem> Items { get; private set; } = new List<TodoItem>();
 }

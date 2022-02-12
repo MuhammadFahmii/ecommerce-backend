@@ -7,40 +7,39 @@
 using System;
 using System.Collections.Generic;
 
-namespace netca.Domain.Common
+namespace netca.Domain.Common;
+
+/// <summary>
+/// IHasDomainEvent
+/// </summary>
+public interface IHasDomainEvent
 {
     /// <summary>
-    /// IHasDomainEvent
+    /// Gets or sets domainEvents
     /// </summary>
-    public interface IHasDomainEvent
+    List<DomainEvent> DomainEvents { get; set; }
+}
+
+/// <summary>
+/// DomainEvent
+/// </summary>
+public abstract class DomainEvent
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DomainEvent"/> class.
+    /// </summary>
+    protected DomainEvent()
     {
-        /// <summary>
-        /// Gets or sets domainEvents
-        /// </summary>
-        public List<DomainEvent> DomainEvents { get; set; }
+        DateOccurred = DateTimeOffset.UtcNow;
     }
 
     /// <summary>
-    /// DomainEvent
+    /// Gets or sets a value indicating whether isPublished
     /// </summary>
-    public abstract class DomainEvent
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DomainEvent"/> class.
-        /// </summary>
-        protected DomainEvent()
-        {
-            DateOccurred = DateTimeOffset.UtcNow;
-        }
+    public bool IsPublished { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether isPublished
-        /// </summary>
-        public bool IsPublished { get; set; }
-
-        /// <summary>
-        /// Gets or sets dateOccurred
-        /// </summary>
-        public DateTimeOffset DateOccurred { get; protected set; }
-    }
+    /// <summary>
+    /// Gets or sets dateOccurred
+    /// </summary>
+    public DateTimeOffset DateOccurred { get; protected set; }
 }
