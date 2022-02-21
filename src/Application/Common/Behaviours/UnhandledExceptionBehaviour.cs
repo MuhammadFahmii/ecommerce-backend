@@ -18,6 +18,7 @@ namespace netca.Application.Common.Behaviours
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
     {
         private readonly ILogger<TRequest> _logger;
 
@@ -47,7 +48,7 @@ namespace netca.Application.Common.Behaviours
             {
                 var requestName = typeof(TRequest).Name;
 
-                _logger.LogError(ex, "netca Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+                _logger.LogWarning(ex, "netca Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
                 throw;
             }

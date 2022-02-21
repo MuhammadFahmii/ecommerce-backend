@@ -13,58 +13,57 @@ using netca.Application.Common.Exceptions;
 using netca.Application.Common.Interfaces;
 using netca.Domain.Entities;
 
-namespace netca.Application.TodoItems.Commands.DeleteTodoItem
+namespace netca.Application.TodoItems.Commands.DeleteTodoItem;
+
+/// <summary>
+/// DeleteTodoItemCommand
+/// </summary>
+public class DeleteTodoItemCommand : IRequest
 {
     /// <summary>
-    /// DeleteTodoItemCommand
+    /// Gets or sets id
     /// </summary>
-    public class DeleteTodoItemCommand : IRequest
+    [BindRequired]
+    public Guid Id { get; set; }
+}
+
+/// <summary>
+/// DeleteTodoItemCommandHandler
+/// </summary>
+public class DeleteTodoItemCommandHandler : IRequestHandler<DeleteTodoItemCommand>
+{
+    private readonly IApplicationDbContext _context;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DeleteTodoItemCommandHandler"/> class.
+    /// DeleteTodoItemCommandHandler
+    /// </summary>
+    /// <param name="context"></param>
+    public DeleteTodoItemCommandHandler(IApplicationDbContext context)
     {
-        /// <summary>
-        /// Gets or sets id
-        /// </summary>
-        [BindRequired]
-        public Guid Id { get; set; }
+        _context = context;
     }
 
     /// <summary>
-    /// DeleteTodoItemCommandHandler
+    /// Handle
     /// </summary>
-    public class DeleteTodoItemCommandHandler : IRequestHandler<DeleteTodoItemCommand>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotFoundException">Exception</exception>
+    public async Task<Unit> Handle(DeleteTodoItemCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.TodoItems!.FindAsync(new object[] { request.Id }, cancellationToken);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteTodoItemCommandHandler"/> class.
-        /// DeleteTodoItemCommandHandler
-        /// </summary>
-        /// <param name="context"></param>
-        public DeleteTodoItemCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(TodoItem), request.Id);
         }
 
-        /// <summary>
-        /// Handle
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="NotFoundException">Exception</exception>
-        public async Task<Unit> Handle(DeleteTodoItemCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.TodoItems!.FindAsync(new object[] { request.Id }, cancellationToken);
+        _context.TodoItems.Remove(entity);
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(TodoItem), request.Id);
-            }
+        await _context.SaveChangesAsync(cancellationToken);
 
-            _context.TodoItems.Remove(entity);
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

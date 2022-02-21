@@ -6,18 +6,17 @@
 
 using AutoMapper;
 
-namespace netca.Application.Common.Mappings
+namespace netca.Application.Common.Mappings;
+
+/// <summary>
+/// IMapFrom
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public interface IMapFrom<T>
 {
     /// <summary>
-    /// IMapFrom
+    /// Mapping
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IMapFrom<T>
-    {
-        /// <summary>
-        /// Mapping
-        /// </summary>
-        /// <param name="profile"></param>
-        void Mapping(Profile profile) => profile.CreateMap(typeof(T), GetType());
-    }
+    /// <param name="profile"></param>
+    void Mapping(Profile profile) => profile.CreateMap(typeof(T), GetType());
 }

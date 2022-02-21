@@ -85,9 +85,6 @@ namespace netca.Infrastructure.Services
         /// <returns></returns>
         public string? GetUserName()
         {
-            if (!IsProd() && !_isAuthenticated)
-                return Constants.SystemEmail;
-
             return _user!.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Name)?.Value;
         }
 

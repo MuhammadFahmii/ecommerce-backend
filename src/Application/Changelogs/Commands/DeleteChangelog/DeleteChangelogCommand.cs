@@ -27,21 +27,18 @@ public class DeleteChangelogCommand : IRequest<Unit>
     public class DeleteChangelogCommandHandler : IRequestHandler<DeleteChangelogCommand, Unit>
     {
         private readonly IApplicationDbContext _context;
-        private readonly ILogger _logger;
         private readonly AppSetting _appSetting;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteChangelogCommandHandler"/> class.
         /// </summary>
         /// <param name="context">Set context to perform CRUD into Database</param>
-        /// <param name="logger">Set logger to perform logging</param>
         /// <param name="appSetting">Set dateTime to get Application Setting</param>
         /// <returns></returns>
         public DeleteChangelogCommandHandler(
-            IApplicationDbContext context, ILogger<DeleteChangelogCommandHandler> logger, AppSetting appSetting)
+            IApplicationDbContext context, AppSetting appSetting)
         {
             _context = context;
-            _logger = logger;
             _appSetting = appSetting;
         }
 
@@ -57,7 +54,6 @@ public class DeleteChangelogCommand : IRequest<Unit>
         /// <returns>A bool true or false</returns>
         public async Task<Unit> Handle(DeleteChangelogCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("deleting changelog");
             var lifeTime = _appSetting.DataLifetime.Changelog;
             await _context.Changelogs!.Where(x => DateTime.Now.AddDays(-lifeTime) > x.ChangeDate)
                 .DeleteAsync(x => x.BatchSize = 1000, cancellationToken);

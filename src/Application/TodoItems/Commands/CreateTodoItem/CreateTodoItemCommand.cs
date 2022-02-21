@@ -16,65 +16,64 @@ using netca.Application.Common.Vms;
 using netca.Domain.Entities;
 using netca.Domain.Events;
 
-namespace netca.Application.TodoItems.Commands.CreateTodoItem
+namespace netca.Application.TodoItems.Commands.CreateTodoItem;
+
+/// <summary>
+/// CreateTodoItemCommand
+/// </summary>
+public class CreateTodoItemCommand : IRequest<DocumentRootJson<CreatedVm>>
 {
     /// <summary>
-    /// CreateTodoItemCommand
+    /// Gets or sets listId
     /// </summary>
-    public class CreateTodoItemCommand : IRequest<DocumentRootJson<CreatedVm>>
-    {
-        /// <summary>
-        /// Gets or sets listId
-        /// </summary>
-        [BindRequired]
-        public Guid ListId { get; set; }
+    [BindRequired]
+    public Guid ListId { get; set; }
 
-        /// <summary>
-        /// Gets or sets title
-        /// </summary>
-        [BindRequired]
-        public string? Title { get; set; }
+    /// <summary>
+    /// Gets or sets title
+    /// </summary>
+    [BindRequired]
+    public string? Title { get; set; }
+}
+
+/// <summary>
+/// CreateTodoItemCommandHandler
+/// </summary>
+public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, DocumentRootJson<CreatedVm>>
+{
+    private readonly IApplicationDbContext _context;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CreateTodoItemCommandHandler"/> class.
+    /// </summary>
+    /// <param name="context"></param>
+    public CreateTodoItemCommandHandler(IApplicationDbContext context)
+    {
+        _context = context;
     }
 
     /// <summary>
-    /// CreateTodoItemCommandHandler
+    /// Handle
     /// </summary>
-    public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, DocumentRootJson<CreatedVm>>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<DocumentRootJson<CreatedVm>> Handle(
+        CreateTodoItemCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreateTodoItemCommandHandler"/> class.
-        /// </summary>
-        /// <param name="context"></param>
-        public CreateTodoItemCommandHandler(IApplicationDbContext context)
+        var entity = new TodoItem
         {
-            _context = context;
-        }
+            ListId = request.ListId,
+            Title = request.Title,
+            Done = false
+        };
 
-        /// <summary>
-        /// Handle
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<DocumentRootJson<CreatedVm>> Handle(
-            CreateTodoItemCommand request, CancellationToken cancellationToken)
-        {
-            var entity = new TodoItem
-            {
-                ListId = request.ListId,
-                Title = request.Title,
-                Done = false
-            };
+        entity.DomainEvents.Add(new TodoItemCreatedEvent(entity));
 
-            entity.DomainEvents.Add(new TodoItemCreatedEvent(entity));
+        _context.TodoItems!.Add(entity);
 
-            _context.TodoItems!.Add(entity);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return JsonApiExtensions.ToJsonApi(new CreatedVm { Id = entity.Id });
-        }
+        return JsonApiExtensions.ToJsonApi(new CreatedVm { Id = entity.Id });
     }
 }

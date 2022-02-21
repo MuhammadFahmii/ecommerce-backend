@@ -8,57 +8,57 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace netca.Application.Common.Models
+namespace netca.Application.Common.Models;
+
+/// <summary>
+/// Retry
+/// </summary>
+public static class Retry
 {
     /// <summary>
-    /// Retry
+    /// Do
     /// </summary>
-    public static class Retry
+    /// <param name="action"></param>
+    /// <param name="appSetting"></param>
+    /// <param name="tmpl"></param>
+    /// <param name="retryInterval"></param>
+    /// <param name="maxAttemptCount"></param>
+    public static void Do(Action<AppSetting, MsTeamTemplate> action, AppSetting appSetting, MsTeamTemplate tmpl,
+        TimeSpan retryInterval, int maxAttemptCount = 3)
     {
-        /// <summary>
-        /// Do
-        /// </summary>
-        /// <param name="action"></param>
-        /// <param name="appSetting"></param>
-        /// <param name="tmpl"></param>
-        /// <param name="retryInterval"></param>
-        /// <param name="maxAttemptCount"></param>
-        public static void Do(Action<AppSetting, MsTeamTemplate> action, AppSetting appSetting, MsTeamTemplate tmpl, TimeSpan retryInterval, int maxAttemptCount = 3)
-        {
-            Do<object>(
-                () =>
-                {
-                    action(appSetting, tmpl);
-                    return null!;
-                },
-                retryInterval,
-                maxAttemptCount
-            );
-        }
-
-        private static void Do<T>(Func<T> action, TimeSpan retryInterval, int maxAttemptCount = 3)
-        {
-            var exceptions = new List<Exception>();
-
-            for (var attempted = 0; attempted < maxAttemptCount; attempted++)
+        Do<object>(
+            () =>
             {
-                try
-                {
-                    if (attempted > 0)
-                    {
-                        Thread.Sleep(retryInterval);
-                    }
+                action(appSetting, tmpl);
+                return null!;
+            },
+            retryInterval,
+            maxAttemptCount
+        );
+    }
 
-                    action();
-                    return;
-                }
-                catch (Exception ex)
+    private static void Do<T>(Func<T> action, TimeSpan retryInterval, int maxAttemptCount = 3)
+    {
+        var exceptions = new List<Exception>();
+
+        for (var attempted = 0; attempted < maxAttemptCount; attempted++)
+        {
+            try
+            {
+                if (attempted > 0)
                 {
-                    exceptions.Add(ex);
+                    Thread.Sleep(retryInterval);
                 }
+
+                action();
+                return;
             }
-
-            throw new AggregateException(exceptions);
+            catch (Exception ex)
+            {
+                exceptions.Add(ex);
+            }
         }
+
+        throw new AggregateException(exceptions);
     }
 }

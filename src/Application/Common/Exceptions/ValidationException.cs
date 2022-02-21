@@ -9,38 +9,37 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentValidation.Results;
 
-namespace netca.Application.Common.Exceptions
+namespace netca.Application.Common.Exceptions;
+
+/// <summary>
+/// ValidationException
+/// </summary>
+public class ValidationException : Exception
 {
     /// <summary>
-    /// ValidationException
+    /// Initializes a new instance of the <see cref="ValidationException"/> class.
     /// </summary>
-    public class ValidationException : Exception
+    public ValidationException()
+        : base("One or more validation failures have occurred.")
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationException"/> class.
-        /// </summary>
-        public ValidationException()
-            : base("One or more validation failures have occurred.")
-        {
-            Errors = new Dictionary<string, string[]>();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationException"/> class.
-        /// </summary>
-        /// <param name="failures"></param>
-        public ValidationException(IEnumerable<ValidationFailure> failures)
-            : this()
-        {
-            Errors = failures
-                .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
-                .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
-        }
-
-        /// <summary>
-        /// Gets errors
-        /// </summary>
-        /// <value></value>
-        public IDictionary<string, string[]> Errors { get; }
+        Errors = new Dictionary<string, string[]>();
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidationException"/> class.
+    /// </summary>
+    /// <param name="failures"></param>
+    public ValidationException(IEnumerable<ValidationFailure> failures)
+        : this()
+    {
+        Errors = failures
+            .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
+            .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
+    }
+
+    /// <summary>
+    /// Gets errors
+    /// </summary>
+    /// <value></value>
+    public IDictionary<string, string[]> Errors { get; }
 }

@@ -7,32 +7,32 @@
 using System.Collections.Generic;
 using System.Dynamic;
 
-namespace netca.Application.Common.Extensions
+namespace netca.Application.Common.Extensions;
+
+/// <summary>
+/// ClassExtensions
+/// </summary>
+public static class DynamicExtensions
 {
     /// <summary>
-    /// ClassExtensions
+    /// AddProperty
     /// </summary>
-    public static class DynamicExtensions
+    /// <param name="expando"></param>
+    /// <param name="propertyName"></param>
+    /// <param name="propertyValue"></param>
+    /// <param name="replace"></param>
+    public static void AddProperty(ExpandoObject expando, string propertyName, object propertyValue,
+        bool replace = true)
     {
-        /// <summary>
-        /// AddProperty
-        /// </summary>
-        /// <param name="expando"></param>
-        /// <param name="propertyName"></param>
-        /// <param name="propertyValue"></param>
-        /// <param name="replace"></param>
-        public static void AddProperty(ExpandoObject expando, string propertyName, object propertyValue, bool replace = true)
+        var exDict = expando as IDictionary<string, object>;
+        if (exDict.ContainsKey(propertyName))
         {
-            var exDict = expando as IDictionary<string, object>;
-            if (exDict.ContainsKey(propertyName))
-            {
-                if (replace)
-                    exDict[propertyName] = propertyValue;
-            }
-            else
-            {
-                exDict.Add(propertyName, propertyValue);
-            }
+            if (replace)
+                exDict[propertyName] = propertyValue;
+        }
+        else
+        {
+            exDict.Add(propertyName, propertyValue);
         }
     }
 }

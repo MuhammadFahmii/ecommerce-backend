@@ -27,12 +27,12 @@ namespace Newtonsoft.Json.Serialization
                 ContractResolver = new DefaultContractResolver
                 {
                     NamingStrategy = new CamelCaseNamingStrategy()
-                }
+                },
             };
         }
 
         /// <summary>
-        /// SerializerSettings
+        /// SerializerSettings.
         /// </summary>
         /// <param name="logger"></param>
         /// <returns></returns>
@@ -48,7 +48,7 @@ namespace Newtonsoft.Json.Serialization
         }
 
         /// <summary>
-        /// SyncSerializerSettings
+        /// SyncSerializerSettings.
         /// </summary>
         /// <param name="logger"></param>
         /// <returns></returns>
@@ -63,7 +63,7 @@ namespace Newtonsoft.Json.Serialization
         }
 
         /// <summary>
-        /// HandleDeserializationError
+        /// HandleDeserializationError.
         /// </summary>
         /// <param name="logger"></param>
         /// <returns></returns>
@@ -73,7 +73,7 @@ namespace Newtonsoft.Json.Serialization
             {
                 var currentError = errorArgs.ErrorContext.Error.Message;
 
-                logger.LogWarning($"Error when serialize value: {currentError}");
+                logger.LogWarning("Error when serialize value: {currentError}", currentError);
 
                 errorArgs.ErrorContext.Handled = true;
             }

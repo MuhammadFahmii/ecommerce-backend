@@ -7,18 +7,17 @@
 using System.Collections.Generic;
 using netca.Application.TodoLists.Queries.ExportTodos;
 
-namespace netca.Application.Common.Interfaces
+namespace netca.Application.Common.Interfaces;
+
+/// <summary>
+/// ICsvFileBuilder
+/// </summary>
+public interface ICsvFileBuilder
 {
     /// <summary>
-    /// ICsvFileBuilder
+    /// BuildTodoItemsFile
     /// </summary>
-    public interface ICsvFileBuilder
-    {
-        /// <summary>
-        /// BuildTodoItemsFile
-        /// </summary>
-        /// <param name="records"></param>
-        /// <returns></returns>
-        byte[]? BuildTodoItemsFile(IEnumerable<TodoItemRecord> records);
-    }
+    /// <param name="records"></param>
+    /// <returns></returns>
+    byte[]? BuildTodoItemsFile(IEnumerable<TodoItemRecord> records);
 }

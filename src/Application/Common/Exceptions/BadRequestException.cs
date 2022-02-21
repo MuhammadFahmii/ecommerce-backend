@@ -6,19 +6,18 @@
 
 using System;
 
-namespace netca.Application.Common.Exceptions
+namespace netca.Application.Common.Exceptions;
+
+/// <summary>
+/// BadRequestException
+/// </summary>
+public class BadRequestException : Exception
 {
     /// <summary>
-    /// BadRequestException
+    /// Initializes a new instance of the <see cref="BadRequestException"/> class.
     /// </summary>
-    public class BadRequestException : Exception
+    /// <param name="message"></param>
+    public BadRequestException(string message) : base(message)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BadRequestException"/> class.
-        /// </summary>
-        /// <param name="message"></param>
-        public BadRequestException(string message) : base(message)
-        {
-        }
     }
 }
