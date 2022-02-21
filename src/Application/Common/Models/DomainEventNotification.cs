@@ -7,27 +7,26 @@
 using MediatR;
 using netca.Domain.Common;
 
-namespace netca.Application.Common.Models
+namespace netca.Application.Common.Models;
+
+/// <summary>
+/// DomainEventNotification
+/// </summary>
+/// <typeparam name="TDomainEvent"></typeparam>
+public class DomainEventNotification<TDomainEvent> : INotification
+    where TDomainEvent : DomainEvent
 {
     /// <summary>
-    /// DomainEventNotification
+    /// Initializes a new instance of the <see cref="DomainEventNotification{TDomainEvent}"/> class.
     /// </summary>
-    /// <typeparam name="TDomainEvent"></typeparam>
-    public class DomainEventNotification<TDomainEvent> : INotification
-        where TDomainEvent : DomainEvent
+    /// <param name="domainEvent"></param>
+    public DomainEventNotification(TDomainEvent domainEvent)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DomainEventNotification{TDomainEvent}"/> class.
-        /// </summary>
-        /// <param name="domainEvent"></param>
-        public DomainEventNotification(TDomainEvent domainEvent)
-        {
-            DomainEvent = domainEvent;
-        }
-
-        /// <summary>
-        /// Gets domainEvent
-        /// </summary>
-        public TDomainEvent DomainEvent { get; }
+        DomainEvent = domainEvent;
     }
+
+    /// <summary>
+    /// Gets domainEvent
+    /// </summary>
+    public TDomainEvent DomainEvent { get; }
 }

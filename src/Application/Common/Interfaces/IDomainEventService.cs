@@ -7,18 +7,17 @@
 using System.Threading.Tasks;
 using netca.Domain.Common;
 
-namespace netca.Application.Common.Interfaces
+namespace netca.Application.Common.Interfaces;
+
+/// <summary>
+/// IDomainEventService
+/// </summary>
+public interface IDomainEventService
 {
     /// <summary>
-    /// IDomainEventService
+    /// Publish
     /// </summary>
-    public interface IDomainEventService
-    {
-        /// <summary>
-        /// Publish
-        /// </summary>
-        /// <param name="domainEvent"></param>
-        /// <returns></returns>
-        Task Publish(DomainEvent domainEvent);
-    }
+    /// <param name="domainEvent"></param>
+    /// <returns></returns>
+    Task Publish(DomainEvent domainEvent);
 }

@@ -13,73 +13,72 @@ using netca.Application.Common.Interfaces;
 using netca.Domain.Entities;
 using netca.Domain.Enums;
 
-namespace netca.Application.TodoItems.Commands.UpdateTodoItemDetail
+namespace netca.Application.TodoItems.Commands.UpdateTodoItemDetail;
+
+/// <summary>
+/// UpdateTodoItemDetailCommand
+/// </summary>
+public class UpdateTodoItemDetailCommand : IRequest
 {
     /// <summary>
-    /// UpdateTodoItemDetailCommand
+    /// Gets or sets id
     /// </summary>
-    public class UpdateTodoItemDetailCommand : IRequest
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets listId
+    /// </summary>
+    public Guid ListId { get; set; }
+
+    /// <summary>
+    /// Gets or sets priority
+    /// </summary>
+    public PriorityLevel Priority { get; set; }
+
+    /// <summary>
+    /// Gets or sets note
+    /// </summary>
+    public string? Note { get; set; }
+}
+
+/// <summary>
+/// UpdateTodoItemDetailCommandHandler
+/// </summary>
+public class UpdateTodoItemDetailCommandHandler : IRequestHandler<UpdateTodoItemDetailCommand>
+{
+    private readonly IApplicationDbContext _context;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UpdateTodoItemDetailCommandHandler"/> class.
+    /// </summary>
+    /// <param name="context"></param>
+    public UpdateTodoItemDetailCommandHandler(IApplicationDbContext context)
     {
-        /// <summary>
-        /// Gets or sets id
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets listId
-        /// </summary>
-        public Guid ListId { get; set; }
-
-        /// <summary>
-        /// Gets or sets priority
-        /// </summary>
-        public PriorityLevel Priority { get; set; }
-
-        /// <summary>
-        /// Gets or sets note
-        /// </summary>
-        public string? Note { get; set; }
+        _context = context;
     }
 
     /// <summary>
-    /// UpdateTodoItemDetailCommandHandler
+    /// Handle
     /// </summary>
-    public class UpdateTodoItemDetailCommandHandler : IRequestHandler<UpdateTodoItemDetailCommand>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotFoundException">Exception</exception>
+    public async Task<Unit> Handle(UpdateTodoItemDetailCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.TodoItems!.FindAsync(new object[] { request.Id }, cancellationToken);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateTodoItemDetailCommandHandler"/> class.
-        /// </summary>
-        /// <param name="context"></param>
-        public UpdateTodoItemDetailCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(TodoItem), request.Id);
         }
 
-        /// <summary>
-        /// Handle
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="NotFoundException">Exception</exception>
-        public async Task<Unit> Handle(UpdateTodoItemDetailCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.TodoItems!.FindAsync(new object[] { request.Id }, cancellationToken);
+        entity.ListId = request.ListId;
+        entity.Priority = request.Priority;
+        entity.Note = request.Note;
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(TodoItem), request.Id);
-            }
+        await _context.SaveChangesAsync(cancellationToken);
 
-            entity.ListId = request.ListId;
-            entity.Priority = request.Priority;
-            entity.Note = request.Note;
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

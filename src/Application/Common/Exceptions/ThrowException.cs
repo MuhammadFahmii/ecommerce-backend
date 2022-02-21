@@ -6,19 +6,18 @@
 
 using System;
 
-namespace netca.Application.Common.Exceptions
+namespace netca.Application.Common.Exceptions;
+
+/// <summary>
+/// ThrowException
+/// </summary>
+public class ThrowException : Exception
 {
     /// <summary>
-    /// ThrowException
+    /// Initializes a new instance of the <see cref="ThrowException"/> class.
     /// </summary>
-    public class ThrowException : Exception
+    /// <param name="message"></param>
+    public ThrowException(string message) : base(message)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ThrowException"/> class.
-        /// </summary>
-        /// <param name="message"></param>
-        public ThrowException(string message) : base(message)
-        {
-        }
     }
 }

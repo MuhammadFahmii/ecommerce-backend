@@ -6,39 +6,38 @@
 
 using System;
 
-namespace netca.Application.Common.Exceptions
+namespace netca.Application.Common.Exceptions;
+
+/// <summary>
+/// NotFoundException
+/// </summary>
+public class NotFoundException : Exception
 {
     /// <summary>
-    /// NotFoundException
+    /// Initializes a new instance of the <see cref="NotFoundException"/> class.
     /// </summary>
-    public class NotFoundException : Exception
+    /// <param name="message"></param>
+    public NotFoundException(string message) : base(message)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotFoundException"/> class.
-        /// </summary>
-        /// <param name="message"></param>
-        public NotFoundException(string message) : base(message)
-        {
-        }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotFoundException"/> class.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public NotFoundException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotFoundException"/> class.
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="innerException"></param>
+    public NotFoundException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotFoundException"/> class.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="key"></param>
-        public NotFoundException(string name, object key)
-            : base($"Entity \"{name}\" ({key}) was not found.")
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotFoundException"/> class.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="key"></param>
+    public NotFoundException(string name, object key)
+        : base($"Entity \"{name}\" ({key}) was not found.")
+    {
     }
 }

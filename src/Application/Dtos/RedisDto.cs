@@ -4,23 +4,22 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Application.Dtos
+namespace netca.Application.Dtos;
+
+/// <summary>
+/// RedisDto
+/// </summary>
+public class RedisDto
 {
     /// <summary>
-    /// RedisDto
+    /// Gets or sets code
     /// </summary>
-    public class RedisDto
-    {
-        /// <summary>
-        /// Gets or sets code
-        /// </summary>
-        /// <value></value>
-        public string? Key { get; set; }
+    /// <value></value>
+    public string? Key { get; set; }
 
-        /// <summary>
-        /// Gets or sets desc
-        /// </summary>
-        /// <value></value>
-        public string? Value { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets desc
+    /// </summary>
+    /// <value></value>
+    public string? Value { get; set; }
 }

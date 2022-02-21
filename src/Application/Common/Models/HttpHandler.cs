@@ -9,32 +9,33 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace netca.Application.Common.Models
+namespace netca.Application.Common.Models;
+
+/// <summary>
+/// HttpHandler
+/// </summary>
+public class HttpHandler : DelegatingHandler
 {
+    private static readonly ILogger Logger = AppLoggingExtensions.CreateLogger("HttpHandler");
+
     /// <summary>
-    /// HttpHandler
+    /// Initializes a new instance of the <see cref="HttpHandler"/> class.
     /// </summary>
-    public class HttpHandler : DelegatingHandler
+    /// <param name="innerHandler"></param>
+    public HttpHandler(HttpMessageHandler innerHandler) : base(innerHandler)
     {
-        private static readonly ILogger Logger = AppLoggingExtensions.CreateLogger("HttpHandler");
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HttpHandler"/> class.
-        /// </summary>
-        /// <param name="innerHandler"></param>
-        public HttpHandler(HttpMessageHandler innerHandler) : base(innerHandler)
-        { }
-
-        /// <summary>
-        /// SendAsync
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            Logger.LogDebug(request.RequestUri?.ToString());
-            return await base.SendAsync(request, cancellationToken);
-        }
+    /// <summary>
+    /// SendAsync
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+        CancellationToken cancellationToken)
+    {
+        Logger.LogDebug(request.RequestUri?.ToString());
+        return await base.SendAsync(request, cancellationToken);
     }
 }

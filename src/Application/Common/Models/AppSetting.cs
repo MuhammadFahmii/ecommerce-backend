@@ -6,624 +6,628 @@
 
 using System.Collections.Generic;
 
-namespace netca.Application.Common.Models
+namespace netca.Application.Common.Models;
+
+/// <summary>
+/// AppSetting
+/// </summary>
+public class AppSetting
 {
-     /// <summary>
-    /// AppSetting
+    /// <summary>
+    /// Gets or sets a value indicating whether isEnableAuth
     /// </summary>
-    public class AppSetting
-    {
-        /// <summary>
-        /// Gets or sets a value indicating whether isEnableAuth
-        /// </summary>
-        /// <value></value>
-        public bool IsEnableAuth { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether isEnableDetailError
-        /// </summary>
-        /// <value></value>
-        public bool IsEnableDetailError { get; set; }
-
-        /// <summary>
-        /// Gets or sets minimumSecondsBetweenFailureNotifications
-        /// </summary>
-        /// <value></value>
-        public int MinimumSecondsBetweenFailureNotifications { get; set; } = 60;
-
-        /// <summary>
-        /// Gets or sets requestPerformanceInMs
-        /// </summary>
-        /// <value></value>
-        public int RequestPerformanceInMs { get; set; } = 500;
-
-        /// <summary>
-        /// Gets or sets connectionStrings
-        /// </summary>
-        /// <returns></returns>
-        public ConnectionStrings ConnectionStrings { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets kestrel
-        /// </summary>
-        /// <returns></returns>
-        public Kestrel Kestrel { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets corsOrigin
-        /// </summary>
-        /// <value></value>
-        public string CorsOrigin { get; set; } = "https://*.unitedtractors.com";
-
-        /// <summary>
-        /// Gets or sets bot
-        /// </summary>
-        /// <returns></returns>
-        public Bot Bot { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets authorizationServer
-        /// </summary>
-        /// <returns></returns>
-        public AuthorizationServer AuthorizationServer { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets databaseSettings
-        /// </summary>
-        /// <returns></returns>
-        public DatabaseSettings DatabaseSettings { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets dataLifetime
-        /// </summary>
-        /// <returns></returns>
-        public DataLifetime DataLifetime { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets app
-        /// </summary>
-        /// <returns></returns>
-        public App App { get; set; } = new App();
-
-        /// <summary>
-        /// Gets or sets redisServer
-        /// </summary>
-        /// <returns></returns>
-        public RedisServer RedisServer { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets backgroundJob
-        /// </summary>
-        public BackgroundJob BackgroundJob { get; set; } = new();
-    }
+    /// <value></value>
+    public bool IsEnableAuth { get; set; } = true;
 
     /// <summary>
-    /// AuthorizationServer
+    /// Gets or sets a value indicating whether isEnableDetailError
     /// </summary>
-    public class AuthorizationServer
-    {
-        /// <summary>
-        /// Gets or sets gateway
-        /// </summary>
-        /// <value></value>
-        public string Gateway { get; set; } = "https://gateway-dev.unitedtractors.com/dev/internal";
-
-        /// <summary>
-        /// Gets or sets address
-        /// </summary>
-        /// <value></value>
-        public string Address { get; set; } = "http://usermanagementservice.dev-rke.unitedtractors.com";
-
-        /// <summary>
-        /// Gets or sets whiteListPathSegment
-        /// </summary>
-        /// <value></value>
-        public string WhiteListPathSegment { get; set; } = "/swagger,/health";
-
-        /// <summary>
-        /// Gets or sets header
-        /// </summary>
-        public string Header { get; set; } = "Ocp-Apim-Subscription-Key";
-
-        /// <summary>
-        /// Gets or sets secret
-        /// </summary>
-        /// <value></value>
-        public string Secret { get; set; } = "";
-
-        /// <summary>
-        /// Gets or sets service
-        /// </summary>
-        /// <value></value>
-        public string Service { get; set; } = "netca";
-
-        /// <summary>
-        /// Gets or sets policy
-        /// </summary>
-        /// <value></value>
-        public List<Policy?> Policy { get; set; } = new();
-    }
+    /// <value></value>
+    public bool IsEnableDetailError { get; set; }
 
     /// <summary>
-    /// Policy
+    /// Gets or sets minimumSecondsBetweenFailureNotifications
     /// </summary>
-    public class Policy
-    {
-        /// <summary>
-        /// Gets or sets name
-        /// </summary>
-        /// <value></value>
-        public string Name { get; set; } = "";
-
-        /// <summary>
-        /// Gets or sets a value indicating whether isCheck
-        /// </summary>
-        /// <value></value>
-        public bool IsCheck { get; set; } = false;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether isCache
-        /// </summary>
-        /// <value></value>
-        public bool IsCache { get; set; } = false;
-    }
+    /// <value></value>
+    public int MinimumSecondsBetweenFailureNotifications { get; set; } = 60;
 
     /// <summary>
-    /// DatabaseSettings
+    /// Gets or sets requestPerformanceInMs
     /// </summary>
-    public class DatabaseSettings
-    {
-        /// <summary>
-        /// Gets or sets maxRetryDelay
-        /// </summary>
-        /// <value></value>
-        public int MaxRetryDelay { get; set; } = 5;
-
-        /// <summary>
-        /// Gets or sets maxRetryCount
-        /// </summary>
-        /// <value></value>
-        public int MaxRetryCount { get; set; } = 100;
-
-        /// <summary>
-        /// Gets or sets commandTimeout
-        /// </summary>
-        /// <value></value>
-        public int CommandTimeout { get; set; } = 60;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether migrations
-        /// </summary>
-        /// <value></value>
-        public bool Migrations { get; set; } = false;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether seedData
-        /// </summary>
-        /// <value></value>
-        public bool SeedData { get; set; } = false;
-    }
+    /// <value></value>
+    public int RequestPerformanceInMs { get; set; } = 500;
 
     /// <summary>
-    /// DataLifetime
+    /// Gets or sets connectionStrings
     /// </summary>
-    public record DataLifetime
-    {
-        /// <summary>
-        /// Gets or sets changelog
-        /// </summary>
-        /// <value></value>
-        public int Changelog { get; set; } = 180;
-    }
+    /// <returns></returns>
+    public ConnectionStrings ConnectionStrings { get; set; } = new();
 
     /// <summary>
-    /// App
+    /// Gets or sets kestrel
     /// </summary>
-    public class App
-    {
-        /// <summary>
-        /// Gets or sets title
-        /// </summary>
-        /// <value></value>
-        public string Title { get; set; } = "netca API";
-
-        /// <summary>
-        /// Gets or sets description
-        /// </summary>
-        /// <value></value>
-        public string Description { get; set; } = "This is awesome app";
-
-        /// <summary>
-        /// Gets or sets version
-        /// </summary>
-        /// <value></value>
-        public string Version { get; set; } = "1.0.0";
-
-        /// <summary>
-        /// Gets or sets appContact
-        /// </summary>
-        /// <value></value>
-        public AppContact AppContact { get; set; } = new();
-    }
+    /// <returns></returns>
+    public Kestrel Kestrel { get; set; } = new();
 
     /// <summary>
-    /// Kestrel
+    /// Gets or sets corsOrigin
     /// </summary>
-    public class Kestrel
-    {
-        /// <summary>
-        /// Gets or sets keepAliveTimeoutInM
-        /// </summary>
-        /// <value></value>
-        public int KeepAliveTimeoutInM { get; set; } = 2;
-
-        /// <summary>
-        /// Gets or sets minRequestBodyDataRate
-        /// </summary>
-        /// <value></value>
-        public MinRequestBodyDataRate MinRequestBodyDataRate { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets minResponseDataRate
-        /// </summary>
-        /// <value></value>
-        public MinResponseDataRate MinResponseDataRate { get; set; } = new();
-    }
+    /// <value></value>
+    public string CorsOrigin { get; set; } = "https://*.unitedtractors.com";
 
     /// <summary>
-    /// MinRequestBodyDataRate
+    /// Gets or sets bot
     /// </summary>
-    public class MinRequestBodyDataRate
-    {
-        /// <summary>
-        /// Gets or sets bytesPerSecond
-        /// </summary>
-        /// <value></value>
-        public double BytesPerSecond { get; set; } = 100;
-
-        /// <summary>
-        /// Gets or sets gracePeriod
-        /// </summary>
-        /// <value></value>
-        public int GracePeriod { get; set; } = 10;
-    }
+    /// <returns></returns>
+    public Bot Bot { get; set; } = new();
 
     /// <summary>
-    /// MinResponseDataRate
+    /// Gets or sets authorizationServer
     /// </summary>
-    public class MinResponseDataRate
-    {
-        /// <summary>
-        /// Gets or sets bytesPerSecond
-        /// </summary>
-        /// <value></value>
-        public double BytesPerSecond { get; set; } = 100;
-
-        /// <summary>
-        /// Gets or sets gracePeriod
-        /// </summary>
-        /// <value></value>
-        public int GracePeriod { get; set; } = 10;
-    }
+    /// <returns></returns>
+    public AuthorizationServer AuthorizationServer { get; set; } = new();
 
     /// <summary>
-    /// AppContact
+    /// Gets or sets databaseSettings
     /// </summary>
-    public class AppContact
-    {
-        /// <summary>
-        /// Gets or sets company
-        /// </summary>
-        /// <value></value>
-        public string Company { get; set; } = "PT United Tractors Tbk";
-
-        /// <summary>
-        /// Gets or sets email
-        /// </summary>
-        /// <value></value>
-        public string Email { get; set; } = "cst_dev42@unitedtractors.com";
-
-        /// <summary>
-        /// Gets or sets uri
-        /// </summary>
-        /// <value></value>
-        public string Uri { get; set; } = "https://www.unitedtractors.com";
-    }
+    /// <returns></returns>
+    public DatabaseSettings DatabaseSettings { get; set; } = new();
 
     /// <summary>
-    /// Bot
+    /// Gets or sets dataLifetime
     /// </summary>
-    public class Bot
-    {
-        /// <summary>
-        /// Gets or sets a value indicating whether isEnable
-        /// </summary>
-        /// <value></value>
-        public bool IsEnable { get; set; } = false;
-
-        /// <summary>
-        /// Gets or sets serviceName
-        /// </summary>
-        /// <value></value>
-        public string ServiceName { get; set; } = "DCA - netca";
-
-        /// <summary>
-        /// Gets or sets serviceDomain
-        /// </summary>
-        /// <value></value>
-        public string ServiceDomain { get; set; } = "netca.dev-aks.unitedtractors.com";
-
-        /// <summary>
-        /// Gets or sets address
-        /// </summary>
-        /// <value></value>
-        public string Address { get; set; } = "https://gateway-dev.unitedtractors.com/dev/internal/dad/msteams";
-
-        /// <summary>
-        /// Gets or sets header
-        /// </summary>
-        public string Header { get; set; } = "Ocp-Apim-Subscription-Key";
-
-        /// <summary>
-        /// Gets or sets secret
-        /// </summary>
-        /// <value></value>
-        public string Secret { get; set; } = "";
-
-        /// <summary>
-        /// Gets or sets cacheMsTeam
-        /// </summary>
-        /// <value></value>
-        public CacheMsTeam CacheMsTeam { get; set; } = new();
-    }
+    /// <returns></returns>
+    public DataLifetime DataLifetime { get; set; } = new();
 
     /// <summary>
-    /// ConnectionStrings
+    /// Gets or sets app
     /// </summary>
-    public class ConnectionStrings
-    {
-        /// <summary>
-        /// Gets or sets netcaDb
-        /// </summary>
-        /// <returns></returns>
-        public string DefaultConnection { get; set; } = "netca.db";
-    }
+    /// <returns></returns>
+    public App App { get; set; } = new App();
 
     /// <summary>
-    /// Messaging
+    /// Gets or sets redisServer
     /// </summary>
-    public class Messaging
-    {
-        /// <summary>
-        /// Gets or sets azureEventHub
-        /// </summary>
-        /// <value></value>
-        public List<AzureEventHub> AzureEventHub { get; set; } = new();
-    }
+    /// <returns></returns>
+    public RedisServer RedisServer { get; set; } = new();
 
     /// <summary>
-    /// AzureEventHub
+    /// Gets or sets backgroundJob
     /// </summary>
-    public class AzureEventHub
-    {
-        /// <summary>
-        /// Gets or sets name
-        /// </summary>
-        /// <value></value>
-        public string Name { get; set; } = "dca";
+    public BackgroundJob BackgroundJob { get; set; } = new();
+}
 
-        /// <summary>
-        /// Gets or sets connectionString
-        /// </summary>
-        /// <value></value>
-        public string ConnectionString { get; set; } = "DCA_Tracking_Service";
-
-        /// <summary>
-        /// Gets or sets storageAccount
-        /// </summary>
-        /// <value></value>
-        public string StorageAccount { get; set; } = "DCA_Tracking_Service";
-
-        /// <summary>
-        /// Gets or sets blobContainerName
-        /// </summary>
-        /// <value></value>
-        public string BlobContainerName { get; set; } = "DCA_Tracking_Service";
-
-        /// <summary>
-        /// Gets or sets topic
-        /// </summary>
-        /// <value></value>
-        public List<EventHubTopic> Topics { get; set; } = new();
-    }
+/// <summary>
+/// AuthorizationServer
+/// </summary>
+public class AuthorizationServer
+{
+    /// <summary>
+    /// Gets or sets gateway
+    /// </summary>
+    /// <value></value>
+    public string Gateway { get; set; } = "https://gateway-dev.unitedtractors.com/dev/internal";
 
     /// <summary>
-    /// EventHubTopic
+    /// Gets or sets address
     /// </summary>
-    public class EventHubTopic
-    {
-        /// <summary>
-        /// Gets or sets name
-        /// </summary>
-        /// <value></value>
-        public string Name { get; set; } = "dca_assignmentservice_assignments_v1";
-
-        /// <summary>
-        /// Gets or sets groupName
-        /// </summary>
-        /// <value></value>
-        public string GroupName { get; set; } = "$Default";
-
-        /// <summary>
-        /// Gets or sets value
-        /// </summary>
-        /// <value></value>
-        public string Value { get; set; } = "dca_assignmentservice_assignments_v1";
-    }
+    /// <value></value>
+    public string Address { get; set; } = "http://usermanagementservice.dev-rke.unitedtractors.com";
 
     /// <summary>
-    /// Topic
+    /// Gets or sets whiteListPathSegment
     /// </summary>
-    public class Topic
-    {
-        /// <summary>
-        /// Gets or sets topic for Consume EquipmentMonitoring from UT Portal
-        /// </summary>
-        /// <value></value>
-        public string EquipmentMonitoring { get; set; } = "utportal_equipmentmonitoringservice_equipment_v1";
-    }
+    /// <value></value>
+    public string WhiteListPathSegment { get; set; } = "/swagger,/health";
 
     /// <summary>
-    /// RedisServer
+    /// Gets or sets header
     /// </summary>
-    public class RedisServer
-    {
-        /// <summary>
-        /// Gets or sets server
-        /// </summary>
-        /// <value></value>
-        public string? Server { get; set; } = "";
-
-        /// <summary>
-        /// Gets or sets instanceName
-        /// </summary>
-        /// <value></value>
-        public string InstanceName { get; set; } = "redis";
-
-        /// <summary>
-        /// Gets or sets databaseNumber
-        /// </summary>
-        public int DatabaseNumber { get; set; } = 0;
-
-        /// <summary>
-        /// Gets or sets requestExpiryInMinutes
-        /// </summary>
-        /// <value></value>
-        public int RequestExpiryInMinutes { get; set; } = 30;
-
-        /// <summary>
-        /// Gets or sets messageExpiryInDays
-        /// </summary>
-        /// <value></value>
-        public int MessageExpiryInDays { get; set; } = 180;
-
-        /// <summary>
-        /// Gets or sets policy
-        /// </summary>
-        /// <value></value>
-        public List<Policy> Policy { get; set; } = new();
-    }
+    public string Header { get; set; } = "Ocp-Apim-Subscription-Key";
 
     /// <summary>
-    /// BackgroundJob
+    /// Gets or sets secret
     /// </summary>
-    public class BackgroundJob
-    {
-        /// <summary>
-        /// Gets or sets a value indicating whether isEnable
-        /// </summary>
-        public bool IsEnable { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether usePersistentStore
-        /// </summary>
-        public bool UsePersistentStore { get; set; } = false;
-
-        /// <summary>
-        /// Gets or sets persistentStore
-        /// </summary>
-        public PersistentStore PersistentStore { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets jobs
-        /// </summary>
-        public List<Job> Jobs { get; set; } = new();
-    }
+    /// <value></value>
+    public string Secret { get; set; } = "";
 
     /// <summary>
-    /// PersistentStore
+    /// Gets or sets service
     /// </summary>
-    public class PersistentStore
-    {
-        /// <summary>
-        /// Gets or sets connectionString
-        /// </summary>
-        public string ConnectionString { get; set; } = "";
-
-        /// <summary>
-        /// Gets or sets a value indicating whether ignoreDuplicates
-        /// </summary>
-        public bool IgnoreDuplicates { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether overWriteExistingData
-        /// </summary>
-        public bool OverWriteExistingData { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether ScheduleTriggerRelativeToReplacedTrigger
-        /// </summary>
-        public bool ScheduleTriggerRelativeToReplacedTrigger { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets maxConcurrency
-        /// </summary>
-        public int MaxConcurrency { get; set; } = 10;
-
-        /// <summary>
-        /// Gets or sets retryInterval
-        /// </summary>
-        public int RetryInterval { get; set; } = 15;
-
-        /// <summary>
-        /// Gets or sets checkinInterval
-        /// </summary>
-        public int CheckinInterval { get; set; } = 15000;
-
-        /// <summary>
-        /// Gets or sets checkinMisfireThreshold
-        /// </summary>
-        public int CheckinMisfireThreshold { get; set; } = 15000;
-
-        /// <summary>
-        /// Gets or sets misfireThreshold
-        /// </summary>
-        public int MisfireThreshold { get; set; } = 15000;
-
-        /// <summary>
-        /// Gets or sets tablePrefix
-        /// </summary>
-        public string TablePrefix { get; set; } = "QRTZ_";
-    }
+    /// <value></value>
+    public string Service { get; set; } = "netca";
 
     /// <summary>
-    /// Job
+    /// Gets or sets policy
     /// </summary>
-    public class Job
-    {
-        /// <summary>
-        /// Gets or sets name
-        /// </summary>
-        public string Name { get; set; } = "";
+    /// <value></value>
+    public List<Policy?> Policy { get; set; } = new();
+}
 
-        /// <summary>
-        /// Gets or sets a value indicating whether isParallel
-        /// </summary>
-        public bool IsParallel { get; set; } = false;
+/// <summary>
+/// Policy
+/// </summary>
+public class Policy
+{
+    /// <summary>
+    /// Gets or sets name
+    /// </summary>
+    /// <value></value>
+    public string Name { get; set; } = "";
 
-        /// <summary>
-        /// Gets or sets a value indicating whether isEnable
-        /// </summary>
-        public bool IsEnable { get; set; } = false;
+    /// <summary>
+    /// Gets or sets a value indicating whether isCheck
+    /// </summary>
+    /// <value></value>
+    public bool IsCheck { get; set; } = false;
 
-        /// <summary>
-        /// Gets or sets schedule
-        /// </summary>
-        public string Schedule { get; set; } = "";
+    /// <summary>
+    /// Gets or sets a value indicating whether isCache
+    /// </summary>
+    /// <value></value>
+    public bool IsCache { get; set; } = false;
+}
 
-        /// <summary>
-        /// Gets or sets description
-        /// </summary>
-        public string Description { get; set; } = "";
-    }
+/// <summary>
+/// DatabaseSettings
+/// </summary>
+public class DatabaseSettings
+{
+    /// <summary>
+    /// Gets or sets maxRetryDelay
+    /// </summary>
+    /// <value></value>
+    public int MaxRetryDelay { get; set; } = 5;
+
+    /// <summary>
+    /// Gets or sets maxRetryCount
+    /// </summary>
+    /// <value></value>
+    public int MaxRetryCount { get; set; } = 100;
+
+    /// <summary>
+    /// Gets or sets commandTimeout
+    /// </summary>
+    /// <value></value>
+    public int CommandTimeout { get; set; } = 60;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether migrations
+    /// </summary>
+    /// <value></value>
+    public bool Migrations { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether seedData
+    /// </summary>
+    /// <value></value>
+    public bool SeedData { get; set; } = false;
+}
+
+/// <summary>
+/// DataLifetime
+/// </summary>
+public record DataLifetime
+{
+    /// <summary>
+    /// Gets or sets changelog
+    /// </summary>
+    /// <value></value>
+    public int Changelog { get; set; } = 180;
+}
+
+/// <summary>
+/// App
+/// </summary>
+public class App
+{
+    /// <summary>
+    /// Gets or sets title
+    /// </summary>
+    /// <value></value>
+    public string Title { get; set; } = "netca API";
+
+    /// <summary>
+    /// Gets or sets description
+    /// </summary>
+    /// <value></value>
+    public string Description { get; set; } = "This is awesome app";
+
+    /// <summary>
+    /// Gets or sets version
+    /// </summary>
+    /// <value></value>
+    public string Version { get; set; } = "1.0.0";
+
+    /// <summary>
+    /// Gets or sets appContact
+    /// </summary>
+    /// <value></value>
+    public AppContact AppContact { get; set; } = new();
+}
+
+/// <summary>
+/// Kestrel
+/// </summary>
+public class Kestrel
+{
+    /// <summary>
+    /// Gets or sets keepAliveTimeoutInM
+    /// </summary>
+    /// <value></value>
+    public int KeepAliveTimeoutInM { get; set; } = 2;
+
+    /// <summary>
+    /// Gets or sets minRequestBodyDataRate
+    /// </summary>
+    /// <value></value>
+    public MinRequestBodyDataRate MinRequestBodyDataRate { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets minResponseDataRate
+    /// </summary>
+    /// <value></value>
+    public MinResponseDataRate MinResponseDataRate { get; set; } = new();
+}
+
+/// <summary>
+/// MinRequestBodyDataRate
+/// </summary>
+public class MinRequestBodyDataRate
+{
+    /// <summary>
+    /// Gets or sets bytesPerSecond
+    /// </summary>
+    /// <value></value>
+    public double BytesPerSecond { get; set; } = 100;
+
+    /// <summary>
+    /// Gets or sets gracePeriod
+    /// </summary>
+    /// <value></value>
+    public int GracePeriod { get; set; } = 10;
+}
+
+/// <summary>
+/// MinResponseDataRate
+/// </summary>
+public class MinResponseDataRate
+{
+    /// <summary>
+    /// Gets or sets bytesPerSecond
+    /// </summary>
+    /// <value></value>
+    public double BytesPerSecond { get; set; } = 100;
+
+    /// <summary>
+    /// Gets or sets gracePeriod
+    /// </summary>
+    /// <value></value>
+    public int GracePeriod { get; set; } = 10;
+}
+
+/// <summary>
+/// AppContact
+/// </summary>
+public class AppContact
+{
+    /// <summary>
+    /// Gets or sets company
+    /// </summary>
+    /// <value></value>
+    public string Company { get; set; } = "PT United Tractors Tbk";
+
+    /// <summary>
+    /// Gets or sets email
+    /// </summary>
+    /// <value></value>
+    public string Email { get; set; } = "cst_dev42@unitedtractors.com";
+
+    /// <summary>
+    /// Gets or sets uri
+    /// </summary>
+    /// <value></value>
+    public string Uri { get; set; } = "https://www.unitedtractors.com";
+}
+
+/// <summary>
+/// Bot
+/// </summary>
+public class Bot
+{
+    /// <summary>
+    /// Gets or sets a value indicating whether isEnable
+    /// </summary>
+    /// <value></value>
+    public bool IsEnable { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets serviceName
+    /// </summary>
+    /// <value></value>
+    public string ServiceName { get; set; } = "DCA - netca";
+
+    /// <summary>
+    /// Gets or sets serviceDomain
+    /// </summary>
+    /// <value></value>
+    public string ServiceDomain { get; set; } = "netca.dev-aks.unitedtractors.com";
+
+    /// <summary>
+    /// Gets or sets address
+    /// </summary>
+    /// <value></value>
+    public string Address { get; set; } = "https://gateway-dev.unitedtractors.com/dev/internal/dad/msteams";
+
+    /// <summary>
+    /// Gets or sets header
+    /// </summary>
+    public string Header { get; set; } = "Ocp-Apim-Subscription-Key";
+
+    /// <summary>
+    /// Gets or sets secret
+    /// </summary>
+    /// <value></value>
+    public string Secret { get; set; } = "";
+
+    /// <summary>
+    /// Gets or sets cacheMsTeam
+    /// </summary>
+    /// <value></value>
+    public CacheMsTeam CacheMsTeam { get; set; } = new();
+}
+
+/// <summary>
+/// ConnectionStrings
+/// </summary>
+public class ConnectionStrings
+{
+    /// <summary>
+    /// Gets or sets netcaDb
+    /// </summary>
+    /// <returns></returns>
+    public string DefaultConnection { get; set; } = "netca.db";
+}
+
+/// <summary>
+/// Messaging
+/// </summary>
+public class Messaging
+{
+    /// <summary>
+    /// Gets or sets azureEventHub
+    /// </summary>
+    /// <value></value>
+    public List<AzureEventHub> AzureEventHub { get; set; } = new();
+}
+
+/// <summary>
+/// AzureEventHub
+/// </summary>
+public class AzureEventHub
+{
+    /// <summary>
+    /// Gets or sets name
+    /// </summary>
+    /// <value></value>
+    public string Name { get; set; } = "dca";
+
+    /// <summary>
+    /// Gets or sets connectionString
+    /// </summary>
+    /// <value></value>
+    public string ConnectionString { get; set; } = "DCA_Tracking_Service";
+
+    /// <summary>
+    /// Gets or sets storageAccount
+    /// </summary>
+    /// <value></value>
+    public string StorageAccount { get; set; } = "DCA_Tracking_Service";
+
+    /// <summary>
+    /// Gets or sets blobContainerName
+    /// </summary>
+    /// <value></value>
+    public string BlobContainerName { get; set; } = "DCA_Tracking_Service";
+
+    /// <summary>
+    /// Gets or sets topic
+    /// </summary>
+    /// <value></value>
+    public List<EventHubTopic> Topics { get; set; } = new();
+}
+
+/// <summary>
+/// EventHubTopic
+/// </summary>
+public class EventHubTopic
+{
+    /// <summary>
+    /// Gets or sets name
+    /// </summary>
+    /// <value></value>
+    public string Name { get; set; } = "dca_assignmentservice_assignments_v1";
+
+    /// <summary>
+    /// Gets or sets groupName
+    /// </summary>
+    /// <value></value>
+    public string GroupName { get; set; } = "$Default";
+
+    /// <summary>
+    /// Gets or sets value
+    /// </summary>
+    /// <value></value>
+    public string Value { get; set; } = "dca_assignmentservice_assignments_v1";
+}
+
+/// <summary>
+/// Topic
+/// </summary>
+public class Topic
+{
+    /// <summary>
+    /// Gets or sets topic for Consume EquipmentMonitoring from UT Portal
+    /// </summary>
+    /// <value></value>
+    public string EquipmentMonitoring { get; set; } = "utportal_equipmentmonitoringservice_equipment_v1";
+}
+
+/// <summary>
+/// RedisServer
+/// </summary>
+public class RedisServer
+{
+    /// <summary>
+    /// Gets or sets server
+    /// </summary>
+    /// <value></value>
+    public string? Server { get; set; } = "";
+
+    /// <summary>
+    /// Gets or sets instanceName
+    /// </summary>
+    /// <value></value>
+    public string InstanceName { get; set; } = "redis";
+
+    /// <summary>
+    /// Gets or sets databaseNumber
+    /// </summary>
+    public int DatabaseNumber { get; set; } = 0;
+
+    /// <summary>
+    /// Gets or sets requestExpiryInMinutes
+    /// </summary>
+    /// <value></value>
+    public int RequestExpiryInMinutes { get; set; } = 30;
+
+    /// <summary>
+    /// Gets or sets messageExpiryInDays
+    /// </summary>
+    /// <value></value>
+    public int MessageExpiryInDays { get; set; } = 180;
+
+    /// <summary>
+    /// Gets or sets policy
+    /// </summary>
+    /// <value></value>
+    public List<Policy> Policy { get; set; } = new();
+}
+
+/// <summary>
+/// BackgroundJob
+/// </summary>
+public class BackgroundJob
+{
+    /// <summary>
+    /// Gets or sets a value indicating whether isEnable
+    /// </summary>
+    public bool IsEnable { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether usePersistentStore
+    /// </summary>
+    public bool UsePersistentStore { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets persistentStore
+    /// </summary>
+    public PersistentStore PersistentStore { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets jobs
+    /// </summary>
+    public List<Job> Jobs { get; set; } = new();
+}
+
+/// <summary>
+/// PersistentStore
+/// </summary>
+public class PersistentStore
+{
+    /// <summary>
+    /// Gets or sets connectionString
+    /// </summary>
+    public string ConnectionString { get; set; } = "";
+
+    /// <summary>
+    /// Gets or sets a value indicating whether ignoreDuplicates
+    /// </summary>
+    public bool IgnoreDuplicates { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether overWriteExistingData
+    /// </summary>
+    public bool OverWriteExistingData { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether ScheduleTriggerRelativeToReplacedTrigger
+    /// </summary>
+    public bool ScheduleTriggerRelativeToReplacedTrigger { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets maxConcurrency
+    /// </summary>
+    public int MaxConcurrency { get; set; } = 10;
+
+    /// <summary>
+    /// Gets or sets retryInterval
+    /// </summary>
+    public int RetryInterval { get; set; } = 15;
+
+    /// <summary>
+    /// Gets or sets checkinInterval
+    /// </summary>
+    public int CheckinInterval { get; set; } = 15000;
+
+    /// <summary>
+    /// Gets or sets checkinMisfireThreshold
+    /// </summary>
+    public int CheckinMisfireThreshold { get; set; } = 15000;
+
+    /// <summary>
+    /// Gets or sets misfireThreshold
+    /// </summary>
+    public int MisfireThreshold { get; set; } = 15000;
+
+    /// <summary>
+    /// Gets or sets tablePrefix
+    /// </summary>
+    public string TablePrefix { get; set; } = "QRTZ_";
+}
+
+/// <summary>
+/// Job
+/// </summary>
+public class Job
+{
+    /// <summary>
+    /// Gets or sets name
+    /// </summary>
+    public string Name { get; set; } = "";
+
+    /// <summary>
+    /// IgnoreMisfire
+    /// </summary>
+    public bool IgnoreMisfire { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether isParallel
+    /// </summary>
+    public bool IsParallel { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether isEnable
+    /// </summary>
+    public bool IsEnable { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets schedule
+    /// </summary>
+    public string Schedule { get; set; } = "";
+
+    /// <summary>
+    /// Gets or sets description
+    /// </summary>
+    public string Description { get; set; } = "";
 }

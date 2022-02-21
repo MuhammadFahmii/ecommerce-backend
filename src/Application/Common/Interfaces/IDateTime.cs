@@ -6,23 +6,22 @@
 
 using System;
 
-namespace netca.Application.Common.Interfaces
+namespace netca.Application.Common.Interfaces;
+
+/// <summary>
+/// IDateTime
+/// </summary>
+public interface IDateTime
 {
     /// <summary>
-    /// IDateTime
+    /// Gets now
     /// </summary>
-    public interface IDateTime
-    {
-        /// <summary>
-        /// Gets now
-        /// </summary>
-        /// <value></value>
-        DateTime Now { get; }
+    /// <value></value>
+    DateTime Now { get; }
 
-        /// <summary>
-        /// Gets utcNow
-        /// </summary>
-        /// <value></value>
-        DateTime UtcNow { get; }
-    }
+    /// <summary>
+    /// Gets utcNow
+    /// </summary>
+    /// <value></value>
+    DateTime UtcNow { get; }
 }

@@ -11,26 +11,25 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using netca.Application.Common.Behaviours;
 
-namespace netca.Application
+namespace netca.Application;
+
+/// <summary>
+/// DependencyInjection
+/// </summary>
+public static class DependencyInjection
 {
     /// <summary>
-    /// DependencyInjection
+    /// AddApplication
     /// </summary>
-    public static class DependencyInjection
+    /// <param name="services"></param>
+    public static void AddApplication(this IServiceCollection services)
     {
-        /// <summary>
-        /// AddApplication
-        /// </summary>
-        /// <param name="services"></param>
-        public static void AddApplication(this IServiceCollection services)
-        {
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            services.AddMediatR(Assembly.GetExecutingAssembly());
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestBehaviour<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-        }
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
     }
 }

@@ -72,8 +72,7 @@ namespace netca.Application.Common.Behaviours
                         _logger.LogWarning("The request has been canceled");
                         break;
                 }
-
-                throw new ThrowException(e.Message);
+                throw;
             }
         }
     }

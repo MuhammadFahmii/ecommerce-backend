@@ -6,21 +6,20 @@
 
 using FluentValidation;
 
-namespace netca.Application.TodoItems.Commands.CreateTodoItem
+namespace netca.Application.TodoItems.Commands.CreateTodoItem;
+
+/// <summary>
+/// CreateTodoItemCommandValidator
+/// </summary>
+public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCommand>
 {
     /// <summary>
-    /// CreateTodoItemCommandValidator
+    /// Initializes a new instance of the <see cref="CreateTodoItemCommandValidator"/> class.
     /// </summary>
-    public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCommand>
+    public CreateTodoItemCommandValidator()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreateTodoItemCommandValidator"/> class.
-        /// </summary>
-        public CreateTodoItemCommandValidator()
-        {
-            RuleFor(x => x.Title)
-                .MaximumLength(200)
-                .NotEmpty();
-        }
+        RuleFor(x => x.Title)
+            .MaximumLength(200)
+            .NotEmpty();
     }
 }

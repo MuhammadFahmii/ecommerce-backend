@@ -6,17 +6,16 @@
 
 using System;
 
-namespace netca.Application.Common.Vms
+namespace netca.Application.Common.Vms;
+
+/// <summary>
+/// CreatedVm
+/// </summary>
+public class CreatedVm
 {
     /// <summary>
-    /// CreatedVm
+    /// Gets or sets id
     /// </summary>
-    public class CreatedVm
-    {
-        /// <summary>
-        /// Gets or sets id
-        /// </summary>
-        /// <value></value>
-        public Guid Id { get; set; } = Guid.NewGuid();
-    }
+    /// <value></value>
+    public Guid Id { get; set; } = Guid.NewGuid();
 }

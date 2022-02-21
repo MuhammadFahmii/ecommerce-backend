@@ -9,41 +9,40 @@ using System.Linq;
 using System.Reflection;
 using AutoMapper;
 
-namespace netca.Application.Common.Mappings
+namespace netca.Application.Common.Mappings;
+
+/// <summary>
+/// MappingProfile
+/// </summary>
+public class MappingProfile : Profile
 {
     /// <summary>
-    /// MappingProfile
+    /// Initializes a new instance of the <see cref="MappingProfile"/> class.
     /// </summary>
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MappingProfile"/> class.
-        /// </summary>
-        public MappingProfile()
+        ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+    }
+
+    /// <summary>
+    /// ApplyMappingsFromAssembly
+    /// </summary>
+    /// <param name="assembly"></param>
+    private void ApplyMappingsFromAssembly(Assembly assembly)
+    {
+        var types = assembly.GetExportedTypes()
+            .Where(t => t.GetInterfaces().Any(i =>
+                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
+            .ToList();
+
+        foreach (var type in types)
         {
-            ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
-        }
+            var instance = Activator.CreateInstance(type);
 
-        /// <summary>
-        /// ApplyMappingsFromAssembly
-        /// </summary>
-        /// <param name="assembly"></param>
-        private void ApplyMappingsFromAssembly(Assembly assembly)
-        {
-            var types = assembly.GetExportedTypes()
-                .Where(t => t.GetInterfaces().Any(i =>
-                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
-                .ToList();
+            var methodInfo = type.GetMethod("Mapping")
+                             ?? type.GetInterface("IMapFrom`1")?.GetMethod("Mapping");
 
-            foreach (var type in types)
-            {
-                var instance = Activator.CreateInstance(type);
-
-                var methodInfo = type.GetMethod("Mapping")
-                                 ?? type.GetInterface("IMapFrom`1")?.GetMethod("Mapping");
-
-                methodInfo?.Invoke(instance, new object[] { this });
-            }
+            methodInfo?.Invoke(instance, new object[] { this });
         }
     }
 }
