@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using netca.Application.Common.Exceptions;
 
 namespace netca.Application.Common.Behaviours
 {
@@ -46,9 +47,20 @@ namespace netca.Application.Common.Behaviours
             }
             catch (Exception ex)
             {
-                var requestName = typeof(TRequest).Name;
-
-                _logger.LogWarning(ex, "netca Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+                switch (ex)
+                {
+                    case OperationCanceledException:
+                        _logger.LogWarning("The request has been canceled");
+                        break;
+                    case ValidationException:
+                    case BadRequestException:
+                    case NotFoundException:
+                        break;
+                    default:
+                        var requestName = typeof(TRequest).Name;
+                        _logger.LogWarning(ex, "netca Request: Unhandled Exception for Request {Name} {Request}", requestName, request);
+                        break;
+                }
 
                 throw;
             }
