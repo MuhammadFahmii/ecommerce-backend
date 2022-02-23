@@ -4,7 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -43,37 +42,23 @@ namespace netca.Application.Common.Behaviours
             TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             var requestType = typeof(TRequest).Name;
+            var response = await next();
 
-            try
+            if (requestType.EndsWith("Command"))
             {
-                var response = await next();
-
-                if (requestType.EndsWith("Command"))
-                {
-                    _logger.LogDebug("Command Request: {r}", request);
-                }
-                else if (requestType.EndsWith("Query"))
-                {
-                    _logger.LogDebug("Query Request: {r}", request);
-                    _logger.LogDebug("Query Response: {r}", request);
-                }
-                else
-                {
-                    throw new ThrowException("The request is not the Command or Query type");
-                }
-
-                return response;
+                _logger.LogDebug("Command Request: {R}", request);
             }
-            catch (Exception e)
+            else if (requestType.EndsWith("Query"))
             {
-                switch (e)
-                {
-                    case OperationCanceledException:
-                        _logger.LogWarning("The request has been canceled");
-                        break;
-                }
-                throw;
+                _logger.LogDebug("Query Request: {R}", request);
+                _logger.LogDebug("Query Response: {R}", request);
             }
+            else
+            {
+                throw new ThrowException("The request is not the Command or Query type");
+            }
+
+            return response;
         }
     }
 }
