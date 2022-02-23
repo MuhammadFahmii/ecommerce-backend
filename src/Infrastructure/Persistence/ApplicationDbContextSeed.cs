@@ -10,75 +10,74 @@ using Microsoft.EntityFrameworkCore;
 using netca.Domain.Entities;
 using netca.Domain.ValueObjects;
 
-namespace netca.Infrastructure.Persistence
+namespace netca.Infrastructure.Persistence;
+
+/// <summary>
+/// ApplicationDbContextSeed
+/// </summary>
+public static class ApplicationDbContextSeed
 {
     /// <summary>
-    /// ApplicationDbContextSeed
+    /// SeedSampleDataAsync
     /// </summary>
-    public static class ApplicationDbContextSeed
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public static async Task SeedSampleDataAsync(ApplicationDbContext context)
     {
-        /// <summary>
-        /// SeedSampleDataAsync
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public static async Task SeedSampleDataAsync(ApplicationDbContext context)
+        if (!context.TodoLists!.IgnoreQueryFilters().Any())
         {
-            if (!context.TodoLists!.IgnoreQueryFilters().Any())
+            context.TodoLists!.Add(new TodoList
             {
-                context.TodoLists!.Add(new TodoList
+                Title = "Shopping",
+                Colour = Colour.Blue,
+                DeletedDate = null,
+                IsActive = true,
+                Items =
                 {
-                    Title = "Shopping",
-                    Colour = Colour.Blue,
-                    DeletedDate = null,
-                    IsActive = true,
-                    Items =
+                    new TodoItem
                     {
-                        new TodoItem
-                        {
-                            Title = "Apples", Done = true, DeletedDate = null,
-                            IsActive = true
-                        },
-                        new TodoItem
-                        {
-                            Title = "Milk", Done = true, DeletedDate = null,
-                            IsActive = true
-                        },
-                        new TodoItem
-                        {
-                            Title = "Bread", Done = true, DeletedDate = null,
-                            IsActive = true
-                        },
-                        new TodoItem
-                        {
-                            Title = "Toilet paper", DeletedDate = null,
-                            IsActive = true
-                        },
-                        new TodoItem
-                        {
-                            Title = "Pasta", DeletedDate = null,
-                            IsActive = true
-                        },
-                        new TodoItem
-                        {
-                            Title = "Tissues", DeletedDate = null,
-                            IsActive = true
-                        },
-                        new TodoItem
-                        {
-                            Title = "Tuna", DeletedDate = null,
-                            IsActive = true
-                        },
-                        new TodoItem
-                        {
-                            Title = "Water", DeletedDate = null,
-                            IsActive = true
-                        }
+                        Title = "Apples", Done = true, DeletedDate = null,
+                        IsActive = true
+                    },
+                    new TodoItem
+                    {
+                        Title = "Milk", Done = true, DeletedDate = null,
+                        IsActive = true
+                    },
+                    new TodoItem
+                    {
+                        Title = "Bread", Done = true, DeletedDate = null,
+                        IsActive = true
+                    },
+                    new TodoItem
+                    {
+                        Title = "Toilet paper", DeletedDate = null,
+                        IsActive = true
+                    },
+                    new TodoItem
+                    {
+                        Title = "Pasta", DeletedDate = null,
+                        IsActive = true
+                    },
+                    new TodoItem
+                    {
+                        Title = "Tissues", DeletedDate = null,
+                        IsActive = true
+                    },
+                    new TodoItem
+                    {
+                        Title = "Tuna", DeletedDate = null,
+                        IsActive = true
+                    },
+                    new TodoItem
+                    {
+                        Title = "Water", DeletedDate = null,
+                        IsActive = true
                     }
-                });
+                }
+            });
 
-                await context.SaveChangesAsync();
-            }
+            await context.SaveChangesAsync();
         }
     }
 }

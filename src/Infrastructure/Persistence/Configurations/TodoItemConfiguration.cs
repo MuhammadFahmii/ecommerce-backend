@@ -7,26 +7,25 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using netca.Domain.Entities;
 
-namespace netca.Infrastructure.Persistence.Configurations
+namespace netca.Infrastructure.Persistence.Configurations;
+
+/// <summary>
+/// TodoItemConfiguration
+/// </summary>
+public class TodoItemConfiguration : AuditTableConfiguration<TodoItem>
 {
     /// <summary>
-    /// TodoItemConfiguration
+    /// Configure TodoItem
     /// </summary>
-    public class TodoItemConfiguration : AuditTableConfiguration<TodoItem>
+    /// <param name="builder"></param>
+    public override void Configure(EntityTypeBuilder<TodoItem> builder)
     {
-        /// <summary>
-        /// Configure TodoItem
-        /// </summary>
-        /// <param name="builder"></param>
-        public override void Configure(EntityTypeBuilder<TodoItem> builder)
-        {
-            base.Configure(builder);
-            builder.Ignore(e => e.DomainEvents);
+        base.Configure(builder);
+        builder.Ignore(e => e.DomainEvents);
 
-            builder.Property(t => t.Title)
-                .HasMaxLength(200)
-                .IsRequired();
-            base.Configure(builder);
-        }
+        builder.Property(t => t.Title)
+            .HasMaxLength(200)
+            .IsRequired();
+        base.Configure(builder);
     }
 }

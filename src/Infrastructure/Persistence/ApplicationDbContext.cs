@@ -19,349 +19,349 @@ using netca.Domain.Common;
 using netca.Domain.Entities;
 using Newtonsoft.Json;
 
-namespace netca.Infrastructure.Persistence
+namespace netca.Infrastructure.Persistence;
+
+/// <summary>
+/// ApplicationDbContext
+/// </summary>
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
+    private readonly IDateTime _dateTime;
+    private readonly IDomainEventService _domainEventService;
+
     /// <summary>
-    /// ApplicationDbContext
+    /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
     /// </summary>
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    /// <param name="options"></param>
+    /// <param name="domainEventService"></param>
+    /// <param name="dateTime"></param>
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options, IDomainEventService domainEventService,
+        IDateTime dateTime) : base(options)
     {
-        private readonly IDateTime _dateTime;
-        private readonly IDomainEventService _domainEventService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
-        /// </summary>
-        /// <param name="options"></param>
-        /// <param name="domainEventService"></param>
-        /// <param name="dateTime"></param>
-        public ApplicationDbContext(
-            DbContextOptions<ApplicationDbContext> options, IDomainEventService domainEventService, IDateTime dateTime) : base(options)
-        {
-            _domainEventService = domainEventService;
-            _dateTime = dateTime;
-        }
-
-        /// <summary>
-        /// Gets or sets todoItems
-        /// </summary>
-        public DbSet<TodoItem>? TodoItems { get; set; }
-
-        /// <summary>
-        /// Gets or sets changelogs
-        /// </summary>
-        public DbSet<Changelog>? Changelogs { get; set; }
-
-        /// <summary>
-        /// Gets or sets todoLists
-        /// </summary>
-        public DbSet<TodoList>? TodoLists { get; set; }
-
-        /// <summary>
-        /// to prevent hard delete
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException">Exception</exception>
-        public override EntityEntry<TEntity> Remove<TEntity>(TEntity entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// to prevent hard delete
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <exception cref="NotImplementedException">Exception</exception>
-        public override void RemoveRange(params object[] entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// to prevent hard delete
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <exception cref="NotImplementedException">Exception</exception>
-        public override void RemoveRange(IEnumerable<object> entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// to prevent hard delete
-        /// </summary>
-        /// <param name="modelBuilder"></param>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            base.OnModelCreating(modelBuilder);
-        }
-
-        /// <summary>
-        /// SaveChangesAsync
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException">Exception</exception>
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            var changelogEntries = OnBeforeSaveChanges();
-            var result = await base.SaveChangesAsync(cancellationToken);
-            await OnAfterSaveChanges(changelogEntries, cancellationToken);
-            await DispatchEvents();
-            return result;
-        }
-
-        private async Task DispatchEvents()
-        {
-            while (true)
-            {
-                var domainEventEntity = ChangeTracker
-                    .Entries<IHasDomainEvent>()
-                    .Select(x => x.Entity.DomainEvents)
-                    .SelectMany(x => x)
-                    .FirstOrDefault(domainEvent => !domainEvent.IsPublished);
-
-                if (domainEventEntity == null)
-                    break;
-                domainEventEntity.IsPublished = true;
-                await _domainEventService.Publish(domainEventEntity);
-            }
-        }
-
-        private List<ChangelogEntry> OnBeforeSaveChanges()
-        {
-            var ignoreTable = new List<string> { "xxx" };
-
-            ChangeTracker.DetectChanges();
-            var changelogEntries = new List<ChangelogEntry>();
-
-            foreach (var entry in ChangeTracker.Entries())
-            {
-                if (entry.Entity is Changelog || entry.State is EntityState.Detached or EntityState.Unchanged)
-                    continue;
-
-                var changelogEntry = new ChangelogEntry(entry)
-                {
-                    ChangeDate = _dateTime.UtcNow,
-                    TableName = entry.Metadata.GetTableName()!
-                };
-
-                if (ignoreTable.Contains(changelogEntry.TableName))
-                    continue;
-                changelogEntries.Add(changelogEntry);
-
-                ChangelogEntryEvent(changelogEntry, entry);
-            }
-
-            foreach (var changelogEntry in changelogEntries.Where(_ => !_.HasTemporaryProperties))
-            {
-                Changelogs!.Add(changelogEntry.ToAudit());
-            }
-
-            return changelogEntries
-                .Where(_ => _.HasTemporaryProperties)
-                .ToList();
-        }
-
-        private void ReplaceUnicodePostgres(PropertyEntry property)
-        {
-            var con = Database.ProviderName;
-            if (!con!.Equals("Npgsql.EntityFrameworkCore.PostgreSQL"))
-                return;
-            var type = property.Metadata.ClrType;
-            var typeName = type.ShortDisplayName();
-            if (typeName.Equals("string") && property.CurrentValue != null)
-            {
-                property.CurrentValue = Encoding.ASCII.GetString(
-                    Encoding.Convert(
-                        Encoding.UTF8,
-                        Encoding.GetEncoding(
-                            Encoding.ASCII.EncodingName,
-                            new EncoderReplacementFallback(string.Empty),
-                            new DecoderExceptionFallback()
-                        ),
-                        Encoding.UTF8.GetBytes(property.CurrentValue.ToString()!
-                        )
-                    ));
-            }
-
-            if (typeName.Equals("string") && property.OriginalValue != null)
-            {
-                property.OriginalValue = Encoding.ASCII.GetString(
-                    Encoding.Convert(
-                        Encoding.UTF8,
-                        Encoding.GetEncoding(
-                            Encoding.ASCII.EncodingName,
-                            new EncoderReplacementFallback(string.Empty),
-                            new DecoderExceptionFallback()
-                        ),
-                        Encoding.UTF8.GetBytes(property.OriginalValue.ToString()!
-                        )
-                    ));
-            }
-        }
-
-        private void ChangelogEntryEvent(ChangelogEntry changelogEntry, EntityEntry entry)
-        {
-            foreach (var property in entry.Properties)
-            {
-                if (property.IsTemporary)
-                {
-                    changelogEntry.TemporaryProperties.Add(property);
-                    continue;
-                }
-
-                var propertyName = property.Metadata.Name;
-
-                if (property.Metadata.IsPrimaryKey())
-                {
-                    changelogEntry.KeyValues[propertyName] = property.CurrentValue!;
-                    continue;
-                }
-
-                ReplaceUnicodePostgres(property);
-
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        changelogEntry.NewValues[propertyName] = property.CurrentValue!;
-                        changelogEntry.Method = "ADD";
-                        break;
-
-                    case EntityState.Deleted:
-                        changelogEntry.OldValues[propertyName] = property.OriginalValue!;
-                        changelogEntry.Method = "DELETE";
-                        break;
-
-                    case EntityState.Modified:
-                        if (property.IsModified)
-                        {
-                            changelogEntry.OldValues[propertyName] = property.OriginalValue!;
-                            changelogEntry.NewValues[propertyName] = property.CurrentValue!;
-                            changelogEntry.Method = "EDIT";
-                        }
-
-                        break;
-                    case EntityState.Detached:
-                        break;
-                    case EntityState.Unchanged:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(entry.State.ToString(), "Un know entry.State.");
-                }
-            }
-        }
-
-        private Task OnAfterSaveChanges(List<ChangelogEntry> changelogEntries, CancellationToken cancellationToken)
-        {
-            if (changelogEntries.Count == 0)
-                return Task.CompletedTask;
-
-            foreach (var changelogEntry in changelogEntries)
-            {
-                foreach (var prop in changelogEntry.TemporaryProperties)
-                {
-                    if (prop.Metadata.IsPrimaryKey())
-                        changelogEntry.KeyValues[prop.Metadata.Name] = prop.CurrentValue!;
-                    else
-                        changelogEntry.NewValues[prop.Metadata.Name] = prop.CurrentValue!;
-                }
-
-                Changelogs!.Add(changelogEntry.ToAudit());
-            }
-
-            return SaveChangesAsync(cancellationToken);
-        }
+        _domainEventService = domainEventService;
+        _dateTime = dateTime;
     }
 
     /// <summary>
-    /// ChangelogEntry
+    /// Gets or sets todoItems
     /// </summary>
-    public class ChangelogEntry
+    public DbSet<TodoItem>? TodoItems { get; set; }
+
+    /// <summary>
+    /// Gets or sets changelogs
+    /// </summary>
+    public DbSet<Changelog>? Changelogs { get; set; }
+
+    /// <summary>
+    /// Gets or sets todoLists
+    /// </summary>
+    public DbSet<TodoList>? TodoLists { get; set; }
+
+    /// <summary>
+    /// to prevent hard delete
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException">Exception</exception>
+    public override EntityEntry<TEntity> Remove<TEntity>(TEntity entity)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChangelogEntry"/> class.
-        /// </summary>
-        /// <param name="entry"></param>
-        public ChangelogEntry(EntityEntry entry)
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// to prevent hard delete
+    /// </summary>
+    /// <param name="entities"></param>
+    /// <exception cref="NotImplementedException">Exception</exception>
+    public override void RemoveRange(params object[] entities)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// to prevent hard delete
+    /// </summary>
+    /// <param name="entities"></param>
+    /// <exception cref="NotImplementedException">Exception</exception>
+    public override void RemoveRange(IEnumerable<object> entities)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// to prevent hard delete
+    /// </summary>
+    /// <param name="modelBuilder"></param>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(modelBuilder);
+    }
+
+    /// <summary>
+    /// SaveChangesAsync
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException">Exception</exception>
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var changelogEntries = OnBeforeSaveChanges();
+        var result = await base.SaveChangesAsync(cancellationToken);
+        await OnAfterSaveChanges(changelogEntries, cancellationToken);
+        await DispatchEvents();
+        return result;
+    }
+
+    private async Task DispatchEvents()
+    {
+        while (true)
         {
-            Entry = entry;
+            var domainEventEntity = ChangeTracker
+                .Entries<IHasDomainEvent>()
+                .Select(x => x.Entity.DomainEvents)
+                .SelectMany(x => x)
+                .FirstOrDefault(domainEvent => !domainEvent.IsPublished);
+
+            if (domainEventEntity == null)
+                break;
+            domainEventEntity.IsPublished = true;
+            await _domainEventService.Publish(domainEventEntity);
         }
+    }
 
-        /// <summary>
-        /// Gets entry
-        /// </summary>
-        /// <value></value>
-        private EntityEntry Entry { get; }
+    private List<ChangelogEntry> OnBeforeSaveChanges()
+    {
+        var ignoreTable = new List<string> { "xxx" };
 
-        /// <summary>
-        /// Gets or sets method
-        /// </summary>
-        /// <value></value>
-        public string Method { get; set; } = null!;
+        ChangeTracker.DetectChanges();
+        var changelogEntries = new List<ChangelogEntry>();
 
-        /// <summary>
-        /// Gets or sets tableName
-        /// </summary>
-        /// <value></value>
-        public string TableName { get; set; } = null!;
-
-        /// <summary>
-        /// Gets or sets changeDate
-        /// </summary>
-        /// <value></value>
-        public DateTime ChangeDate { get; set; }
-
-        /// <summary>
-        /// Gets keyValues
-        /// </summary>
-        /// <returns></returns>
-        public Dictionary<string, object> KeyValues { get; } = new();
-
-        /// <summary>
-        /// Gets oldValues
-        /// </summary>
-        /// <returns></returns>
-        public Dictionary<string, object> OldValues { get; } = new();
-
-        /// <summary>
-        /// Gets newValues
-        /// </summary>
-        /// <returns></returns>
-        public Dictionary<string, object> NewValues { get; } = new();
-
-        /// <summary>
-        /// Gets temporaryProperties
-        /// </summary>
-        /// <returns></returns>
-        public List<PropertyEntry> TemporaryProperties { get; } = new();
-
-        /// <summary>
-        /// Gets a value indicating whether hasTemporaryProperties
-        /// </summary>
-        /// <returns></returns>
-        public bool HasTemporaryProperties => TemporaryProperties.Any();
-
-        /// <summary>
-        /// ToAudit save record for audit changelog
-        /// </summary>
-        /// <returns></returns>
-        public Changelog ToAudit()
+        foreach (var entry in ChangeTracker.Entries())
         {
-            var changelog = new Changelog
+            if (entry.Entity is Changelog || entry.State is EntityState.Detached or EntityState.Unchanged)
+                continue;
+
+            var changelogEntry = new ChangelogEntry(entry)
             {
-                TableName = TableName,
-                ChangeDate = ChangeDate,
-                Method = Method,
-                KeyValues = JsonConvert.SerializeObject(KeyValues),
-                OldValues = OldValues.Count == 0 ? null : JsonConvert.SerializeObject(OldValues),
-                NewValues = NewValues.Count == 0 ? null : JsonConvert.SerializeObject(NewValues)
+                ChangeDate = _dateTime.UtcNow,
+                TableName = entry.Metadata.GetTableName()!
             };
 
-            return changelog;
+            if (ignoreTable.Contains(changelogEntry.TableName))
+                continue;
+            changelogEntries.Add(changelogEntry);
+
+            ChangelogEntryEvent(changelogEntry, entry);
         }
+
+        foreach (var changelogEntry in changelogEntries.Where(_ => !_.HasTemporaryProperties))
+        {
+            Changelogs!.Add(changelogEntry.ToAudit());
+        }
+
+        return changelogEntries
+            .Where(_ => _.HasTemporaryProperties)
+            .ToList();
+    }
+
+    private void ReplaceUnicodePostgres(PropertyEntry property)
+    {
+        var con = Database.ProviderName;
+        if (!con!.Equals("Npgsql.EntityFrameworkCore.PostgreSQL"))
+            return;
+        var type = property.Metadata.ClrType;
+        var typeName = type.ShortDisplayName();
+        if (typeName.Equals("string") && property.CurrentValue != null)
+        {
+            property.CurrentValue = Encoding.ASCII.GetString(
+                Encoding.Convert(
+                    Encoding.UTF8,
+                    Encoding.GetEncoding(
+                        Encoding.ASCII.EncodingName,
+                        new EncoderReplacementFallback(string.Empty),
+                        new DecoderExceptionFallback()
+                    ),
+                    Encoding.UTF8.GetBytes(property.CurrentValue.ToString()!
+                    )
+                ));
+        }
+
+        if (typeName.Equals("string") && property.OriginalValue != null)
+        {
+            property.OriginalValue = Encoding.ASCII.GetString(
+                Encoding.Convert(
+                    Encoding.UTF8,
+                    Encoding.GetEncoding(
+                        Encoding.ASCII.EncodingName,
+                        new EncoderReplacementFallback(string.Empty),
+                        new DecoderExceptionFallback()
+                    ),
+                    Encoding.UTF8.GetBytes(property.OriginalValue.ToString()!
+                    )
+                ));
+        }
+    }
+
+    private void ChangelogEntryEvent(ChangelogEntry changelogEntry, EntityEntry entry)
+    {
+        foreach (var property in entry.Properties)
+        {
+            if (property.IsTemporary)
+            {
+                changelogEntry.TemporaryProperties.Add(property);
+                continue;
+            }
+
+            var propertyName = property.Metadata.Name;
+
+            if (property.Metadata.IsPrimaryKey())
+            {
+                changelogEntry.KeyValues[propertyName] = property.CurrentValue!;
+                continue;
+            }
+
+            ReplaceUnicodePostgres(property);
+
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    changelogEntry.NewValues[propertyName] = property.CurrentValue!;
+                    changelogEntry.Method = "ADD";
+                    break;
+
+                case EntityState.Deleted:
+                    changelogEntry.OldValues[propertyName] = property.OriginalValue!;
+                    changelogEntry.Method = "DELETE";
+                    break;
+
+                case EntityState.Modified:
+                    if (property.IsModified)
+                    {
+                        changelogEntry.OldValues[propertyName] = property.OriginalValue!;
+                        changelogEntry.NewValues[propertyName] = property.CurrentValue!;
+                        changelogEntry.Method = "EDIT";
+                    }
+
+                    break;
+                case EntityState.Detached:
+                    break;
+                case EntityState.Unchanged:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(entry.State.ToString(), "Un know entry.State.");
+            }
+        }
+    }
+
+    private Task OnAfterSaveChanges(List<ChangelogEntry> changelogEntries, CancellationToken cancellationToken)
+    {
+        if (changelogEntries.Count == 0)
+            return Task.CompletedTask;
+
+        foreach (var changelogEntry in changelogEntries)
+        {
+            foreach (var prop in changelogEntry.TemporaryProperties)
+            {
+                if (prop.Metadata.IsPrimaryKey())
+                    changelogEntry.KeyValues[prop.Metadata.Name] = prop.CurrentValue!;
+                else
+                    changelogEntry.NewValues[prop.Metadata.Name] = prop.CurrentValue!;
+            }
+
+            Changelogs!.Add(changelogEntry.ToAudit());
+        }
+
+        return SaveChangesAsync(cancellationToken);
+    }
+}
+
+/// <summary>
+/// ChangelogEntry
+/// </summary>
+public class ChangelogEntry
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChangelogEntry"/> class.
+    /// </summary>
+    /// <param name="entry"></param>
+    public ChangelogEntry(EntityEntry entry)
+    {
+        Entry = entry;
+    }
+
+    /// <summary>
+    /// Gets entry
+    /// </summary>
+    /// <value></value>
+    private EntityEntry Entry { get; }
+
+    /// <summary>
+    /// Gets or sets method
+    /// </summary>
+    /// <value></value>
+    public string Method { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets tableName
+    /// </summary>
+    /// <value></value>
+    public string TableName { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets changeDate
+    /// </summary>
+    /// <value></value>
+    public DateTime ChangeDate { get; set; }
+
+    /// <summary>
+    /// Gets keyValues
+    /// </summary>
+    /// <returns></returns>
+    public Dictionary<string, object> KeyValues { get; } = new();
+
+    /// <summary>
+    /// Gets oldValues
+    /// </summary>
+    /// <returns></returns>
+    public Dictionary<string, object> OldValues { get; } = new();
+
+    /// <summary>
+    /// Gets newValues
+    /// </summary>
+    /// <returns></returns>
+    public Dictionary<string, object> NewValues { get; } = new();
+
+    /// <summary>
+    /// Gets temporaryProperties
+    /// </summary>
+    /// <returns></returns>
+    public List<PropertyEntry> TemporaryProperties { get; } = new();
+
+    /// <summary>
+    /// Gets a value indicating whether hasTemporaryProperties
+    /// </summary>
+    /// <returns></returns>
+    public bool HasTemporaryProperties => TemporaryProperties.Any();
+
+    /// <summary>
+    /// ToAudit save record for audit changelog
+    /// </summary>
+    /// <returns></returns>
+    public Changelog ToAudit()
+    {
+        var changelog = new Changelog
+        {
+            TableName = TableName,
+            ChangeDate = ChangeDate,
+            Method = Method,
+            KeyValues = JsonConvert.SerializeObject(KeyValues),
+            OldValues = OldValues.Count == 0 ? null : JsonConvert.SerializeObject(OldValues),
+            NewValues = NewValues.Count == 0 ? null : JsonConvert.SerializeObject(NewValues)
+        };
+
+        return changelog;
     }
 }

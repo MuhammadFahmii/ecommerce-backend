@@ -1,8 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace netca.Infrastructure.Persistence.Migrations
-{
+namespace netca.Infrastructure.Persistence.Migrations;
 #pragma warning disable 1591
     /// <summary>
     /// Init
@@ -115,4 +114,3 @@ namespace netca.Infrastructure.Persistence.Migrations
         }
     }
 #pragma warning restore 1591
-}

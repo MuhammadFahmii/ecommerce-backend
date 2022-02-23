@@ -19,24 +19,24 @@ using netca.Infrastructure.Services;
 using netca.Infrastructure.Services.Cache;
 using Quartz;
 
-namespace netca.Infrastructure
+namespace netca.Infrastructure;
+
+/// <summary>
+/// DependencyInjection
+/// </summary>
+public static class DependencyInjection
 {
     /// <summary>
-    /// DependencyInjection
+    /// AddInfrastructure
     /// </summary>
-    public static class DependencyInjection
+    /// <param name="services"></param>
+    /// <param name="environment"></param>
+    /// <param name="appSetting"></param>
+    public static void AddInfrastructure(
+        this IServiceCollection services, IWebHostEnvironment environment, AppSetting appSetting)
     {
-        /// <summary>
-        /// AddInfrastructure
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="environment"></param>
-        /// <param name="appSetting"></param>
-        public static void AddInfrastructure(
-            this IServiceCollection services, IWebHostEnvironment environment, AppSetting appSetting)
-        {
-            services.AddDbContext<ApplicationDbContext>(
-                options =>
+        services.AddDbContext<ApplicationDbContext>(
+            options =>
                 options.UseSqlServer(
                     appSetting.ConnectionStrings.DefaultConnection,
                     b =>
@@ -54,73 +54,72 @@ namespace netca.Infrastructure
                             options.EnableSensitiveDataLogging();
                         }
                     }),
-                ServiceLifetime.Transient
-            );
+            ServiceLifetime.Transient
+        );
 
-            services.AddTransient<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-            services.AddScoped<IDomainEventService, DomainEventService>();
-            services.AddTransient<IDateTime, DateTimeService>();
-            services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
-            services.AddScoped<IUserAuthorizationService, UserAuthorizationService>();
-            services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandlerService>();
-            services.AddSingleton<IRedisService, RedisService>();
-            services.AddHostedService<LifetimeEventsHostedService>();
-            services.AddHostedService<OrderProcessService>();
+        services.AddTransient<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<IDomainEventService, DomainEventService>();
+        services.AddTransient<IDateTime, DateTimeService>();
+        services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
+        services.AddScoped<IUserAuthorizationService, UserAuthorizationService>();
+        services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandlerService>();
+        services.AddSingleton<IRedisService, RedisService>();
+        services.AddHostedService<LifetimeEventsHostedService>();
+        services.AddHostedService<OrderProcessService>();
 
-            if (!appSetting.BackgroundJob.IsEnable)
-                return;
+        if (!appSetting.BackgroundJob.IsEnable)
+            return;
 
-            services.Configure<QuartzOptions>(options =>
+        services.Configure<QuartzOptions>(options =>
+        {
+            options.Scheduling.IgnoreDuplicates = appSetting.BackgroundJob.PersistentStore.IgnoreDuplicates;
+            options.Scheduling.OverWriteExistingData = appSetting.BackgroundJob.PersistentStore.OverWriteExistingData;
+            options.Scheduling.ScheduleTriggerRelativeToReplacedTrigger = appSetting.BackgroundJob.PersistentStore
+                .ScheduleTriggerRelativeToReplacedTrigger;
+        });
+
+        services.AddQuartz(q =>
+        {
+            q.UseMicrosoftDependencyInjectionJobFactory();
+            q.UseSimpleTypeLoader();
+            if (appSetting.BackgroundJob.UsePersistentStore)
             {
-                options.Scheduling.IgnoreDuplicates = appSetting.BackgroundJob.PersistentStore.IgnoreDuplicates;
-                options.Scheduling.OverWriteExistingData = appSetting.BackgroundJob.PersistentStore.OverWriteExistingData;
-                options.Scheduling.ScheduleTriggerRelativeToReplacedTrigger = appSetting.BackgroundJob.PersistentStore.ScheduleTriggerRelativeToReplacedTrigger;
-            });
-
-            services.AddQuartz(q =>
-            {
-                q.UseMicrosoftDependencyInjectionJobFactory();
-                q.UseSimpleTypeLoader();
-                if (appSetting.BackgroundJob.UsePersistentStore)
+                q.SchedulerId = appSetting.App.Title;
+                q.SchedulerName = $"{appSetting.App.Title} Scheduler";
+                q.InterruptJobsOnShutdown = false;
+                q.InterruptJobsOnShutdownWithWait = true;
+                q.MaxBatchSize = 10;
+                q.UseJobAutoInterrupt(options => { options.DefaultMaxRunTime = TimeSpan.FromMinutes(10); });
+                q.UsePersistentStore(s =>
                 {
-                    q.SchedulerId = appSetting.App.Title;
-                    q.SchedulerName = $"{appSetting.App.Title} Scheduler";
-                    q.InterruptJobsOnShutdown = false;
-                    q.InterruptJobsOnShutdownWithWait = true;
-                    q.MaxBatchSize = 10;
-                    q.UseJobAutoInterrupt(options =>
+                    s.UseSqlServer(options =>
                     {
-                        options.DefaultMaxRunTime = TimeSpan.FromMinutes(10);
+                        options.ConnectionString = appSetting.BackgroundJob.PersistentStore.ConnectionString;
+                        options.TablePrefix = appSetting.BackgroundJob.PersistentStore.TablePrefix;
                     });
-                    q.UsePersistentStore(s =>
+                    s.RetryInterval = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.RetryInterval);
+                    s.UseJsonSerializer();
+                    s.UseClustering(cfg =>
                     {
-                        s.UseSqlServer(options =>
-                        {
-                            options.ConnectionString = appSetting.BackgroundJob.PersistentStore.ConnectionString;
-                            options.TablePrefix = appSetting.BackgroundJob.PersistentStore.TablePrefix;
-                        });
-                        s.RetryInterval = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.RetryInterval);
-                        s.UseJsonSerializer();
-                        s.UseClustering(cfg =>
-                        {
-                            cfg.CheckinInterval = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinInterval);
-                            cfg.CheckinMisfireThreshold = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinMisfireThreshold);
-                        });
+                        cfg.CheckinInterval =
+                            TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinInterval);
+                        cfg.CheckinMisfireThreshold =
+                            TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinMisfireThreshold);
                     });
-                    q.MisfireThreshold = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.MisfireThreshold);
-                    q.UseDefaultThreadPool(tp =>
-                    {
-                        tp.MaxConcurrency = appSetting.BackgroundJob.PersistentStore.MaxConcurrency;
-                    });
-                }
+                });
+                q.MisfireThreshold = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.MisfireThreshold);
+                q.UseDefaultThreadPool(tp =>
+                {
+                    tp.MaxConcurrency = appSetting.BackgroundJob.PersistentStore.MaxConcurrency;
+                });
+            }
 
-                q.AddJobAndTrigger<DeleteChangelogJob>(appSetting);
-                q.AddJobAndTrigger<ProduceOrderJob>(appSetting);
-                q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
-            });
+            q.AddJobAndTrigger<DeleteChangelogJob>(appSetting);
+            q.AddJobAndTrigger<ProduceOrderJob>(appSetting);
+            q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
+        });
 
-            services.AddQuartzHostedService(
-                q => q.WaitForJobsToComplete = true);
-        }
+        services.AddQuartzHostedService(
+            q => q.WaitForJobsToComplete = true);
     }
 }
