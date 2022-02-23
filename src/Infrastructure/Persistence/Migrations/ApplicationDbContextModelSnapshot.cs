@@ -6,8 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using netca.Infrastructure.Persistence;
 
-namespace netca.Infrastructure.Persistence.Migrations
-{
+namespace netca.Infrastructure.Persistence.Migrations;
 #pragma warning disable 1591
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -185,4 +184,3 @@ namespace netca.Infrastructure.Persistence.Migrations
         }
     }
 #pragma warning restore 1591
-}

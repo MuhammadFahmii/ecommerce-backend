@@ -12,30 +12,29 @@ using netca.Application.Common.Interfaces;
 using netca.Application.TodoLists.Queries.ExportTodos;
 using netca.Infrastructure.Files.Maps;
 
-namespace netca.Infrastructure.Files
+namespace netca.Infrastructure.Files;
+
+/// <summary>
+/// CsvFileBuilder
+/// </summary>
+public class CsvFileBuilder : ICsvFileBuilder
 {
     /// <summary>
-    /// CsvFileBuilder
+    /// BuildTodoItemsFile
     /// </summary>
-    public class CsvFileBuilder : ICsvFileBuilder
+    /// <param name="records"></param>
+    /// <returns></returns>
+    public byte[]? BuildTodoItemsFile(IEnumerable<TodoItemRecord> records)
     {
-        /// <summary>
-        /// BuildTodoItemsFile
-        /// </summary>
-        /// <param name="records"></param>
-        /// <returns></returns>
-        public byte[]? BuildTodoItemsFile(IEnumerable<TodoItemRecord> records)
+        using var memoryStream = new MemoryStream();
+        using (var streamWriter = new StreamWriter(memoryStream))
         {
-            using var memoryStream = new MemoryStream();
-            using (var streamWriter = new StreamWriter(memoryStream))
-            {
-                using var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
+            using var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
 
-                csvWriter.Context.RegisterClassMap<TodoItemRecordMap>();
-                csvWriter.WriteRecords(records);
-            }
-
-            return memoryStream.ToArray();
+            csvWriter.Context.RegisterClassMap<TodoItemRecordMap>();
+            csvWriter.WriteRecords(records);
         }
+
+        return memoryStream.ToArray();
     }
 }

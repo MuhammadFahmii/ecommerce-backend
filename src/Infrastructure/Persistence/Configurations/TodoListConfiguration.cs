@@ -4,29 +4,27 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using netca.Domain.Entities;
 
-namespace netca.Infrastructure.Persistence.Configurations
+namespace netca.Infrastructure.Persistence.Configurations;
+
+/// <summary>
+/// TodoListConfiguration
+/// </summary>
+public class TodoListConfiguration : AuditTableConfiguration<TodoList>
 {
     /// <summary>
-    /// TodoListConfiguration
+    /// Configure TodoList
     /// </summary>
-    public class TodoListConfiguration : AuditTableConfiguration<TodoList>
+    /// <param name="builder"></param>
+    public override void Configure(EntityTypeBuilder<TodoList> builder)
     {
-        /// <summary>
-        /// Configure TodoList
-        /// </summary>
-        /// <param name="builder"></param>
-        public override void Configure(EntityTypeBuilder<TodoList> builder)
-        {
-            builder.Property(t => t.Title)
-                .HasMaxLength(200)
-                .IsRequired();
-            builder
-                .OwnsOne(b => b.Colour);
-            base.Configure(builder);
-        }
+        builder.Property(t => t.Title)
+            .HasMaxLength(200)
+            .IsRequired();
+        builder
+            .OwnsOne(b => b.Colour);
+        base.Configure(builder);
     }
 }

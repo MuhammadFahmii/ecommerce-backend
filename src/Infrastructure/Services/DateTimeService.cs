@@ -7,21 +7,20 @@
 using System;
 using netca.Application.Common.Interfaces;
 
-namespace netca.Infrastructure.Services
+namespace netca.Infrastructure.Services;
+
+/// <summary>
+/// DateTimeService
+/// </summary>
+public class DateTimeService : IDateTime
 {
     /// <summary>
-    /// DateTimeService
+    /// Gets now
     /// </summary>
-    public class DateTimeService : IDateTime
-    {
-        /// <summary>
-        /// Gets now
-        /// </summary>
-        public DateTime Now => DateTime.Now;
+    public DateTime Now => DateTime.Now;
 
-        /// <summary>
-        /// Gets utcNow
-        /// </summary>
-        public DateTime UtcNow => DateTime.UtcNow;
-    }
+    /// <summary>
+    /// Gets utcNow
+    /// </summary>
+    public DateTime UtcNow => DateTime.UtcNow;
 }

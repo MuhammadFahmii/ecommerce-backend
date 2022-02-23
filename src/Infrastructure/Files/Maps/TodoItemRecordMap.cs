@@ -8,20 +8,19 @@ using System.Globalization;
 using CsvHelper.Configuration;
 using netca.Application.TodoLists.Queries.ExportTodos;
 
-namespace netca.Infrastructure.Files.Maps
+namespace netca.Infrastructure.Files.Maps;
+
+/// <summary>
+/// TodoItemRecordMap
+/// </summary>
+public sealed class TodoItemRecordMap : ClassMap<TodoItemRecord>
 {
     /// <summary>
-    /// TodoItemRecordMap
+    /// Initializes a new instance of the <see cref="TodoItemRecordMap"/> class.
     /// </summary>
-    public sealed class TodoItemRecordMap : ClassMap<TodoItemRecord>
+    public TodoItemRecordMap()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TodoItemRecordMap"/> class.
-        /// </summary>
-        public TodoItemRecordMap()
-        {
-            AutoMap(CultureInfo.InvariantCulture);
-            Map(m => m.Done).Convert(c => c.Value.Done ? "Yes" : "No");
-        }
+        AutoMap(CultureInfo.InvariantCulture);
+        Map(m => m.Done).Convert(c => c.Value.Done ? "Yes" : "No");
     }
 }
