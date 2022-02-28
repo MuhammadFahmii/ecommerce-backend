@@ -15,126 +15,125 @@ using netca.Application.Common.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace netca.Api.Middlewares
+namespace netca.Api.Middlewares;
+
+/// <summary>
+/// CustomExceptionHandlerMiddleware
+/// </summary>
+public class CustomExceptionHandlerMiddleware
 {
+    private readonly RequestDelegate _next;
+    private readonly ILogger _logger;
+
     /// <summary>
-    /// CustomExceptionHandlerMiddleware
+    /// Initializes a new instance of the <see cref="CustomExceptionHandlerMiddleware"/> class.
     /// </summary>
-    public class CustomExceptionHandlerMiddleware
+    /// <param name="next"></param>
+    /// <param name="logger"></param>
+    public CustomExceptionHandlerMiddleware(RequestDelegate next, ILogger<CustomExceptionHandlerMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger _logger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CustomExceptionHandlerMiddleware"/> class.
-        /// </summary>
-        /// <param name="next"></param>
-        /// <param name="logger"></param>
-        public CustomExceptionHandlerMiddleware(RequestDelegate next, ILogger<CustomExceptionHandlerMiddleware> logger)
-        {
-            _next = next;
-            _logger = logger;
-        }
-
-        /// <summary>
-        /// InvokeAsync
-        /// </summary>
-        /// <param name="httpContext"></param>
-        /// <returns></returns>
-        public async Task InvokeAsync(HttpContext httpContext)
-        {
-            try
-            {
-                await _next(httpContext);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogDebug("Something went wrong:{ex} {msg}", ex.Source, ex.Message);
-                await HandleExceptionAsync(httpContext, _logger, ex);
-            }
-        }
-
-        private static Task HandleExceptionAsync(HttpContext context, ILogger logger, Exception exception)
-        {
-            var code = HttpStatusCode.InternalServerError;
-
-            var result = string.Empty;
-            switch (exception)
-            {
-                case ValidationException validationException:
-                    code = HttpStatusCode.BadRequest;
-                    result = JsonConvert.SerializeObject(
-                        JsonApiExtensions.ToJsonApi(
-                            new object(),
-                            new Status
-                            {
-                                Code = (int)code,
-                                Desc = validationException.Errors
-                            }
-                        ),
-                        JsonExtensions.ErrorSerializerSettings());
-                    break;
-                case BadRequestException badRequestException:
-                    code = HttpStatusCode.BadRequest;
-                    result = JsonConvert.SerializeObject(
-                        JsonApiExtensions.ToJsonApi(
-                            new object(),
-                            new Status
-                            {
-                                Code = (int)code,
-                                Desc = badRequestException.Message
-                            }
-                        ),
-                        JsonExtensions.ErrorSerializerSettings());
-                    break;
-                case NotFoundException _:
-                    code = HttpStatusCode.NotFound;
-                    result = JsonConvert.SerializeObject(
-                        JsonApiExtensions.ToJsonApi(
-                            new object(),
-                            new Status
-                            {
-                                Code = (int)code,
-                                Desc = exception.Message
-                            }
-                        ),
-                        JsonExtensions.ErrorSerializerSettings());
-                    break;
-            }
-
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)code;
-
-            if (!string.IsNullOrEmpty(result))
-                return context.Response.WriteAsync(result);
-
-            result = JsonConvert.SerializeObject(
-                JsonApiExtensions.ToJsonApi(
-                    new object(),
-                    new Status
-                    {
-                        Code = (int)code,
-                        Desc = "Internal Server Error"
-                    }
-                ),
-                JsonExtensions.ErrorSerializerSettings());
-            logger.LogWarning("Internal Server Error:{ex} {msg}", exception.Source, exception.Message);
-            return context.Response.WriteAsync(result);
-        }
+        _next = next;
+        _logger = logger;
     }
 
     /// <summary>
-    /// CustomExceptionHandlerMiddlewareExtensions
+    /// InvokeAsync
     /// </summary>
-    public static class CustomExceptionHandlerMiddlewareExtensions
+    /// <param name="httpContext"></param>
+    /// <returns></returns>
+    public async Task InvokeAsync(HttpContext httpContext)
     {
-        /// <summary>
-        /// UseCustomExceptionHandler
-        /// </summary>
-        /// <param name="builder"></param>
-        public static void UseCustomExceptionHandler(this IApplicationBuilder builder)
+        try
         {
-            builder.UseMiddleware<CustomExceptionHandlerMiddleware>();
+            await _next(httpContext);
         }
+        catch (Exception ex)
+        {
+            _logger.LogDebug("Something went wrong:{Ex} {Msg}", ex.Source, ex.Message);
+            await HandleExceptionAsync(httpContext, _logger, ex);
+        }
+    }
+
+    private static Task HandleExceptionAsync(HttpContext context, ILogger logger, Exception exception)
+    {
+        var code = HttpStatusCode.InternalServerError;
+
+        var result = string.Empty;
+        switch (exception)
+        {
+            case ValidationException validationException:
+                code = HttpStatusCode.BadRequest;
+                result = JsonConvert.SerializeObject(
+                    JsonApiExtensions.ToJsonApi(
+                        new object(),
+                        new Status
+                        {
+                            Code = (int)code,
+                            Desc = validationException.Errors
+                        }
+                    ),
+                    JsonExtensions.ErrorSerializerSettings());
+                break;
+            case BadRequestException badRequestException:
+                code = HttpStatusCode.BadRequest;
+                result = JsonConvert.SerializeObject(
+                    JsonApiExtensions.ToJsonApi(
+                        new object(),
+                        new Status
+                        {
+                            Code = (int)code,
+                            Desc = badRequestException.Message
+                        }
+                    ),
+                    JsonExtensions.ErrorSerializerSettings());
+                break;
+            case NotFoundException _:
+                code = HttpStatusCode.NotFound;
+                result = JsonConvert.SerializeObject(
+                    JsonApiExtensions.ToJsonApi(
+                        new object(),
+                        new Status
+                        {
+                            Code = (int)code,
+                            Desc = exception.Message
+                        }
+                    ),
+                    JsonExtensions.ErrorSerializerSettings());
+                break;
+        }
+
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)code;
+
+        if (!string.IsNullOrEmpty(result))
+            return context.Response.WriteAsync(result);
+
+        result = JsonConvert.SerializeObject(
+            JsonApiExtensions.ToJsonApi(
+                new object(),
+                new Status
+                {
+                    Code = (int)code,
+                    Desc = "Internal Server Error"
+                }
+            ),
+            JsonExtensions.ErrorSerializerSettings());
+        logger.LogWarning("Internal Server Error:{Ex} {Msg}", exception.Source, exception.Message);
+        return context.Response.WriteAsync(result);
+    }
+}
+
+/// <summary>
+/// CustomExceptionHandlerMiddlewareExtensions
+/// </summary>
+public static class CustomExceptionHandlerMiddlewareExtensions
+{
+    /// <summary>
+    /// UseCustomExceptionHandler
+    /// </summary>
+    /// <param name="builder"></param>
+    public static void UseCustomExceptionHandler(this IApplicationBuilder builder)
+    {
+        builder.UseMiddleware<CustomExceptionHandlerMiddleware>();
     }
 }

@@ -7,43 +7,42 @@
 using Microsoft.AspNetCore.Builder;
 using netca.Application.Common.Models;
 
-namespace netca.Api.Handlers
+namespace netca.Api.Handlers;
+
+/// <summary>
+/// CorsOriginHandler
+/// </summary>
+public static class CorsOriginHandler
 {
     /// <summary>
-    /// CorsOriginHandler
+    /// ApplyCorsOrigin
     /// </summary>
-    public static class CorsOriginHandler
+    /// <param name="builder"></param>
+    /// <param name="appSetting"></param>
+    public static void ApplyCorsOrigin(IApplicationBuilder builder, AppSetting appSetting)
     {
-        /// <summary>
-        /// ApplyCorsOrigin
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="appSetting"></param>
-        public static void ApplyCorsOrigin(IApplicationBuilder builder, AppSetting appSetting)
-        {
-            var origin = appSetting.CorsOrigin;
-            builder.UseCors(
-                options => options.WithOrigins(origin)
-                    .SetIsOriginAllowedToAllowWildcardSubdomains()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-            );
-        }
+        var origin = appSetting.CorsOrigin;
+        builder.UseCors(
+            options => options.WithOrigins(origin)
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+        );
     }
+}
 
+/// <summary>
+/// UseCorsOriginHandlerExtension
+/// </summary>
+public static class UseCorsOriginHandlerExtension
+{
     /// <summary>
-    /// UseCorsOriginHandlerExtension
+    /// UseCorsOriginHandler
     /// </summary>
-    public static class UseCorsOriginHandlerExtension
+    /// <param name="builder"></param>
+    /// <param name="appSetting"></param>
+    public static void UseCorsOriginHandler(this IApplicationBuilder builder, AppSetting appSetting)
     {
-        /// <summary>
-        /// UseCorsOriginHandler
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="appSetting"></param>
-        public static void UseCorsOriginHandler(this IApplicationBuilder builder, AppSetting appSetting)
-        {
-            CorsOriginHandler.ApplyCorsOrigin(builder, appSetting);
-        }
+        CorsOriginHandler.ApplyCorsOrigin(builder, appSetting);
     }
 }

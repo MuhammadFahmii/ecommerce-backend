@@ -11,67 +11,70 @@ using System.Threading.Tasks;
 using JsonApiSerializer.JsonApi;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using netca.Api.Filters;
 using netca.Application.Common.Models;
 using netca.Application.TodoLists.Queries.ExportTodos;
 using netca.Application.TodoLists.Queries.GetTodos;
 using NSwag.Annotations;
 
-namespace netca.Api.Controllers
+namespace netca.Api.Controllers;
+
+/// <summary>
+/// Represents RESTful of TodoListsController
+/// </summary>
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/todoLists")]
+[ServiceFilter(typeof(ApiAuthorizeFilterAttribute))]
+public class TodoListsController : ApiControllerBase
 {
     /// <summary>
-    /// Represents RESTful of TodoListsController
+    /// Initializes a new instance of the <see cref="TodoListsController"/> class.
     /// </summary>
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/todoLists")]
-    [ServiceFilter(typeof(ApiAuthorizeFilterAttribute))]
-    public class TodoListsController : ApiControllerBase<TodoListsController>
+    public TodoListsController()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TodoListsController"/> class.
-        /// </summary>
-        /// <param name="logger"></param>
-        public TodoListsController(ILogger<TodoListsController> logger) : base(logger)
-        {
-        }
+    }
 
-        /// <summary>
-        /// get todos
-        /// </summary>
-        /// <param name="query"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Produces(Constants.HeaderJson)]
-        [SwaggerResponse(HttpStatusCode.OK, typeof(DocumentRootJson<TodosVm>), Description = "Successfully to get todos")]
-        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = Constants.ApiErrorDescription.BadRequest)]
-        [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit), Description = Constants.ApiErrorDescription.Unauthorized)]
-        [SwaggerResponse(HttpStatusCode.Forbidden, typeof(Unit), Description = Constants.ApiErrorDescription.Forbidden)]
-        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Unit), Description = Constants.ApiErrorDescription.InternalServerError)]
-        public async Task<DocumentRootJson<TodosVm>> GetAsync([FromQuery] GetTodosQuery query, CancellationToken cancellationToken)
-        {
-            return await Mediator.Send(query, cancellationToken);
-        }
+    /// <summary>
+    /// get todos
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Produces(Constants.HeaderJson)]
+    [SwaggerResponse(HttpStatusCode.OK, typeof(DocumentRootJson<TodosVm>), Description = "Successfully to get todos")]
+    [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = Constants.ApiErrorDescription.BadRequest)]
+    [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit),
+        Description = Constants.ApiErrorDescription.Unauthorized)]
+    [SwaggerResponse(HttpStatusCode.Forbidden, typeof(Unit), Description = Constants.ApiErrorDescription.Forbidden)]
+    [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Unit),
+        Description = Constants.ApiErrorDescription.InternalServerError)]
+    public async Task<DocumentRootJson<TodosVm>> GetAsync([FromQuery] GetTodosQuery query,
+        CancellationToken cancellationToken)
+    {
+        return await Mediator.Send(query, cancellationToken);
+    }
 
-        /// <summary>
-        /// Get Todos csv
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [HttpGet("{id:guid}")]
-        [Produces(Constants.HeaderTextCsv)]
-        [SwaggerResponse(HttpStatusCode.OK, typeof(DocumentRootJson<TodosVm>), Description = "Successfully to get todos csv")]
-        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = Constants.ApiErrorDescription.BadRequest)]
-        [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit), Description = Constants.ApiErrorDescription.Unauthorized)]
-        [SwaggerResponse(HttpStatusCode.Forbidden, typeof(Unit), Description = Constants.ApiErrorDescription.Forbidden)]
-        [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Unit), Description = Constants.ApiErrorDescription.InternalServerError)]
-        public async Task<FileResult> GetCsvAsync(Guid id, CancellationToken cancellationToken)
-        {
-            var vm = await Mediator.Send(new ExportTodosQuery { ListId = id }, cancellationToken);
+    /// <summary>
+    /// Get Todos csv
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet("{id:guid}")]
+    [Produces(Constants.HeaderTextCsv)]
+    [SwaggerResponse(HttpStatusCode.OK, typeof(DocumentRootJson<TodosVm>),
+        Description = "Successfully to get todos csv")]
+    [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = Constants.ApiErrorDescription.BadRequest)]
+    [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit),
+        Description = Constants.ApiErrorDescription.Unauthorized)]
+    [SwaggerResponse(HttpStatusCode.Forbidden, typeof(Unit), Description = Constants.ApiErrorDescription.Forbidden)]
+    [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Unit),
+        Description = Constants.ApiErrorDescription.InternalServerError)]
+    public async Task<FileResult> GetCsvAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var vm = await Mediator.Send(new ExportTodosQuery { ListId = id }, cancellationToken);
 
-            return File(vm.Content!, vm.ContentType!, vm.FileName);
-        }
+        return File(vm.Content!, vm.ContentType!, vm.FileName);
     }
 }
