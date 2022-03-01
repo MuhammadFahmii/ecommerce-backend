@@ -52,10 +52,12 @@ public class UserAuthorizationService : IUserAuthorizationService
         _user = httpContextAccessor.HttpContext?.User;
         _appSetting = appSetting;
         _environment = environment;
-        _permissionName = (string)httpContextAccessor?.HttpContext?.Items["CurrentPolicyName"]!;
-
-        if (httpContextAccessor != null)
-            _isAuthenticated = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) != null;
+        
+        if (httpContextAccessor.HttpContext?.Items.TryGetValue("CurrentPolicyName", out _) == true)
+        {
+            _permissionName = (string)httpContextAccessor.HttpContext?.Items["CurrentPolicyName"]!;
+        }
+        _isAuthenticated = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) != null;
 
         _httpClient.DefaultRequestHeaders.Add(
             _appSetting.AuthorizationServer.Header,
@@ -76,7 +78,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         if (!IsProd() && !_isAuthenticated)
             return Guid.NewGuid();
 
-        var userId = _user!.Claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value;
+        var userId = _user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value;
         return new Guid(userId ?? string.Empty);
     }
 
@@ -86,7 +88,7 @@ public class UserAuthorizationService : IUserAuthorizationService
     /// <returns></returns>
     public string? GetUserName()
     {
-        return _user!.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Name)?.Value;
+        return _user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Name)?.Value;
     }
 
     /// <summary>
@@ -98,7 +100,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         if (!IsProd() && !_isAuthenticated)
             return Constants.SystemCustomerName;
 
-        return _user!.Claims.FirstOrDefault(i => i.Type == Constants.CustomerCode)?.Value;
+        return _user?.Claims.FirstOrDefault(i => i.Type == Constants.CustomerCode)?.Value;
     }
 
     /// <summary>
@@ -110,7 +112,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         if (!IsProd() && !_isAuthenticated)
             return Constants.SystemClientId;
 
-        return _user!.Claims.FirstOrDefault(i => i.Type == Constants.ClientId)?.Value;
+        return _user?.Claims.FirstOrDefault(i => i.Type == Constants.ClientId)?.Value;
     }
 
     /// <summary>
@@ -131,7 +133,7 @@ public class UserAuthorizationService : IUserAuthorizationService
                 UserId = GetUserId(),
                 UserName = StringExtensions.Truncate(GetUserName(), 50),
                 UserFullName = StringExtensions.Truncate(
-                    $"{_user!.Claims.FirstOrDefault(i => i.Type == ClaimTypes.GivenName)?.Value} {_user.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Surname)?.Value}",
+                    $"{_user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.GivenName)?.Value} {_user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Surname)?.Value}",
                     50),
                 CustomerCode = GetCustomerCode(),
                 ClientId = GetClientId()
@@ -155,7 +157,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         if (IsTest())
             return MockData.GetUserAttribute();
 
-        if (!_isAuthenticated)
+        if (!_isAuthenticated || _permissionName == null)
             return null;
 
         var userId = GetUserId();
@@ -165,7 +167,7 @@ public class UserAuthorizationService : IUserAuthorizationService
 
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
-        _logger.LogDebug("Response:");
+        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
         _logger.LogDebug("{M}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
@@ -213,7 +215,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             cancellationToken
         );
 
-        _logger.LogDebug("Response:");
+        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
         _logger.LogDebug("{M}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
@@ -264,7 +266,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             cancellationToken
         );
 
-        _logger.LogDebug("Response:");
+        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
         _logger.LogDebug("{M}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
@@ -302,7 +304,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/device/{userId}/{clientId}";
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
-        _logger.LogDebug("Response:");
+        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
         _logger.LogDebug("{M}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
@@ -338,7 +340,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/email/{userId}";
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
-        _logger.LogDebug("Response:");
+        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
         _logger.LogDebug("{M}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
@@ -376,7 +378,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             _appSetting.AuthorizationServer.Gateway + "api/generalparameter/" + generalParameterCode);
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
-        _logger.LogDebug("Response:");
+        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
         _logger.LogDebug("{M}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
@@ -416,7 +418,7 @@ public class UserAuthorizationService : IUserAuthorizationService
     {
         var result = new Dictionary<string, List<string>>();
 
-        if (!_isAuthenticated)
+        if (!_isAuthenticated || _permissionName == null)
             return result;
 
         var userId = GetUserId();
@@ -425,7 +427,7 @@ public class UserAuthorizationService : IUserAuthorizationService
                   $"/api/user/attribute/service/{userId}/{clientId}/{_permissionName}?getService=true";
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
-        _logger.LogDebug("Response:");
+        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
         _logger.LogDebug("{M}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
@@ -464,7 +466,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/clientid/{clientId}";
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
-        _logger.LogDebug("Response:");
+        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
         _logger.LogDebug("{M}", response.ToString());
 
         if (!response.IsSuccessStatusCode)

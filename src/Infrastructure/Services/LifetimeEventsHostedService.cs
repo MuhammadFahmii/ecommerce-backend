@@ -30,7 +30,7 @@ public class LifetimeEventsHostedService : IHostedService
     private readonly string _appName;
     private readonly bool _isEnable;
     private const string ImgWarning = Constants.MsTeamsImageWarning;
-    private MsTeamTemplate _tmpl = null!;
+    private MsTeamTemplate? _tmpl;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LifetimeEventsHostedService"/> class.
@@ -154,7 +154,7 @@ public class LifetimeEventsHostedService : IHostedService
 
     private void Send()
     {
-        _logger.LogDebug("Sending message to MsTeam with color {Color}", _tmpl.ThemeColor);
-        SendToMsTeams.Send(_appSetting, _tmpl).ConfigureAwait(false);
+        _logger.LogDebug("Sending message to MsTeam with color {Color}", _tmpl?.ThemeColor);
+        if (_tmpl != null) SendToMsTeams.Send(_appSetting, _tmpl).ConfigureAwait(false);
     }
 }
