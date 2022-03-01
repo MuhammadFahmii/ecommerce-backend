@@ -15,84 +15,84 @@ using Microsoft.Extensions.Logging;
 using netca.Application.Common.Models;
 using netca.Infrastructure.Services;
 
-namespace netca.Api.Middlewares
+namespace netca.Api.Middlewares;
+
+/// <summary>
+/// AuthHandlerMiddleware
+/// </summary>
+public class AuthHandlerMiddleware
 {
+    private readonly RequestDelegate _next;
+    private readonly AppSetting _appSetting;
+    private readonly ILogger<AuthHandlerMiddleware> _logger;
+
     /// <summary>
-    /// AuthHandlerMiddleware
+    /// Initializes a new instance of the <see cref="AuthHandlerMiddleware"/> class.
     /// </summary>
-    public class AuthHandlerMiddleware
+    /// <param name="next"></param>
+    /// <param name="appSetting"></param>
+    /// <param name="logger"></param>
+    public AuthHandlerMiddleware(RequestDelegate next, AppSetting appSetting, ILogger<AuthHandlerMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly AppSetting _appSetting;
-        private readonly ILogger<AuthHandlerMiddleware> _logger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHandlerMiddleware"/> class.
-        /// </summary>
-        /// <param name="next"></param>
-        /// <param name="appSetting"></param>
-        /// <param name="logger"></param>
-        public AuthHandlerMiddleware(RequestDelegate next, AppSetting appSetting, ILogger<AuthHandlerMiddleware> logger)
-        {
-            _next = next;
-            _appSetting = appSetting;
-            _logger = logger;
-        }
-
-        /// <summary>
-        /// Invoke
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public async Task Invoke(HttpContext context)
-        {
-            var whitelistPathSegment = _appSetting.AuthorizationServer.WhiteListPathSegment.Split(",").ToList();
-            var requiredCheck = !whitelistPathSegment.Any(item => context.Request.Path.StartsWithSegments(item));
-
-            if (requiredCheck)
-            {
-                _logger.LogDebug("Authenticating");
-                var auth = await CheckAuthAsync(context);
-                if (!auth.Succeeded)
-                {
-                    await context.ChallengeAsync();
-                    return;
-                }
-            }
-
-            await _next(context);
-        }
-
-        private static async Task<AuthenticateResult> CheckAuthAsync(HttpContext context)
-        {
-            var auth = context.RequestServices.GetRequiredService<IAuthenticationService>();
-            return await auth.AuthenticateAsync(context, scheme: JwtBearerDefaults.AuthenticationScheme);
-        }
+        _next = next;
+        _appSetting = appSetting;
+        _logger = logger;
     }
 
     /// <summary>
-    /// AuthHandlerMiddlewareExtensions
+    /// Invoke
     /// </summary>
-    public static class AuthHandlerMiddlewareExtensions
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public async Task Invoke(HttpContext context)
     {
-        /// <summary>
-        /// UseAuthHandler
-        /// </summary>
-        /// <param name="builder"></param>
-        public static void UseAuthHandler(this IApplicationBuilder builder)
+        var whitelistPathSegment = _appSetting.AuthorizationServer.WhiteListPathSegment.Split(",").ToList();
+        var requiredCheck = !whitelistPathSegment.Any(item => context.Request.Path.StartsWithSegments(item));
+
+        if (requiredCheck)
         {
-            builder.UseAuthentication();
-            builder.UseMiddleware<AuthHandlerMiddleware>();
+            _logger.LogDebug("Authenticating");
+            var auth = await CheckAuthAsync(context);
+            if (!auth.Succeeded)
+            {
+                await context.ChallengeAsync();
+                return;
+            }
         }
 
-        /// <summary>
-        /// AddPermissions
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="appSetting"></param>
-        public static void AddPermissions(this IServiceCollection services, AppSetting appSetting)
-        {
-            services.AddAuthentication(options =>
+        await _next(context);
+    }
+
+    private static async Task<AuthenticateResult> CheckAuthAsync(HttpContext context)
+    {
+        var auth = context.RequestServices.GetRequiredService<IAuthenticationService>();
+        return await auth.AuthenticateAsync(context, scheme: JwtBearerDefaults.AuthenticationScheme);
+    }
+}
+
+/// <summary>
+/// AuthHandlerMiddlewareExtensions
+/// </summary>
+public static class AuthHandlerMiddlewareExtensions
+{
+    /// <summary>
+    /// UseAuthHandler
+    /// </summary>
+    /// <param name="builder"></param>
+    public static void UseAuthHandler(this IApplicationBuilder builder)
+    {
+        builder.UseAuthentication();
+        builder.UseMiddleware<AuthHandlerMiddleware>();
+    }
+
+    /// <summary>
+    /// AddPermissions
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="appSetting"></param>
+    public static void AddPermissions(this IServiceCollection services, AppSetting appSetting)
+    {
+        services.AddAuthentication(options =>
             {
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -105,15 +105,14 @@ namespace netca.Api.Middlewares
                 options.RequireHttpsMetadata = false;
             });
 
-            services.AddAuthorization(options =>
+        services.AddAuthorization(options =>
+        {
+            var policy = appSetting.AuthorizationServer.Policy;
+            policy.ForEach(p =>
             {
-                var policy = appSetting.AuthorizationServer.Policy;
-                policy.ForEach(p =>
-                {
-                    if (p != null)
-                        options.AddPolicy(p.Name, pol => pol.Requirements.Add(new Permission(p.Name)));
-                });
+                if (p != null)
+                    options.AddPolicy(p.Name, pol => pol.Requirements.Add(new Permission(p.Name)));
             });
-        }
+        });
     }
 }

@@ -43,7 +43,7 @@ public class ApiAuthorizeFilterAttribute : ActionFilterAttribute
             if (policy is { IsCheck: true })
             {
                 var auth = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
-                logger.LogDebug("Checking permission {name}", policy.Name);
+                logger.LogDebug("Checking permission {Name}", policy.Name);
                 var permissionCheck = await auth.AuthorizeAsync(context.HttpContext.User, null, policy.Name);
                 if (!permissionCheck.Succeeded)
                 {
@@ -61,14 +61,14 @@ public class ApiAuthorizeFilterAttribute : ActionFilterAttribute
         }
         catch (Exception e)
         {
-            logger.LogWarning("error checking permission {Message}", e.Message);
+            logger.LogError("error checking permission {Message}", e.Message);
             context.Result = new ForbidResult();
         }
     }
 
     private static Policy? GetPolicy(ILogger logger, AppSetting appSetting, string policy)
     {
-        logger.LogDebug("Get policy {policy} if exists", policy);
+        logger.LogDebug("Get policy {Policy} if exists", policy);
         var policyList = appSetting.AuthorizationServer.Policy;
         return policyList.Count.Equals(0)
             ? null

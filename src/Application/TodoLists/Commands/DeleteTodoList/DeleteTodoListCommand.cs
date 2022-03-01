@@ -35,14 +35,17 @@ namespace netca.Application.TodoLists.Commands.DeleteTodoList
     public class DeleteTodoListCommandHandler : IRequestHandler<DeleteTodoListCommand>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IDateTime _dateTime;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteTodoListCommandHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
-        public DeleteTodoListCommandHandler(IApplicationDbContext context)
+        /// <param name="dateTime"></param>
+        public DeleteTodoListCommandHandler(IApplicationDbContext context, IDateTime dateTime)
         {
             _context = context;
+            _dateTime = dateTime;
         }
 
         /// <summary>
@@ -62,9 +65,8 @@ namespace netca.Application.TodoLists.Commands.DeleteTodoList
             {
                 throw new NotFoundException(nameof(TodoList), request.Id);
             }
-
-            _context.TodoLists!.Remove(entity);
-
+            
+            entity.DeletedDate = _dateTime.UtcNow;
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

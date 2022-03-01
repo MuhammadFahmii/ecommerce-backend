@@ -54,7 +54,7 @@ namespace netca.Application.TodoLists.Queries.GetTodos
         /// <returns></returns>
         public async Task<DocumentRootJson<TodosVm>> Handle(GetTodosQuery request, CancellationToken cancellationToken)
         {
-            var countEntity = await _context.TodoLists!
+            var countEntity = await _context.TodoLists
                 .AsNoTracking()
                 .QueryWithoutLimit(request)
                 .Select(x => x.Id)
@@ -66,7 +66,7 @@ namespace netca.Application.TodoLists.Queries.GetTodos
                      .Select(p => new PriorityLevelVm { Value = (int)p, Name = p.ToString() })
                      .ToList(),
 
-                Lists = await _context.TodoLists!
+                Lists = await _context.TodoLists
                      .AsNoTracking()
                      .Query(request)
                      .ProjectTo<TodoListVm>(_mapper.ConfigurationProvider)

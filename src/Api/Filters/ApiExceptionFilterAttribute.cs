@@ -11,66 +11,65 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace netca.Api.Filters
+namespace netca.Api.Filters;
+
+/// <summary>
+/// ApiExceptionFilterAttribute
+/// </summary>
+public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 {
+    private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers;
+    private readonly ILogger _logger;
+
     /// <summary>
-    /// ApiExceptionFilterAttribute
+    /// Initializes a new instance of the <see cref="ApiExceptionFilterAttribute"/> class.
     /// </summary>
-    public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
+    /// <param name="loggerFactory"></param>
+    public ApiExceptionFilterAttribute(ILoggerFactory loggerFactory)
     {
-        private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers;
-        private readonly ILogger _logger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApiExceptionFilterAttribute"/> class.
-        /// </summary>
-        /// <param name="loggerFactory"></param>
-        public ApiExceptionFilterAttribute(ILoggerFactory loggerFactory)
+        _logger = loggerFactory.CreateLogger<ApiExceptionFilterAttribute>();
+        _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
         {
-            _logger = loggerFactory.CreateLogger<ApiExceptionFilterAttribute>();
-            _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
-            {
-                { typeof(OperationCanceledException), HandleOperationCancelledException }
-            };
-        }
+            { typeof(OperationCanceledException), HandleOperationCancelledException }
+        };
+    }
 
-        /// <summary>
-        /// OnException
-        /// </summary>
-        /// <param name="context"></param>
-        public override void OnException(ExceptionContext context)
+    /// <summary>
+    /// OnException
+    /// </summary>
+    /// <param name="context"></param>
+    public override void OnException(ExceptionContext context)
+    {
+        HandleException(context);
+
+        base.OnException(context);
+    }
+
+    private void HandleException(ExceptionContext context)
+    {
+        var type = context.Exception.GetType();
+        if (_exceptionHandlers.ContainsKey(type))
         {
-            HandleException(context);
-
-            base.OnException(context);
+            _exceptionHandlers[type].Invoke(context);
         }
+    }
 
-        private void HandleException(ExceptionContext context)
+    private void HandleOperationCancelledException(ExceptionContext context)
+    {
+        var details = new ProblemDetails
         {
-            var type = context.Exception.GetType();
-            if (_exceptionHandlers.ContainsKey(type))
-            {
-                _exceptionHandlers[type].Invoke(context);
-            }
-        }
+            Status = 499,
+            Title = "Client Closed Request",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
+        };
 
-        private void HandleOperationCancelledException(ExceptionContext context)
+        _logger.LogWarning("Client Closed Request");
+
+        context.Result = new ObjectResult(details)
         {
-            var details = new ProblemDetails
-            {
-                Status = 499,
-                Title = "Client Closed Request",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
-            };
+            StatusCode = StatusCodes.Status400BadRequest
+        };
 
-            _logger.LogWarning("Client Closed Request");
-
-            context.Result = new ObjectResult(details)
-            {
-                StatusCode = StatusCodes.Status400BadRequest
-            };
-
-            context.ExceptionHandled = true;
-        }
+        context.ExceptionHandled = true;
     }
 }

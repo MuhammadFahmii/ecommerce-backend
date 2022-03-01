@@ -13,65 +13,64 @@ using netca.Application.Common.Models;
 using netca.Infrastructure.Persistence;
 using Serilog;
 
-namespace netca.Api.Handlers
+namespace netca.Api.Handlers;
+
+/// <summary>
+/// MigrationsHandler
+/// </summary>
+public static class MigrationsHandler
 {
     /// <summary>
-    /// MigrationsHandler
+    /// ApplyMigration
     /// </summary>
-    public static class MigrationsHandler
+    /// <param name="app"></param>
+    /// <param name="appSetting"></param>
+    /// <returns></returns>
+    public static async Task ApplyMigration(IApplicationBuilder app, AppSetting appSetting)
     {
-        /// <summary>
-        /// ApplyMigration
-        /// </summary>
-        /// <param name="app"></param>
-        /// <param name="appSetting"></param>
-        /// <returns></returns>
-        public static async Task ApplyMigration(IApplicationBuilder app, AppSetting appSetting)
+        if (!appSetting.DatabaseSettings.Migrations && !appSetting.DatabaseSettings.SeedData)
+            return;
+
+        using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();
+        var logger = Log.ForContext(typeof(MigrationsHandler));
+
+        try
         {
-            if (!appSetting.DatabaseSettings.Migrations && !appSetting.DatabaseSettings.SeedData)
-                return;
-
-            using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();
-            var logger = Log.ForContext(typeof(MigrationsHandler));
-
-            try
+            logger.Warning("Migrating Database");
+            if (serviceScope != null)
             {
-                logger.Warning("Migrating Database");
-                if (serviceScope != null)
+                var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                if (appSetting.DatabaseSettings.Migrations)
                 {
-                    var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    if (appSetting.DatabaseSettings.Migrations)
-                    {
-                        await context.Database.MigrateAsync();
-                    }
+                    await context.Database.MigrateAsync();
+                }
 
-                    if (appSetting.DatabaseSettings.SeedData)
-                    {
-                        logger.Warning("Seeding Database");
-                        await ApplicationDbContextSeed.SeedSampleDataAsync(context);
-                    }
+                if (appSetting.DatabaseSettings.SeedData)
+                {
+                    logger.Warning("Seeding Database");
+                    await ApplicationDbContextSeed.SeedSampleDataAsync(context);
                 }
             }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "An error occurred while migrating the database.");
-            }
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "An error occurred while migrating the database");
         }
     }
+}
 
+/// <summary>
+/// UseMigrationsHandlerExtensions
+/// </summary>
+public static class UseMigrationsHandlerExtensions
+{
     /// <summary>
-    /// UseMigrationsHandlerExtensions
+    /// UseMigrationsHandler
     /// </summary>
-    public static class UseMigrationsHandlerExtensions
+    /// <param name="builder"></param>
+    /// <param name="appSetting"></param>
+    public static void UseMigrationsHandler(this IApplicationBuilder builder, AppSetting appSetting)
     {
-        /// <summary>
-        /// UseMigrationsHandler
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="appSetting"></param>
-        public static void UseMigrationsHandler(this IApplicationBuilder builder, AppSetting appSetting)
-        {
-            MigrationsHandler.ApplyMigration(builder, appSetting).ConfigureAwait(false);
-        }
+        MigrationsHandler.ApplyMigration(builder, appSetting).ConfigureAwait(false);
     }
 }

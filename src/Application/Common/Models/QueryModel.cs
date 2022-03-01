@@ -98,7 +98,7 @@ public class QueryModel
                 Logic = logic
             });
 
-            Logger.LogDebug($"Filter = {subFilters[i]} {filterSplit[0]} {filterSplit[1]}");
+            Logger.LogDebug("Filter = {Sub} {F1} {F2}",subFilters[i], filterSplit[0], filterSplit[1]);
         }
     }
 
@@ -137,7 +137,7 @@ public class QueryModel
                 });
 
                 Logger.LogDebug(
-                    $"Filter = {filterSplit[0]} {Array.Find(Constants.Operators, filter.Contains) ?? "=="} {subFilters[i]}");
+                    "Filter = {F1} {Op} {Fs}", filterSplit[0], Array.Find(Constants.Operators, filter.Contains) ?? "==", subFilters[i]);
             }
         }
         else
@@ -149,9 +149,9 @@ public class QueryModel
                 Value = filterSplit[1],
                 Logic = "AND"
             });
-
+            
             Logger.LogDebug(
-                $"Filter = {filterSplit[0]} {Array.Find(Constants.Operators, filter.Contains) ?? "=="} {filterSplit[1]}");
+                "Filter = {F1} {Op} {Fs}", filterSplit[0], Array.Find(Constants.Operators, filter.Contains) ?? "==", filterSplit[1]);
         }
     }
 

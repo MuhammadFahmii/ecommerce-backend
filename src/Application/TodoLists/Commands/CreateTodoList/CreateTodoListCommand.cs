@@ -56,7 +56,7 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
                 Title = request.Title
             };
 
-            _context.TodoLists!.Add(entity);
+            _context.TodoLists.Add(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
 

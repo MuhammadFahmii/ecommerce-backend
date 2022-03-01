@@ -7,37 +7,20 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
-namespace netca.Api.Controllers
+namespace netca.Api.Controllers;
+
+/// <summary>
+/// ApiController
+/// </summary>
+[ApiController]
+public abstract class ApiControllerBase : ControllerBase
 {
+    private IMediator? _mediator;
+
     /// <summary>
-    /// ApiController
+    /// Gets protected variable to encapsulate request/response and publishing interaction patterns.
     /// </summary>
-    /// <typeparam name="T">The type of the controller class</typeparam>
-    [ApiController]
-    public abstract class ApiControllerBase<T> : ControllerBase
-    {
-        private IMediator? _mediator;
-
-        /// <summary>
-        /// Protected variable to perform logging.
-        /// </summary>
-        protected readonly ILogger Logger;
-
-        /// <summary>
-        /// Gets protected variable to encapsulate request/response and publishing interaction patterns.
-        /// </summary>
-        /// <returns></returns>
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<IMediator>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApiControllerBase{T}"/> class.
-        /// </summary>
-        /// <param name="logger">Set Logger to perform logging</param>
-        protected ApiControllerBase(ILogger<T> logger)
-        {
-            Logger = logger;
-        }
-    }
+    /// <returns></returns>
+    protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<IMediator>();
 }

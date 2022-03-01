@@ -10,60 +10,53 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using netca.Application.Common.Models;
 
-namespace netca.Api.Handlers
+namespace netca.Api.Handlers;
+
+/// <summary>
+/// CompressionHandler
+/// </summary>
+public static class CompressionHandler
 {
     /// <summary>
-    /// CompressionHandler
+    /// ApplyCompress
     /// </summary>
-    public static class CompressionHandler
+    /// <param name="services"></param>
+    public static void ApplyCompress(IServiceCollection services)
     {
-        /// <summary>
-        /// ApplyCompress
-        /// </summary>
-        /// <param name="services"></param>
-        public static void ApplyCompress(IServiceCollection services)
+        services.AddResponseCompression(options =>
         {
-            services.AddResponseCompression(options =>
+            var mimeTypes = new[]
             {
-                var mimeTypes = new[]
-                {
-                    Constants.HeaderPdf,
-                    Constants.HeaderTextPlain,
-                    Constants.HeaderImageJpg,
-                    Constants.HeaderJson,
-                    Constants.HeaderOctetStream,
-                    Constants.HeaderProblemJson,
-                    Constants.HeaderTextCsv
-                };
-                options.EnableForHttps = true;
-                options.MimeTypes = mimeTypes;
-                options.Providers.Add<GzipCompressionProvider>();
-                options.Providers.Add<BrotliCompressionProvider>();
-            });
+                Constants.HeaderPdf,
+                Constants.HeaderTextPlain,
+                Constants.HeaderImageJpg,
+                Constants.HeaderJson,
+                Constants.HeaderOctetStream,
+                Constants.HeaderProblemJson,
+                Constants.HeaderTextCsv
+            };
+            options.EnableForHttps = true;
+            options.MimeTypes = mimeTypes;
+            options.Providers.Add<GzipCompressionProvider>();
+            options.Providers.Add<BrotliCompressionProvider>();
+        });
 
-            services.Configure<BrotliCompressionProviderOptions>(options =>
-            {
-                options.Level = CompressionLevel.Optimal;
-            });
-            services.Configure<GzipCompressionProviderOptions>(options =>
-            {
-                options.Level = CompressionLevel.Optimal;
-            });
-        }
+        services.Configure<BrotliCompressionProviderOptions>(options => { options.Level = CompressionLevel.Optimal; });
+        services.Configure<GzipCompressionProviderOptions>(options => { options.Level = CompressionLevel.Optimal; });
     }
+}
 
+/// <summary>
+/// AddCompressionHandlerExtension
+/// </summary>
+public static class AddCompressionHandlerExtension
+{
     /// <summary>
-    /// AddCompressionHandlerExtension
+    /// AddCompressionHandler
     /// </summary>
-    public static class AddCompressionHandlerExtension
+    /// <param name="services"></param>
+    public static void AddCompressionHandler(this IServiceCollection services)
     {
-        /// <summary>
-        /// AddCompressionHandler
-        /// </summary>
-        /// <param name="services"></param>
-        public static void AddCompressionHandler(this IServiceCollection services)
-        {
-            CompressionHandler.ApplyCompress(services);
-        }
+        CompressionHandler.ApplyCompress(services);
     }
 }

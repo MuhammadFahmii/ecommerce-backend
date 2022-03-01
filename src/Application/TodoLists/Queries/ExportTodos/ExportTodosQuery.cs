@@ -59,7 +59,7 @@ namespace netca.Application.TodoLists.Queries.ExportTodos
         {
             var vm = new ExportTodosVm();
 
-            var records = await _context.TodoItems!
+            var records = await _context.TodoItems
                 .Where(t => t.ListId == request.ListId)
                 .ProjectTo<TodoItemRecord>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
