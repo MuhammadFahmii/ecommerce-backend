@@ -69,7 +69,7 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
         /// <returns></returns>
         public async Task<DocumentRootJson<List<TodoItemBriefVm>>> Handle(GetTodoItemsWithPaginationQuery request, CancellationToken cancellationToken)
         {
-            return await _context.TodoItems!
+            return await _context.TodoItems
                 .Where(x => x.ListId == request.ListId)
                 .OrderBy(x => x.Title)
                 .ProjectTo<TodoItemBriefVm>(_mapper.ConfigurationProvider)

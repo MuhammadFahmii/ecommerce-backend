@@ -59,7 +59,7 @@ namespace netca.Application.TodoLists.Commands.UpdateTodoList
         /// <exception cref="NotFoundException">Exception</exception>
         public async Task<Unit> Handle(UpdateTodoListCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.TodoLists!.FindAsync(new object[] { request.Id }, cancellationToken);
+            var entity = await _context.TodoLists.FindAsync(new object[] { request.Id }, cancellationToken);
 
             if (entity == null)
             {

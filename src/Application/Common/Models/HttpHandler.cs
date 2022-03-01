@@ -35,7 +35,7 @@ public class HttpHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        Logger.LogDebug(request.RequestUri?.ToString());
+        Logger.LogDebug("url : {Url}",request.RequestUri?.ToString());
         return await base.SendAsync(request, cancellationToken);
     }
 }

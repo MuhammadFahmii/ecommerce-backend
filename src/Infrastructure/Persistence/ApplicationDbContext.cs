@@ -46,17 +46,17 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// <summary>
     /// Gets or sets todoItems
     /// </summary>
-    public DbSet<TodoItem>? TodoItems { get; set; }
+    public DbSet<TodoItem> TodoItems { get; set; }
 
     /// <summary>
     /// Gets or sets changelogs
     /// </summary>
-    public DbSet<Changelog>? Changelogs { get; set; }
+    public DbSet<Changelog> Changelogs { get; set; }
 
     /// <summary>
     /// Gets or sets todoLists
     /// </summary>
-    public DbSet<TodoList>? TodoLists { get; set; }
+    public DbSet<TodoList> TodoLists { get; set; }
 
     /// <summary>
     /// to prevent hard delete
