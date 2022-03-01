@@ -16,6 +16,10 @@
     <None Include=".dockerignore" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".azuredevops\gitversion.yml" />
+    <Content Include=".azuredevops\pull_request_template\branches\develop.md" />
+    <Content Include=".azuredevops\pull_request_template\branches\main.md" />
+    <Content Include=".azuredevops\release-notes-template.md" />
     <Content Include="Dockerfile" />
     <Content Include="LICENSE" />
     <Content Include="README.md" />
