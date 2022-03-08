@@ -17,7 +17,7 @@ namespace netca.Application.Common.Models;
 /// </summary>
 public class QueryModel
 {
-    private static readonly ILogger Logger = AppLoggingExtensions.CreateLogger("QueryModel");
+    private static readonly ILogger? Logger = AppLoggingExtensions.CreateLogger("QueryModel");
 
     /// <summary>
     /// Gets or sets filters
@@ -98,7 +98,7 @@ public class QueryModel
                 Logic = logic
             });
 
-            Logger.LogDebug("Filter = {Sub} {F1} {F2}",subFilters[i], filterSplit[0], filterSplit[1]);
+            Logger?.LogDebug("Filter = {Sub} {F1} {F2}",subFilters[i], filterSplit[0], filterSplit[1]);
         }
     }
 
@@ -136,7 +136,7 @@ public class QueryModel
                     Logic = logic
                 });
 
-                Logger.LogDebug(
+                Logger?.LogDebug(
                     "Filter = {F1} {Op} {Fs}", filterSplit[0], Array.Find(Constants.Operators, filter.Contains) ?? "==", subFilters[i]);
             }
         }
@@ -150,7 +150,7 @@ public class QueryModel
                 Logic = "AND"
             });
             
-            Logger.LogDebug(
+            Logger?.LogDebug(
                 "Filter = {F1} {Op} {Fs}", filterSplit[0], Array.Find(Constants.Operators, filter.Contains) ?? "==", filterSplit[1]);
         }
     }

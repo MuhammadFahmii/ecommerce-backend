@@ -16,7 +16,7 @@ namespace netca.Application.Common.Models;
 /// </summary>
 public class HttpHandler : DelegatingHandler
 {
-    private static readonly ILogger Logger = AppLoggingExtensions.CreateLogger("HttpHandler");
+    private static readonly ILogger? Logger = AppLoggingExtensions.CreateLogger("HttpHandler");
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpHandler"/> class.
@@ -35,7 +35,7 @@ public class HttpHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        Logger.LogDebug("url : {Url}",request.RequestUri?.ToString());
+        Logger?.LogDebug("url : {Url}",request.RequestUri?.ToString());
         return await base.SendAsync(request, cancellationToken);
     }
 }

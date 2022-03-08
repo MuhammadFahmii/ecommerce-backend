@@ -182,7 +182,7 @@ public class DocumentRootJson<TData> : IDocumentRoot<TData>
     /// Data.
     /// </value>
     [JsonProperty(Order = 2)]
-    public TData? Data { get; set; }
+    public TData Data { get; set; } = default!;
 
     /// <summary>
     /// Gets or sets included

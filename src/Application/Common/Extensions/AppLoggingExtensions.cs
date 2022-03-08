@@ -15,19 +15,19 @@ public static class AppLoggingExtensions
     /// Gets or sets loggerFactory
     /// </summary>
     /// <value></value>
-    public static ILoggerFactory LoggerFactory { get; set; } = null!;
+    public static ILoggerFactory? LoggerFactory { get; set; }
 
     /// <summary>
     /// CreateLogger
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static ILogger<T> CreateLogger<T>() => LoggerFactory.CreateLogger<T>();
+    public static ILogger<T>? CreateLogger<T>() => LoggerFactory?.CreateLogger<T>();
 
     /// <summary>
     /// CreateLogger
     /// </summary>
     /// <param name="categoryName"></param>
     /// <returns></returns>
-    public static ILogger CreateLogger(string categoryName) => LoggerFactory.CreateLogger(categoryName);
+    public static ILogger? CreateLogger(string categoryName) => LoggerFactory?.CreateLogger(categoryName);
 }

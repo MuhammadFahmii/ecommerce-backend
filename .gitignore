@@ -235,3 +235,4 @@ _Pvt_Extensions
 /NDependOut
 .vscode/**
 **/appsettings.Local.json
+**/appsettings.Test.Local.json
