@@ -36,9 +36,9 @@ public static class MockData
     /// <returns></returns>
     public static AuthorizedUser GetAuthorizedUser()
     {
-        return new AuthorizedUser()
+        return new AuthorizedUser
         {
-            UserId = Guid.NewGuid(),
+            UserId = Constants.SystemId,
             UserName = Constants.SystemEmail,
             UserFullName = Constants.SystemName,
             CustomerCode = Constants.SystemName,
@@ -53,7 +53,7 @@ public static class MockData
     /// <returns></returns>
     public static List<UserClientIdInfo> GetUserByAttribute()
     {
-        return new List<UserClientIdInfo>()
+        return new List<UserClientIdInfo>
         {
             new()
             {
@@ -94,7 +94,7 @@ public static class MockData
     /// <returns></returns>
     public static List<UserManagementUser> GetListMechanics()
     {
-        var result = new List<UserManagementUser>()
+        var result = new List<UserManagementUser>
         {
             new()
             {
