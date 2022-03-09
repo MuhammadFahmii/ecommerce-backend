@@ -100,7 +100,7 @@ public class Testing
     /// </summary>
     public static async Task ResetState()
     {
-        await _checkpoint?.Reset(_configuration.GetConnectionString("DefaultConnection"))!;
+       await _checkpoint?.Reset(_configuration.GetConnectionString("DefaultConnection"))!;
     }
     
     private static void EnsureDatabase()
@@ -141,6 +141,21 @@ public class Testing
         context?.Add(entity);
 
         await context?.SaveChangesAsync()!;
+    }
+    
+    /// <summary>
+    /// Find
+    /// </summary>
+    /// <param name="keyValues"></param>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <returns></returns>
+    public static  TEntity? Find<TEntity>(params object[] keyValues)
+        where TEntity : class
+    {
+        using var scope = ScopeFactory?.CreateScope();
+
+        var context = scope?.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        return  context?.Find<TEntity>(keyValues);
     }
     
     /// <summary>
