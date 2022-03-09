@@ -104,8 +104,11 @@ public class Startup
         services.AddMvcCore(options =>
         {
             var serializerSettings = new JsonApiSerializerSettings();
+#pragma warning disable 0618
             var jsonApiFormatter =
                 new NewtonsoftJsonOutputFormatter(serializerSettings, ArrayPool<char>.Shared, new MvcOptions());
+#pragma warning restore 0618
+
             options.OutputFormatters.RemoveType<NewtonsoftJsonOutputFormatter>();
             options.OutputFormatters.Insert(0, jsonApiFormatter);
 

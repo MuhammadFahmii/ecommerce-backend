@@ -1,11 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace netca.Infrastructure.Persistence.Migrations;
+#nullable disable
 #pragma warning disable 1591
-    /// <summary>
-    /// Init
-    /// </summary>
+namespace netca.Infrastructure.Persistence.Migrations
+{
     public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,10 +32,10 @@ namespace netca.Infrastructure.Persistence.Migrations;
                 {
                     Id = table.Column<Guid>(type: "Uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Colour_Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Colour_Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "BIT", nullable: false)
@@ -59,7 +58,7 @@ namespace netca.Infrastructure.Persistence.Migrations;
                     Done = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "BIT", nullable: false)
@@ -113,4 +112,5 @@ namespace netca.Infrastructure.Persistence.Migrations;
                 name: "TodoLists");
         }
     }
+}
 #pragma warning restore 1591
