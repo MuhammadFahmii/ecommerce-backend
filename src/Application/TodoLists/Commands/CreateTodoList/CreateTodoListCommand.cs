@@ -33,14 +33,17 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
     public class CreateTodoListCommandHandler : IRequestHandler<CreateTodoListCommand, DocumentRootJson<CreatedVm>>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateTodoListCommandHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
-        public CreateTodoListCommandHandler(IApplicationDbContext context)
+        /// <param name="userAuthorizationService"></param>
+        public CreateTodoListCommandHandler(IApplicationDbContext context, IUserAuthorizationService userAuthorizationService)
         {
             _context = context;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         /// <summary>
@@ -53,7 +56,8 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
         {
             var entity = new TodoList
             {
-                Title = request.Title
+                Title = request.Title,
+                CreatedBy = _userAuthorizationService.GetAuthorizedUser().UserId
             };
 
             _context.TodoLists.Add(entity);

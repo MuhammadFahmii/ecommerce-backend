@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
+using ValidationException = netca.Application.Common.Exceptions.ValidationException;
 
 namespace netca.Application.Common.Behaviours;
 
