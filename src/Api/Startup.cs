@@ -37,28 +37,23 @@ namespace netca.Api;
 /// </summary>
 public class Startup
 {
-    private readonly ILogger<Startup> _logger;
+    private ILogger<Startup>? _logger;
     private IServiceCollection _services = null!;
-
+    
     /// <summary>
-    /// Initializes a new instance of the <see cref="Startup"/> class.
+    /// startup app
     /// </summary>
     /// <param name="configuration"></param>
-    /// <param name="environment"></param>
-    /// <param name="loggerFactory"></param>
-    public Startup(IConfiguration configuration, IWebHostEnvironment environment, ILoggerFactory loggerFactory)
+    public Startup(IConfiguration? configuration)
     {
-        Environment = environment;
         AppSetting = configuration.Get<AppSetting>();
-        AppLoggingExtensions.LoggerFactory = loggerFactory;
-        _logger = AppLoggingExtensions.CreateLogger<Startup>();
     }
 
     /// <summary>
     /// Gets environment
     /// </summary>
     /// <value></value>
-    private IWebHostEnvironment Environment { get; }
+    private IWebHostEnvironment? Environment { get; set; }
 
     /// <summary>
     /// Gets AppSetting
@@ -72,6 +67,12 @@ public class Startup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
+        
+        Environment = CreateServiceProvider(services).GetService<IWebHostEnvironment>();
+        var loggerFactory = CreateServiceProvider(services).GetService<ILoggerFactory>();
+        AppLoggingExtensions.LoggerFactory = loggerFactory;
+        _logger = AppLoggingExtensions.CreateLogger<Startup>();
+        
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
@@ -91,7 +92,7 @@ public class Startup
             services.AddScoped<ApiAuthorizeFilterAttribute>();
         }
 
-        if (Environment.EnvironmentName == "Test")
+        if (Environment?.EnvironmentName == "Test")
         {
             services.AddLocalPermissions(AppSetting);
         }
@@ -103,8 +104,11 @@ public class Startup
         services.AddMvcCore(options =>
         {
             var serializerSettings = new JsonApiSerializerSettings();
+#pragma warning disable 0618
             var jsonApiFormatter =
                 new NewtonsoftJsonOutputFormatter(serializerSettings, ArrayPool<char>.Shared, new MvcOptions());
+#pragma warning restore 0618
+
             options.OutputFormatters.RemoveType<NewtonsoftJsonOutputFormatter>();
             options.OutputFormatters.Insert(0, jsonApiFormatter);
 
@@ -169,7 +173,7 @@ public class Startup
 
         services.AddOpenApiDocument(configure =>
         {
-            if (Environment.EnvironmentName != "Development")
+            if (Environment?.EnvironmentName != "Development")
             {
                 configure.OperationProcessors.Insert(0, new MyControllerProcessor());
             }
@@ -232,19 +236,19 @@ public class Startup
 
         if (!AppSetting.IsEnableDetailError)
         {
-            _logger.LogDebug("Activate exception middleware");
+            _logger?.LogDebug("Activate exception middleware");
             app.UseCustomExceptionHandler();
         }
         else
         {
-            _logger.LogWarning("enable detail error response");
+            _logger?.LogWarning("enable detail error response");
         }
 
         app.UseRouting();
 
         if (AppSetting.IsEnableAuth)
         {
-            _logger.LogInformation("Activate auth middleware");
+            _logger?.LogInformation("Activate auth middleware");
 
             if (env.EnvironmentName == "Test")
             {
@@ -257,7 +261,7 @@ public class Startup
         }
         else
         {
-            _logger.LogWarning("Disable Auth middleware");
+            _logger?.LogWarning("Disable Auth middleware");
         }
 
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
@@ -284,6 +288,12 @@ public class Startup
         {
             ForwardedHeaders = ForwardedHeaders.All
         });
+    }
+    
+    private static ServiceProvider CreateServiceProvider(IServiceCollection services)
+    {
+        var serviceProvider = services.BuildServiceProvider();
+        return serviceProvider;
     }
 
     private void RegisteredServicesPage(IApplicationBuilder app)

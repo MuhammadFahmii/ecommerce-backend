@@ -40,14 +40,17 @@ namespace netca.Application.TodoLists.Commands.UpdateTodoList
     public class UpdateTodoListCommandHandler : IRequestHandler<UpdateTodoListCommand>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateTodoListCommandHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
-        public UpdateTodoListCommandHandler(IApplicationDbContext context)
+        /// <param name="userAuthorizationService"></param>
+        public UpdateTodoListCommandHandler(IApplicationDbContext context, IUserAuthorizationService userAuthorizationService)
         {
             _context = context;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         /// <summary>
@@ -67,6 +70,7 @@ namespace netca.Application.TodoLists.Commands.UpdateTodoList
             }
 
             entity.Title = request.Title;
+            entity.UpdatedBy = _userAuthorizationService.GetAuthorizedUser().UserId;
 
             await _context.SaveChangesAsync(cancellationToken);
 

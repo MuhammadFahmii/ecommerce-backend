@@ -33,17 +33,21 @@ public class DeleteTodoItemCommand : IRequest
 public class DeleteTodoItemCommandHandler : IRequestHandler<DeleteTodoItemCommand>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IUserAuthorizationService _userAuthorizationService;
+    private readonly IDateTime _dateTime;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DeleteTodoItemCommandHandler"/> class.
-    /// DeleteTodoItemCommandHandler
     /// </summary>
     /// <param name="context"></param>
-    public DeleteTodoItemCommandHandler(IApplicationDbContext context)
+    /// <param name="userAuthorizationService"></param>
+    /// <param name="dateTime"></param>
+    public DeleteTodoItemCommandHandler(IApplicationDbContext context, IUserAuthorizationService userAuthorizationService, IDateTime dateTime)
     {
         _context = context;
+        _userAuthorizationService = userAuthorizationService;
+        _dateTime = dateTime;
     }
-
     /// <summary>
     /// Handle
     /// </summary>
@@ -60,8 +64,8 @@ public class DeleteTodoItemCommandHandler : IRequestHandler<DeleteTodoItemComman
             throw new NotFoundException(nameof(TodoItem), request.Id);
         }
 
-        _context.TodoItems.Remove(entity);
-
+        entity.UpdatedBy = _userAuthorizationService.GetAuthorizedUser().UserId;
+        entity.DeletedDate = _dateTime.UtcNow;
         await _context.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;

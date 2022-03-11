@@ -68,7 +68,7 @@ public static class AddHealthCheckHandler
             timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)
         );
         services.AddHealthChecks().AddRedis(
-            appSetting.RedisServer.Server,
+            appSetting.RedisServer.Server ?? string.Empty,
             Constants.DefaultHealthCheckRedisName,
             HealthStatus.Degraded,
             timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)

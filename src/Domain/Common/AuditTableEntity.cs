@@ -35,7 +35,7 @@ public abstract class AuditTableEntity
     /// Gets or sets updatedBy
     /// </summary>
     /// <value></value>
-    public Guid UpdatedBy { get; set; }
+    public Guid? UpdatedBy { get; set; }
 
     /// <summary>
     /// Gets or sets updatedDate

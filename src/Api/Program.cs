@@ -45,6 +45,7 @@ public static class Program
         var appSetting = new AppSetting();
 
         services.AddOptions();
+#pragma warning disable 0618
 
         return WebHost.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration((hostingContext, config) =>
@@ -90,5 +91,6 @@ public static class Program
                 loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration).WriteTo
                     .Sink(sink);
             });
+#pragma warning restore 0618
     }
 }

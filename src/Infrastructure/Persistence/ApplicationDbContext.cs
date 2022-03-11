@@ -46,17 +46,17 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// <summary>
     /// Gets or sets todoItems
     /// </summary>
-    public DbSet<TodoItem> TodoItems { get; set; }
+    public DbSet<TodoItem> TodoItems { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets changelogs
     /// </summary>
-    public DbSet<Changelog> Changelogs { get; set; }
+    public DbSet<Changelog> Changelogs { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets todoLists
     /// </summary>
-    public DbSet<TodoList> TodoLists { get; set; }
+    public DbSet<TodoList> TodoLists { get; set; } = null!;
 
     /// <summary>
     /// to prevent hard delete
@@ -134,6 +134,28 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     private List<ChangelogEntry> OnBeforeSaveChanges()
     {
+        foreach (var entry in ChangeTracker.Entries<AuditTableEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.CreatedDate = _dateTime?.UtcNow;
+                    entry.Entity.IsActive = true;
+                    break;
+                case EntityState.Modified:
+                    entry.Entity.UpdatedDate = _dateTime?.UtcNow;
+                    break;
+                case EntityState.Detached:
+                    break;
+                case EntityState.Unchanged:
+                    break;
+                case EntityState.Deleted:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(entry.State.ToString(), "Un know entry.State.");
+            }
+        }
+
         var ignoreTable = new List<string> { "xxx" };
 
         ChangeTracker.DetectChanges();
@@ -146,7 +168,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
             var changelogEntry = new ChangelogEntry(entry)
             {
-                ChangeDate = _dateTime.UtcNow,
+                ChangeDate = _dateTime?.UtcNow ?? DateTime.UtcNow,
                 TableName = entry.Metadata.GetTableName()!
             };
 
@@ -159,7 +181,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
         foreach (var changelogEntry in changelogEntries.Where(_ => !_.HasTemporaryProperties))
         {
-            Changelogs!.Add(changelogEntry.ToAudit());
+            Changelogs.Add(changelogEntry.ToAudit());
         }
 
         return changelogEntries
@@ -271,7 +293,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                     changelogEntry.NewValues[prop.Metadata.Name] = prop.CurrentValue!;
             }
 
-            Changelogs!.Add(changelogEntry.ToAudit());
+            Changelogs.Add(changelogEntry.ToAudit());
         }
 
         return SaveChangesAsync(cancellationToken);

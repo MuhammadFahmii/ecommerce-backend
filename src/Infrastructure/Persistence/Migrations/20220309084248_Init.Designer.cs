@@ -2,24 +2,24 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using netca.Infrastructure.Persistence;
 
-namespace netca.Infrastructure.Persistence.Migrations;
+#nullable disable
 #pragma warning disable 1591
+namespace netca.Infrastructure.Persistence.Migrations
+{
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211013143630_Init")]
+    [Migration("20220309084248_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("netca.Domain.Entities.Changelog", b =>
                 {
@@ -91,7 +91,7 @@ namespace netca.Infrastructure.Persistence.Migrations;
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("Uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -131,7 +131,7 @@ namespace netca.Infrastructure.Persistence.Migrations;
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<Guid>("UpdatedBy")
+                    b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("Uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -165,6 +165,7 @@ namespace netca.Infrastructure.Persistence.Migrations;
                                 .HasColumnType("Uniqueidentifier");
 
                             b1.Property<string>("Code")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("TodoListId");
@@ -175,7 +176,8 @@ namespace netca.Infrastructure.Persistence.Migrations;
                                 .HasForeignKey("TodoListId");
                         });
 
-                    b.Navigation("Colour");
+                    b.Navigation("Colour")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("netca.Domain.Entities.TodoList", b =>
@@ -185,4 +187,5 @@ namespace netca.Infrastructure.Persistence.Migrations;
 #pragma warning restore 612, 618
         }
     }
+}
 #pragma warning restore 1591

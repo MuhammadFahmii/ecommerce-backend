@@ -33,7 +33,7 @@ public static class DependencyInjection
     /// <param name="environment"></param>
     /// <param name="appSetting"></param>
     public static void AddInfrastructure(
-        this IServiceCollection services, IWebHostEnvironment environment, AppSetting appSetting)
+        this IServiceCollection services, IWebHostEnvironment? environment, AppSetting appSetting)
     {
         services.AddDbContext<ApplicationDbContext>(
             options =>
@@ -48,8 +48,8 @@ public static class DependencyInjection
                             TimeSpan.FromSeconds(appSetting.DatabaseSettings.MaxRetryDelay),
                             null
                         );
-
-                        if (!environment.IsProduction())
+                        var env = environment?.IsProduction() ?? false;
+                        if (!env)
                         {
                             options.EnableSensitiveDataLogging();
                         }

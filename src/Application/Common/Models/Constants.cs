@@ -4,6 +4,8 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System;
+
 namespace netca.Application.Common.Models;
 
 /// <summary>
@@ -241,6 +243,11 @@ public static class Constants
     /// SystemCustomerName
     /// </summary>
     public const string SystemCustomerName = "PAMA";
+    
+    /// <summary>
+    /// SystemId
+    /// </summary>
+    public static readonly Guid SystemId = new Guid("00000000-0000-0000-0000-000000000000");
 
     /// <summary>
     /// SystemEmail

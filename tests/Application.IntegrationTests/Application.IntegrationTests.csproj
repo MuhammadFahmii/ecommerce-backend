@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>netca.Application.IntegrationTests</RootNamespace>
+        <AssemblyName>netca.Application.IntegrationTests</AssemblyName>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+        <IsPublishable>false</IsPublishable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="appsettings.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+        <PackageReference Include="nunit" Version="3.13.2" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="FluentAssertions" Version="6.5.1" />
+        <PackageReference Include="Moq" Version="4.16.1" />
+        <PackageReference Include="Respawn" Version="5.0.1" />
+        <PackageReference Include="Shouldly" Version="4.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Api\Api.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="appsettings.Test.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="appsettings.Test.Local.json" Condition="Exists('appsettings.Test.Local.json')">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>

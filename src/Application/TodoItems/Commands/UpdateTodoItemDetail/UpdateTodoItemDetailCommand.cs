@@ -47,14 +47,17 @@ public class UpdateTodoItemDetailCommand : IRequest
 public class UpdateTodoItemDetailCommandHandler : IRequestHandler<UpdateTodoItemDetailCommand>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IUserAuthorizationService _userAuthorizationService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UpdateTodoItemDetailCommandHandler"/> class.
     /// </summary>
     /// <param name="context"></param>
-    public UpdateTodoItemDetailCommandHandler(IApplicationDbContext context)
+    /// <param name="userAuthorizationService"></param>
+    public UpdateTodoItemDetailCommandHandler(IApplicationDbContext context, IUserAuthorizationService userAuthorizationService)
     {
         _context = context;
+        _userAuthorizationService = userAuthorizationService;
     }
 
     /// <summary>
@@ -76,6 +79,7 @@ public class UpdateTodoItemDetailCommandHandler : IRequestHandler<UpdateTodoItem
         entity.ListId = request.ListId;
         entity.Priority = request.Priority;
         entity.Note = request.Note;
+        entity.UpdatedBy = _userAuthorizationService.GetAuthorizedUser().UserId;
 
         await _context.SaveChangesAsync(cancellationToken);
 

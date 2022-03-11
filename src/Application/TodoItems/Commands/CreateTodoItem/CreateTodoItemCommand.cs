@@ -7,7 +7,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using JsonApiSerializer.JsonApi;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -42,14 +41,17 @@ public class CreateTodoItemCommand : IRequest<DocumentRootJson<CreatedVm>>
 public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, DocumentRootJson<CreatedVm>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IUserAuthorizationService _userAuthorizationService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CreateTodoItemCommandHandler"/> class.
     /// </summary>
     /// <param name="context"></param>
-    public CreateTodoItemCommandHandler(IApplicationDbContext context)
+    /// <param name="userAuthorizationService"></param>
+    public CreateTodoItemCommandHandler(IApplicationDbContext context, IUserAuthorizationService userAuthorizationService)
     {
         _context = context;
+        _userAuthorizationService = userAuthorizationService;
     }
 
     /// <summary>
@@ -65,7 +67,8 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
         {
             ListId = request.ListId,
             Title = request.Title,
-            Done = false
+            Done = false,
+            CreatedBy = _userAuthorizationService.GetAuthorizedUser().UserId
         };
 
         entity.DomainEvents.Add(new TodoItemCreatedEvent(entity));

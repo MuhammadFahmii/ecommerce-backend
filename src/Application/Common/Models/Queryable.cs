@@ -18,7 +18,7 @@ namespace netca.Application.Common.Models;
 /// </summary>
 public static class Queryable
 {
-    private static readonly ILogger Logger = AppLoggingExtensions.CreateLogger("Queryable");
+    private static readonly ILogger? Logger = AppLoggingExtensions.CreateLogger("Queryable");
     private static Type _type = null!;
 
     /// <summary>
@@ -81,14 +81,14 @@ public static class Queryable
                 if (!string.IsNullOrEmpty(where))
                 {
                     var values = filter.Select(f => f.Value).ToArray();
-                    Logger.LogDebug("Filter {Type} with {Where} {Values}", _type, where, values);
+                    Logger?.LogDebug("Filter {Type} with {Where} {Values}", _type, where, values);
                     source = source.Where(where, values);
                 }
             }
         }
         catch (Exception e)
         {
-            Logger.LogWarning("Failed to filter {Message}", e.Message);
+            Logger?.LogWarning("Failed to filter {Message}", e.Message);
         }
 
         return source;
@@ -119,7 +119,7 @@ public static class Queryable
 
     private static IQueryable<T> Limit<T>(IQueryable<T> source, int pageNumber, int pageSize)
     {
-        Logger.LogDebug("Try to skip {Skip} and take {PageSize}", (pageSize * (pageNumber - 1)), pageSize);
+        Logger?.LogDebug("Try to skip {Skip} and take {PageSize}", (pageSize * (pageNumber - 1)), pageSize);
         return source.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
     }
 
@@ -168,7 +168,7 @@ public static class Queryable
         }
         catch (Exception e)
         {
-            Logger.LogWarning("Operator {Operator} not part of the Dictionary {Message}", filter.Operator, e.Message);
+            Logger?.LogWarning("Operator {Operator} not part of the Dictionary {Message}", filter.Operator, e.Message);
         }
 
         return null!;
@@ -238,12 +238,12 @@ public static class Queryable
         try
         {
             var ordering = string.Join(",", sort.Select(s => $"{s.Field} {s.Direction}"));
-            Logger.LogDebug("Try to sort {Type} with {Ordering}", _type, ordering);
+            Logger?.LogDebug("Try to sort {Type} with {Ordering}", _type, ordering);
             return source.OrderBy(ordering);
         }
         catch (ParseException e)
         {
-            Logger.LogWarning("sortBy include field not part of the {Type} {Message}", _type, e.Message);
+            Logger?.LogWarning("sortBy include field not part of the {Type} {Message}", _type, e.Message);
         }
 
         return source;
