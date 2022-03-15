@@ -17,22 +17,16 @@ namespace netca.Infrastructure.Jobs;
 /// <summary>
 /// CacheTeamsJob
 /// </summary>
-[DisallowConcurrentExecution]
-public class CacheTeamsJob : IJob
+public class CacheTeamsJob : BaseJob<CacheTeamsJob>
 {
-    private readonly ILogger<CacheTeamsJob> _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="CacheTeamsJob"/> class.
     /// CacheTeamsJob
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="serviceScopeFactory"></param>
-    public CacheTeamsJob(ILogger<CacheTeamsJob> logger, IServiceScopeFactory serviceScopeFactory)
+    public CacheTeamsJob(ILogger<CacheTeamsJob> logger, IServiceScopeFactory serviceScopeFactory) : base(logger,
+        serviceScopeFactory)
     {
-        _logger = logger;
-        _serviceScopeFactory = serviceScopeFactory;
     }
 
     /// <summary>
@@ -40,9 +34,9 @@ public class CacheTeamsJob : IJob
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public Task Execute(IJobExecutionContext context)
+    public override Task Execute(IJobExecutionContext context)
     {
-        using (var scope = _serviceScopeFactory.CreateScope())
+        using (var scope = ServiceScopeFactory.CreateScope())
         {
             var ch = scope.ServiceProvider.GetRequiredService<IMemoryCache>();
             var appSet = scope.ServiceProvider.GetRequiredService<AppSetting>();
@@ -50,7 +44,7 @@ public class CacheTeamsJob : IJob
             var hours = (DateTime.UtcNow - ctm.Date).TotalHours;
             if (hours < appSet.Bot.CacheMsTeam.Hours)
                 return Task.CompletedTask;
-            _logger.LogWarning("Resetting CacheMSTeams");
+            Logger.LogWarning("Resetting CacheMSTeams");
             ctm.Counter = 0;
             ctm.Date = DateTime.UtcNow;
             SetCounter(ctm, ch);

@@ -11,27 +11,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using netca.Application.Changelogs.Commands.DeleteChangelog;
 using Quartz;
+using Serilog;
 
 namespace netca.Infrastructure.Jobs;
 
 /// <summary>
 /// DeleteChangelogJob
 /// </summary>
-[DisallowConcurrentExecution]
-public class DeleteChangelogJob : IJob
+public class DeleteChangelogJob : BaseJob<DeleteChangelogJob>
 {
-    private readonly ILogger<DeleteChangelogJob> _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeleteChangelogJob"/> class.
+    /// DeleteChangelogJob
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="serviceScopeFactory"></param>
-    public DeleteChangelogJob(ILogger<DeleteChangelogJob> logger, IServiceScopeFactory serviceScopeFactory)
+    public DeleteChangelogJob(ILogger<DeleteChangelogJob> logger, IServiceScopeFactory serviceScopeFactory) : base(logger,
+        serviceScopeFactory)
     {
-        _logger = logger;
-        _serviceScopeFactory = serviceScopeFactory;
     }
 
     /// <summary>
@@ -39,22 +35,22 @@ public class DeleteChangelogJob : IJob
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public async Task Execute(IJobExecutionContext context)
+    public override async Task Execute(IJobExecutionContext context)
     {
         try
         {
-            _logger.LogDebug("Process delete changelog");
-            using var scope = _serviceScopeFactory.CreateScope();
+            Logger.LogDebug("Process delete changelog");
+            using var scope = ServiceScopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
             await mediator.Send(new DeleteChangelogCommand());
         }
         catch (Exception e)
         {
-            _logger.LogError("Error when running worker delete changelog: {Message}", e.Message);
+            Logger.LogError("Error when running worker delete changelog: {Message}", e.Message);
         }
         finally
         {
-            _logger.LogDebug("Delete changelog done");
+            Logger.LogDebug("Delete changelog done");
         }
     }
 }

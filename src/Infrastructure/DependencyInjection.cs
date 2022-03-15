@@ -99,13 +99,16 @@ public static class DependencyInjection
                     });
                     s.RetryInterval = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.RetryInterval);
                     s.UseJsonSerializer();
-                    s.UseClustering(cfg =>
+                    if (appSetting.BackgroundJob.PersistentStore.UseCluster)
                     {
-                        cfg.CheckinInterval =
-                            TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinInterval);
-                        cfg.CheckinMisfireThreshold =
-                            TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinMisfireThreshold);
-                    });
+                        s.UseClustering(cfg =>
+                        {
+                            cfg.CheckinInterval =
+                                TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinInterval);
+                            cfg.CheckinMisfireThreshold =
+                                TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinMisfireThreshold);
+                        });
+                    }
                 });
                 q.MisfireThreshold = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.MisfireThreshold);
                 q.UseDefaultThreadPool(tp =>

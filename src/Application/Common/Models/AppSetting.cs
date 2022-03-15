@@ -523,6 +523,11 @@ public class BackgroundJob
     /// Gets or sets a value indicating whether isEnable
     /// </summary>
     public bool IsEnable { get; set; } = true;
+    
+    /// <summary>
+    /// HostName
+    /// </summary>
+    public string HostName { get; set; } = "local";
 
     /// <summary>
     /// Gets or sets a value indicating whether usePersistentStore
@@ -549,6 +554,11 @@ public class PersistentStore
     /// Gets or sets connectionString
     /// </summary>
     public string ConnectionString { get; set; } = "";
+    
+    /// <summary>
+    /// Gets or sets a value indicating whether ignoreDuplicates
+    /// </summary>
+    public bool UseCluster { get; set; } = false;
 
     /// <summary>
     /// Gets or sets a value indicating whether ignoreDuplicates
@@ -605,16 +615,16 @@ public class Job
     /// Gets or sets name
     /// </summary>
     public string Name { get; set; } = "";
-
+    
+    /// <summary>
+    /// Gets or sets a value indicating whether isParallel
+    /// </summary>
+    public bool IsParallel { get; set; }
+    
     /// <summary>
     /// IgnoreMisfire
     /// </summary>
     public bool IgnoreMisfire { get; set; } = false;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether isParallel
-    /// </summary>
-    public bool IsParallel { get; set; } = false;
 
     /// <summary>
     /// Gets or sets a value indicating whether isEnable

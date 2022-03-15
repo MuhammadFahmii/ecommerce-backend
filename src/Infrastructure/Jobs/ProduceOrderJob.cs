@@ -12,42 +12,37 @@ using netca.Application.Common.Interfaces;
 using Quartz;
 
 namespace netca.Infrastructure.Jobs;
-
-/// <summary>
-/// ProduceOrderJob
-/// </summary>
-[DisallowConcurrentExecution]
-public class ProduceOrderJob : IJob
-{
-    private readonly ILogger<ProduceOrderJob> _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="ProduceOrderJob"/> class.
+    /// ProduceOrderJob
     /// </summary>
-    /// <param name="logger"></param>
-    /// <param name="serviceScopeFactory"></param>
-    public ProduceOrderJob(ILogger<ProduceOrderJob> logger, IServiceScopeFactory serviceScopeFactory)
+    public class ProduceOrderJob : BaseJob<ProduceOrderJob>
     {
-        _logger = logger;
-        _serviceScopeFactory = serviceScopeFactory;
-    }
+        /// <summary>
+        /// ProduceOrderJob
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="serviceScopeFactory"></param>
+        public ProduceOrderJob(ILogger<ProduceOrderJob> logger, IServiceScopeFactory serviceScopeFactory) : base(logger,
+            serviceScopeFactory)
+        {
+        }
 
     /// <summary>
     /// Execute
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public Task Execute(IJobExecutionContext context)
+    public override Task Execute(IJobExecutionContext context)
     {
-        using (var scope = _serviceScopeFactory.CreateScope())
+        using (var scope = ServiceScopeFactory.CreateScope())
         {
-            var redisService = scope.ServiceProvider.GetRequiredService<IRedisService>();
+            var data = context.Trigger;
+            // var redisService = scope.ServiceProvider.GetRequiredService<IRedisService>();
             var dt = scope.ServiceProvider.GetRequiredService<IDateTime>();
-            for (var index = 1; index <= 100; index++)
+            for (var index = 1; index <= 1; index++)
             {
-                redisService.ListLeftPushAsync("order", "{ 'order': " + index + "}");
-                _logger.LogWarning("{Now} -> sending order {I}", dt.Now, index);
+               // redisService.ListLeftPushAsync("order", "{ 'order': " + index + "}");
+                Logger.LogWarning("{Now} -> sending order {I}", dt.Now, data.Key.Name);
                 Thread.Sleep(100);
             }
         }
