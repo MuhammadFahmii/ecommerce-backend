@@ -35,15 +35,14 @@ public static class QuartzService
         if (job == null || string.IsNullOrEmpty(job.Schedule))
             throw new ArgumentNullException($"No Quartz.NET Cron schedule found for {jobName} in configuration");
         var group = jobName + "Group";
-        if (job.IsParallel && appSetting.BackgroundJob.UsePersistentStore)
-        {
-            jobName += Environment.GetEnvironmentVariable("hostname");
-        }
 
         var jobKey = new JobKey(jobName, group);
 
         quartz.AddJob<T>(opts => opts.WithIdentity(jobKey));
-
+        if (job.IsParallel && appSetting.BackgroundJob.UsePersistentStore)
+        {
+            jobName += appSetting.BackgroundJob.HostName;
+        }
         quartz.AddTrigger(opts => opts
             .ForJob(jobKey)
             .WithDescription(job.Description)
@@ -51,7 +50,7 @@ public static class QuartzService
             .WithCronSchedule(job.Schedule, x =>
             {
                 if (job.IgnoreMisfire)
-                    x.WithMisfireHandlingInstructionDoNothing();
+                    x.WithMisfireHandlingInstructionIgnoreMisfires();
             }));
     }
 }

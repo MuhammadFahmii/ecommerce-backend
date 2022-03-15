@@ -77,7 +77,7 @@ public class LifetimeEventsHostedService : IHostedService
     {
         return Task.CompletedTask;
     }
-
+    
     private void CleanUpQuartz()
     {
         if (!_appSetting.BackgroundJob.IsEnable || !_appSetting.BackgroundJob.UsePersistentStore)
@@ -86,8 +86,7 @@ public class LifetimeEventsHostedService : IHostedService
         var triggers = (from jobGroupName in sc.GetTriggerGroupNames().Result
             from triggerKey in sc.GetTriggerKeys(GroupMatcher<TriggerKey>.GroupEquals(jobGroupName)).Result
             select sc.GetTrigger(triggerKey).Result).ToList();
-        var hostname = Environment.GetEnvironmentVariable("hostname");
-        var jobs = triggers.Where(x => x!.JobKey.Name.Contains(hostname!)).Select(x => x!.JobKey).ToList();
+        var jobs = triggers.Where(x => x!.Key.Name.Contains(_appSetting.BackgroundJob.HostName)).Select(x => x!.JobKey).ToList();
         sc.DeleteJobs(jobs);
     }
 
