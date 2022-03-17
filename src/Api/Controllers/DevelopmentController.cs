@@ -22,7 +22,7 @@ namespace netca.Api.Controllers;
 /// </summary>
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/development")]
-[ServiceFilter(typeof(ApiAuthorizeFilterAttribute))]
+[ServiceFilter(typeof(ApiDevelopmentFilterAttribute))]
 public class DevelopmentController : ApiControllerBase
 {
     /// <summary>

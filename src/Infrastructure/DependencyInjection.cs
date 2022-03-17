@@ -82,14 +82,14 @@ public static class DependencyInjection
         {
             q.UseMicrosoftDependencyInjectionJobFactory();
             q.UseSimpleTypeLoader();
+            q.UseJobAutoInterrupt(options => { options.DefaultMaxRunTime = TimeSpan.FromMinutes(appSetting.BackgroundJob.DefaultMaxRunTime); });
+            q.InterruptJobsOnShutdown = false;
+            q.InterruptJobsOnShutdownWithWait = true;
             if (appSetting.BackgroundJob.UsePersistentStore)
             {
                 q.SchedulerId = appSetting.App.Title;
                 q.SchedulerName = $"{appSetting.App.Title} Scheduler";
-                q.InterruptJobsOnShutdown = false;
-                q.InterruptJobsOnShutdownWithWait = true;
                 q.MaxBatchSize = 10;
-                q.UseJobAutoInterrupt(options => { options.DefaultMaxRunTime = TimeSpan.FromMinutes(10); });
                 q.UsePersistentStore(s =>
                 {
                     s.UseSqlServer(options =>
@@ -97,20 +97,20 @@ public static class DependencyInjection
                         options.ConnectionString = appSetting.BackgroundJob.PersistentStore.ConnectionString;
                         options.TablePrefix = appSetting.BackgroundJob.PersistentStore.TablePrefix;
                     });
-                    s.RetryInterval = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.RetryInterval);
+                    s.RetryInterval = TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.RetryInterval);
                     s.UseJsonSerializer();
                     if (appSetting.BackgroundJob.PersistentStore.UseCluster)
                     {
                         s.UseClustering(cfg =>
                         {
                             cfg.CheckinInterval =
-                                TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinInterval);
+                                TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.CheckinInterval);
                             cfg.CheckinMisfireThreshold =
-                                TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.CheckinMisfireThreshold);
+                                TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.CheckinMisfireThreshold);
                         });
                     }
                 });
-                q.MisfireThreshold = TimeSpan.FromSeconds(appSetting.BackgroundJob.PersistentStore.MisfireThreshold);
+                q.MisfireThreshold = TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.MisfireThreshold);
                 q.UseDefaultThreadPool(tp =>
                 {
                     tp.MaxConcurrency = appSetting.BackgroundJob.PersistentStore.MaxConcurrency;

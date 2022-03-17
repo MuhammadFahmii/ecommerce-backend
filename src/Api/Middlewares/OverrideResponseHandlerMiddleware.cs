@@ -159,7 +159,7 @@ public class OverrideResponseHandlerMiddleware
 
     private Policy IsCache(string policy)
     {
-        var policyList = _appSetting.RedisServer.Policy;
+        var policyList = _appSetting.Redis.Policy;
         return (policyList.Count.Equals(0)
             ? null
             : policyList.SingleOrDefault(x => x.Name.ToLower().Equals(policy.ToLower())))!;
