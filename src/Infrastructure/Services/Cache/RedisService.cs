@@ -34,7 +34,7 @@ public class RedisService : BaseService, IRedisService
     {
         _logger = logger;
         _appSetting = appSetting;
-        ConnectionString = _appSetting.RedisServer.Server;
+        ConnectionString = _appSetting.Redis.Server;
     }
 
     private static string? ConnectionString { get; set; }
@@ -48,7 +48,7 @@ public class RedisService : BaseService, IRedisService
     /// <value></value>
     private ConnectionMultiplexer Connections => _lazyConnection.Value;
 
-    private IDatabase Database => Connections.GetDatabase(_appSetting.RedisServer.DatabaseNumber);
+    private IDatabase Database => Connections.GetDatabase(_appSetting.Redis.DatabaseNumber);
 
     private IEnumerable<IServer> Servers
     {
@@ -68,7 +68,7 @@ public class RedisService : BaseService, IRedisService
     /// <returns></returns>
     public async Task<long> ListLeftPushAsync(string key, string value)
     {
-        key += _appSetting.RedisServer.InstanceName;
+        key += _appSetting.Redis.InstanceName;
         return await Database.ListLeftPushAsync(key, value);
     }
 
@@ -79,7 +79,7 @@ public class RedisService : BaseService, IRedisService
     /// <returns></returns>
     public async Task<string> ListLeftPopAsync(string key)
     {
-        key += _appSetting.RedisServer.InstanceName;
+        key += _appSetting.Redis.InstanceName;
         return await Database.ListLeftPopAsync(key);
     }
 
@@ -155,16 +155,16 @@ public class RedisService : BaseService, IRedisService
             TimeSpan? expiry = null;
             if (sub.ToLower().Equals(Constants.RedisSubKeyHttpRequest.ToLower()))
             {
-                expiry = TimeSpan.FromMinutes(_appSetting.RedisServer.RequestExpiryInMinutes);
+                expiry = TimeSpan.FromMinutes(_appSetting.Redis.RequestExpiryInMinutes);
             }
 
             if (sub.ToLower().Equals(Constants.RedisSubKeyMessageConsume.ToLower()) ||
                 sub.ToLower().Equals(Constants.RedisSubKeyMessageProduce.ToLower()))
             {
-                expiry = TimeSpan.FromDays(_appSetting.RedisServer.MessageExpiryInDays);
+                expiry = TimeSpan.FromDays(_appSetting.Redis.MessageExpiryInDays);
             }
 
-            sub += _appSetting.RedisServer.InstanceName;
+            sub += _appSetting.Redis.InstanceName;
             resultKey = GenerateKey(key, sub);
             await Database.StringSetAsync(resultKey, value, expiry);
             _logger.LogDebug("Save to Redis with key {Key}", resultKey);

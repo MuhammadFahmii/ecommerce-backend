@@ -89,7 +89,7 @@ public class AppSetting
     /// Gets or sets redisServer
     /// </summary>
     /// <returns></returns>
-    public RedisServer RedisServer { get; set; } = new();
+    public Redis Redis { get; set; } = new();
 
     /// <summary>
     /// Gets or sets backgroundJob
@@ -474,9 +474,9 @@ public class Topic
 }
 
 /// <summary>
-/// RedisServer
+/// Redis
 /// </summary>
-public class RedisServer
+public class Redis
 {
     /// <summary>
     /// Gets or sets server
@@ -528,6 +528,11 @@ public class BackgroundJob
     /// HostName
     /// </summary>
     public string HostName { get; set; } = "local";
+    
+    /// <summary>
+    /// HostName
+    /// </summary>
+    public int DefaultMaxRunTime { get; set; } = 10;
 
     /// <summary>
     /// Gets or sets a value indicating whether usePersistentStore

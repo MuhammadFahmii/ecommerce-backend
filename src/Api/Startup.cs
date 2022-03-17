@@ -91,6 +91,7 @@ public class Startup
         {
             services.AddScoped<ApiAuthorizeFilterAttribute>();
         }
+        services.AddScoped<ApiDevelopmentFilterAttribute>();
 
         if (Environment?.EnvironmentName == "Test")
         {
@@ -173,7 +174,7 @@ public class Startup
 
         services.AddOpenApiDocument(configure =>
         {
-            if (Environment?.EnvironmentName != "Development")
+            if (Environment?.IsProduction() ?? false)
             {
                 configure.OperationProcessors.Insert(0, new MyControllerProcessor());
             }
