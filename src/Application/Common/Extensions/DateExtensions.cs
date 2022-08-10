@@ -62,13 +62,22 @@ public static class DateExtensions
             return null;
         }
     }
-
+    
     /// <summary>
-    /// GetUnixTimestamp
+    /// GetUnixUtcTimestamp
     /// </summary>
     /// <returns></returns>
-    public static long GetUnixTimestamp()
+    public static long GetUnixUtcTimestamp()
     {
         return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+    }
+    
+    /// <summary>
+    /// GetUnixLocalTimestamp
+    /// </summary>
+    /// <returns></returns>
+    public static long GetUnixLocalTimestamp()
+    {
+        return DateTimeOffset.Now.ToUnixTimeMilliseconds();
     }
 }
