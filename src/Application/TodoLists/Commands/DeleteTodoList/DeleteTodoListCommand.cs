@@ -4,12 +4,8 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Interfaces;
@@ -25,7 +21,7 @@ namespace netca.Application.TodoLists.Commands.DeleteTodoList
         /// <summary>
         /// Gets or sets id
         /// </summary>
-        [BindRequired]
+        [Required]
         public Guid Id { get; set; }
     }
 
@@ -60,7 +56,7 @@ namespace netca.Application.TodoLists.Commands.DeleteTodoList
         /// <exception cref="NotFoundException">Exception</exception>
         public async Task<Unit> Handle(DeleteTodoListCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.TodoLists!
+            var entity = await _context.TodoLists
                 .Where(l => l.Id == request.Id)
                 .SingleOrDefaultAsync(cancellationToken);
 
@@ -70,7 +66,7 @@ namespace netca.Application.TodoLists.Commands.DeleteTodoList
             }
             
             entity.UpdatedBy = _userAuthorizationService.GetAuthorizedUser().UserId;
-            entity.DeletedDate = _dateTime.UtcNow;
+            entity.IsDeleted = true;
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

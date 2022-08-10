@@ -4,11 +4,9 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using JsonApiSerializer.JsonApi;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Vms;
 using netca.Domain.Entities;
@@ -23,7 +21,7 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
         /// <summary>
         /// Gets or sets title
         /// </summary>
-        [BindRequired]
+        [Required]
         public string? Title { get; set; }
     }
 

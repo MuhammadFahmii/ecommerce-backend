@@ -4,8 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-
 namespace netca.Application.Common.Vms;
 
 /// <summary>

@@ -4,12 +4,8 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Interfaces;
 using netca.Domain.Entities;
@@ -24,13 +20,13 @@ namespace netca.Application.TodoLists.Commands.UpdateTodoList
         /// <summary>
         /// Gets or sets id
         /// </summary>
-        [BindRequired]
+        [Required]
         public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets title
         /// </summary>
-        [BindRequired]
+        [Required]
         public string? Title { get; set; }
     }
 
