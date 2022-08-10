@@ -12,7 +12,7 @@ namespace netca.Domain.Events;
 /// <summary>
 /// TodoItemCompletedEvent
 /// </summary>
-public class TodoItemCompletedEvent : DomainEvent
+public class TodoItemCompletedEvent : BaseEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TodoItemCompletedEvent"/> class.
