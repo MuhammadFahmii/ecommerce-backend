@@ -4,15 +4,12 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using netca.Domain.Common;
-using netca.Domain.Entities;
-
 namespace netca.Domain.Events;
 
 /// <summary>
 /// TodoItemCreatedEvent
 /// </summary>
-public class TodoItemCreatedEvent : DomainEvent
+public class TodoItemCreatedEvent : BaseEvent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="TodoItemCreatedEvent"/> class.
