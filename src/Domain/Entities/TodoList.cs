@@ -13,7 +13,7 @@ namespace netca.Domain.Entities;
 /// <summary>
 /// TodoList
 /// </summary>
-public class TodoList : AuditTableEntity
+public class TodoList : BaseAuditableEntity
 {
     /// <summary>
     /// Gets or sets title
