@@ -58,7 +58,6 @@ public static class DependencyInjection
         );
 
         services.AddTransient<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-        services.AddScoped<IDomainEventService, DomainEventService>();
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
         services.AddScoped<IUserAuthorizationService, UserAuthorizationService>();
