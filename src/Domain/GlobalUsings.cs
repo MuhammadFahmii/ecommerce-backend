@@ -1,20 +1,12 @@
 // ------------------------------------------------------------------------------------
-// TodoItemDeletedEvent.cs  2022
+// GlobalUsings.cs  2022
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Domain.Events;
-
-/// <summary>
-/// TodoItemDeletedEvent
-/// </summary>
-public class TodoItemDeletedEvent : BaseEvent
-{
-    public TodoItemDeletedEvent(TodoItem item)
-    {
-        Item = item;
-    }
-
-    public TodoItem Item { get; }
-}
+global using netca.Domain.Common;
+global using netca.Domain.Entities;
+global using netca.Domain.Enums;
+global using netca.Domain.Events;
+global using netca.Domain.Exceptions;
+global using netca.Domain.ValueObjects;

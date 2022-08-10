@@ -4,9 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using netca.Domain.Common;
-using netca.Domain.Entities;
-
 namespace netca.Domain.Events;
 
 /// <summary>
