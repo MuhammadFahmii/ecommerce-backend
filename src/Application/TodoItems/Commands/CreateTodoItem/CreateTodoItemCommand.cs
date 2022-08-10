@@ -4,12 +4,9 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using JsonApiSerializer.JsonApi;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Vms;
 using netca.Domain.Entities;
@@ -25,13 +22,13 @@ public class CreateTodoItemCommand : IRequest<DocumentRootJson<CreatedVm>>
     /// <summary>
     /// Gets or sets listId
     /// </summary>
-    [BindRequired]
+    [Required]
     public Guid ListId { get; set; }
 
     /// <summary>
     /// Gets or sets title
     /// </summary>
-    [BindRequired]
+    [Required]
     public string? Title { get; set; }
 }
 
@@ -71,8 +68,7 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
             CreatedBy = _userAuthorizationService.GetAuthorizedUser().UserId
         };
 
-        entity.DomainEvents.Add(new TodoItemCreatedEvent(entity));
-
+        entity.AddDomainEvent(new TodoItemCreatedEvent(entity));
         _context.TodoItems.Add(entity);
 
         await _context.SaveChangesAsync(cancellationToken);
