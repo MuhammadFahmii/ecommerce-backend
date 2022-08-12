@@ -29,7 +29,7 @@ public abstract class AuditTableVm
     /// Gets or sets createdDate
     /// </summary>
     /// <value></value>
-    public DateTime? CreatedDate { get; set; }
+    public long? CreatedDate { get; set; }
 
     /// <summary>
     /// Gets or sets updatedBy
@@ -41,17 +41,11 @@ public abstract class AuditTableVm
     /// Gets or sets updatedDate
     /// </summary>
     /// <value></value>
-    public DateTime? UpdatedDate { get; set; }
+    public long? UpdatedDate { get; set; }
 
     /// <summary>
-    /// Gets or sets deletedDate
+    /// Gets or sets a value indicating whether IsDelete
     /// </summary>
     /// <value></value>
-    public DateTime? DeletedDate { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether isActive
-    /// </summary>
-    /// <value></value>
-    public bool IsActive { get; set; }
+    public bool IsDelete { get; set; }
 }
