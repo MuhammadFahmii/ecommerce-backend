@@ -5,10 +5,8 @@
 // -----------------------------------------------------------------------------------
 
 using System.ComponentModel.DataAnnotations;
-using JsonApiSerializer.JsonApi;
 using MediatR;
 using netca.Application.Common.Interfaces;
-using netca.Application.Common.Vms;
 using netca.Domain.Entities;
 using netca.Domain.Events;
 
@@ -17,7 +15,7 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem;
 /// <summary>
 /// CreateTodoItemCommand
 /// </summary>
-public class CreateTodoItemCommand : IRequest<DocumentRootJson<CreatedVm>>
+public class CreateTodoItemCommand : IRequest<Unit>
 {
     /// <summary>
     /// Gets or sets listId
@@ -35,7 +33,7 @@ public class CreateTodoItemCommand : IRequest<DocumentRootJson<CreatedVm>>
 /// <summary>
 /// CreateTodoItemCommandHandler
 /// </summary>
-public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, DocumentRootJson<CreatedVm>>
+public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, Unit>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUserAuthorizationService _userAuthorizationService;
@@ -57,7 +55,7 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<DocumentRootJson<CreatedVm>> Handle(
+    public async Task<Unit> Handle(
         CreateTodoItemCommand request, CancellationToken cancellationToken)
     {
         var entity = new TodoItem
@@ -73,6 +71,6 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return JsonApiExtensions.ToJsonApi(new CreatedVm { Id = entity.Id });
+        return Unit.Value;
     }
 }

@@ -4,7 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
 using AutoMapper;
 using netca.Application.Common.Mappings;
 using netca.Domain.Entities;
