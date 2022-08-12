@@ -32,19 +32,16 @@ namespace netca.Application.TodoLists.Commands.DeleteTodoList
     {
         private readonly IApplicationDbContext _context;
         private readonly IUserAuthorizationService _userAuthorizationService;
-        private readonly IDateTime _dateTime;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteTodoListCommandHandler"/> class.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="userAuthorizationService"></param>
-        /// <param name="dateTime"></param>
-        public DeleteTodoListCommandHandler(IApplicationDbContext context, IUserAuthorizationService userAuthorizationService, IDateTime dateTime)
+        public DeleteTodoListCommandHandler(IApplicationDbContext context, IUserAuthorizationService userAuthorizationService)
         {
             _context = context;
             _userAuthorizationService = userAuthorizationService;
-            _dateTime = dateTime;
         }
 
         /// <summary>
