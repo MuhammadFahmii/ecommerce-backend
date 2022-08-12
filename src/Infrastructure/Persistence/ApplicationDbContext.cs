@@ -11,11 +11,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using netca.Application.Common.Interfaces;
 using netca.Domain.Entities;
+using netca.Infrastructure.MediatorExtensions;
 using netca.Infrastructure.Persistence.Interceptors;
 using Newtonsoft.Json;
 
@@ -26,6 +28,7 @@ namespace netca.Infrastructure.Persistence;
 /// </summary>
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
+    private readonly IMediator _mediator;
     private readonly IDateTime _dateTime;
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
 
@@ -33,14 +36,16 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
     /// </summary>
     /// <param name="options"></param>
+    /// <param name="mediator"></param>
     /// <param name="auditableEntitySaveChangesInterceptor"></param>
     /// <param name="dateTime"></param>
     public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+        DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
         IDateTime dateTime) : base(options)
     {
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
         _dateTime = dateTime;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -99,6 +104,15 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
     }
+    
+    /// <summary>
+    /// OnConfiguring
+    /// </summary>
+    /// <param name="optionsBuilder"></param>
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
+    }
 
     /// <summary>
     /// SaveChangesAsync
@@ -108,6 +122,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// <exception cref="ArgumentOutOfRangeException">Exception</exception>
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        await _mediator.DispatchDomainEvents(this);
         var changelogEntries = OnBeforeSaveChanges();
         var result = await base.SaveChangesAsync(cancellationToken);
         await OnAfterSaveChanges(changelogEntries, cancellationToken);

@@ -4,7 +4,9 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
+
+namespace netca.Application.Common.Extensions;
 
 /// <summary>
 /// Shared logger

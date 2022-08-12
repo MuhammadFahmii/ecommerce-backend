@@ -4,7 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
 using System.Globalization;
 
 namespace netca.Application.Common.Extensions;

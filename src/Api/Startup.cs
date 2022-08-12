@@ -20,6 +20,7 @@ using netca.Api.Handlers;
 using netca.Api.Middlewares;
 using netca.Api.Processors;
 using netca.Application;
+using netca.Application.Common.Extensions;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
 using netca.Infrastructure;
