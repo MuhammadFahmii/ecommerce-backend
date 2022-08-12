@@ -4,8 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-
 namespace netca.Application.Common.Interfaces;
 
 /// <summary>
@@ -17,11 +15,11 @@ public interface IDateTime
     /// Gets now
     /// </summary>
     /// <value></value>
-    DateTime Now { get; }
+    long Now { get; }
 
     /// <summary>
     /// Gets utcNow
     /// </summary>
     /// <value></value>
-    DateTime UtcNow { get; }
+    long UtcNow { get; }
 }

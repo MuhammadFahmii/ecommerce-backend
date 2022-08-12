@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
+using netca.Application.Common.Extensions;
 
 namespace netca.Application.Common.Models;
 

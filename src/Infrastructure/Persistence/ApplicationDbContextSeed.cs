@@ -30,49 +30,39 @@ public static class ApplicationDbContextSeed
             {
                 Title = "Shopping",
                 Colour = Colour.Blue,
-                DeletedDate = null,
-                IsActive = true,
                 Items =
                 {
                     new TodoItem
                     {
-                        Title = "Apples", Done = true, DeletedDate = null,
-                        IsActive = true
+                        Title = "Apples", Done = true,
                     },
                     new TodoItem
                     {
-                        Title = "Milk", Done = true, DeletedDate = null,
-                        IsActive = true
+                        Title = "Milk", Done = true,
                     },
                     new TodoItem
                     {
-                        Title = "Bread", Done = true, DeletedDate = null,
-                        IsActive = true
+                        Title = "Bread", Done = true,
                     },
                     new TodoItem
                     {
-                        Title = "Toilet paper", DeletedDate = null,
-                        IsActive = true
+                        Title = "Toilet paper",
                     },
                     new TodoItem
                     {
-                        Title = "Pasta", DeletedDate = null,
-                        IsActive = true
+                        Title = "Pasta",
                     },
                     new TodoItem
                     {
-                        Title = "Tissues", DeletedDate = null,
-                        IsActive = true
+                        Title = "Tissues",
                     },
                     new TodoItem
                     {
-                        Title = "Tuna", DeletedDate = null,
-                        IsActive = true
+                        Title = "Tuna",
                     },
                     new TodoItem
                     {
-                        Title = "Water", DeletedDate = null,
-                        IsActive = true
+                        Title = "Water",
                     }
                 }
             });

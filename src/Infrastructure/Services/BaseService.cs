@@ -21,6 +21,6 @@ public abstract class BaseService
     /// <returns>concatenates the key with the name of the type</returns>
     protected string GenerateKey(string key, string sub)
     {
-        return string.Concat(DateExtensions.GetUnixTimestamp(), ":", sub.ToLower(), ":", key.ToLower());
+        return string.Concat(DateExtensions.GetUnixUtcTimestamp(), ":", sub.ToLower(), ":", key.ToLower());
     }
 }

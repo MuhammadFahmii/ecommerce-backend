@@ -4,7 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
 using Microsoft.Extensions.Logging;
 
 namespace Newtonsoft.Json.Serialization

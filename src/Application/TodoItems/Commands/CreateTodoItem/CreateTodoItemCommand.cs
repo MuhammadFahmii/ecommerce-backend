@@ -4,14 +4,9 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using JsonApiSerializer.JsonApi;
+using System.ComponentModel.DataAnnotations;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using netca.Application.Common.Interfaces;
-using netca.Application.Common.Vms;
 using netca.Domain.Entities;
 using netca.Domain.Events;
 
@@ -20,25 +15,25 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem;
 /// <summary>
 /// CreateTodoItemCommand
 /// </summary>
-public class CreateTodoItemCommand : IRequest<DocumentRootJson<CreatedVm>>
+public class CreateTodoItemCommand : IRequest<Unit>
 {
     /// <summary>
     /// Gets or sets listId
     /// </summary>
-    [BindRequired]
+    [Required]
     public Guid ListId { get; set; }
 
     /// <summary>
     /// Gets or sets title
     /// </summary>
-    [BindRequired]
+    [Required]
     public string? Title { get; set; }
 }
 
 /// <summary>
 /// CreateTodoItemCommandHandler
 /// </summary>
-public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, DocumentRootJson<CreatedVm>>
+public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, Unit>
 {
     private readonly IApplicationDbContext _context;
     private readonly IUserAuthorizationService _userAuthorizationService;
@@ -60,7 +55,7 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<DocumentRootJson<CreatedVm>> Handle(
+    public async Task<Unit> Handle(
         CreateTodoItemCommand request, CancellationToken cancellationToken)
     {
         var entity = new TodoItem
@@ -71,12 +66,11 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
             CreatedBy = _userAuthorizationService.GetAuthorizedUser().UserId
         };
 
-        entity.DomainEvents.Add(new TodoItemCreatedEvent(entity));
-
+        entity.AddDomainEvent(new TodoItemCreatedEvent(entity));
         _context.TodoItems.Add(entity);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return JsonApiExtensions.ToJsonApi(new CreatedVm { Id = entity.Id });
+        return Unit.Value;
     }
 }

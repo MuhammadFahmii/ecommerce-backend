@@ -53,5 +53,5 @@ public class Changelog
     /// Gets or sets changeDate
     /// </summary>
     /// <value></value>
-    public DateTime ChangeDate { get; set; }
+    public long? ChangeDate { get; set; }
 }

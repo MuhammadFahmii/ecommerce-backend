@@ -4,10 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using netca.Domain.Common;
-using netca.Domain.Enums;
-using netca.Domain.Events;
-
 namespace netca.Domain.Entities;
 
 /// <summary>
@@ -57,15 +53,10 @@ public class TodoItem : BaseAuditableEntity
         {
             if (value && !_done)
             {
-                DomainEvents.Add(new TodoItemCompletedEvent(this));
+                AddDomainEvent(new TodoItemCompletedEvent(this));
             }
 
             _done = value;
         }
     }
-
-    /// <summary>
-    /// Gets or sets domainEvents
-    /// </summary>
-    public new List<TodoItemCompletedEvent> DomainEvents { get; set; } = new();
 }

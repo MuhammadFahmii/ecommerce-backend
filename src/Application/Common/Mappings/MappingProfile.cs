@@ -4,8 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
 using System.Reflection;
 using AutoMapper;
 
