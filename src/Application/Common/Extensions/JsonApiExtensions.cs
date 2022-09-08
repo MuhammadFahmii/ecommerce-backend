@@ -4,12 +4,14 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using JsonApiSerializer;
+using JsonApiSerializer.JsonApi;
 using JsonApiSerializer.JsonApi.WellKnown;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace JsonApiSerializer.JsonApi;
+namespace netca.Application.Common.Extensions;
 
 /// <summary>
 /// JsonApiExtensionPaginated
@@ -78,11 +80,12 @@ public static class JsonApiExtensions
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="data"></param>
+    /// <param name="meta"></param>
     /// <param name="totalItems"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
     /// <returns></returns>
-    public static DocumentRootJson<T> ToJsonApiPaginated<T>(T data, int totalItems = 1, int pageNumber = 1,
+    public static DocumentRootJson<T> ToJsonApiPaginated<T>(T data, Meta meta, int totalItems = 1, int pageNumber = 1,
         int pageSize = 1)
     {
         var totalPages = totalItems > 0 ? (int)Math.Ceiling(totalItems / (double)pageSize) : 0;
@@ -90,18 +93,16 @@ public static class JsonApiExtensions
         var hasNextPage = pageNumber < totalPages;
         var nextPageNumber = hasNextPage ? pageNumber + 1 : totalPages;
         var previousPageNumber = hasPreviousPage ? pageNumber - 1 : 1;
-        var meta = new Meta
-        {
-            { "totalItems", totalItems },
-            { "pageNumber", pageNumber },
-            { "pageSize", pageSize },
-            { "totalPages", totalPages },
-            { "hasPreviousPage", hasPreviousPage },
-            { "hasNextPage", hasNextPage },
-            { "nextPageNumber", nextPageNumber },
-            { "previousPageNumber", previousPageNumber },
-        };
-
+        meta.Add(key:"totalItems", value:totalItems);
+        meta.Add(key:"pageNumber", value:pageNumber);
+        meta.Add(key:"pageSize", value:pageSize);
+        meta.Add(key:"totalItems", value:totalPages);
+        meta.Add(key:"totalPages", value:totalItems);
+        meta.Add(key:"hasPreviousPage", value:hasPreviousPage);
+        meta.Add(key:"hasNextPage", value:hasNextPage);
+        meta.Add(key:"nextPageNumber", value:nextPageNumber);
+        meta.Add(key:"previousPageNumber", value:previousPageNumber);
+        
         return new DocumentRootJson<T>
         {
             Data = data,

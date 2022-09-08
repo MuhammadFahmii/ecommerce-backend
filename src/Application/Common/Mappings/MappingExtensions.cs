@@ -6,8 +6,8 @@
 
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using JsonApiSerializer.JsonApi;
 using Microsoft.EntityFrameworkCore;
+using netca.Application.Common.Extensions;
 
 namespace netca.Application.Common.Mappings;
 
