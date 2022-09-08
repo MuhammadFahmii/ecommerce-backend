@@ -4,8 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-
 namespace netca.Application.Common.Models;
 
 /// <summary>
@@ -75,6 +73,11 @@ public static class Constants
     /// HeaderJson
     /// </summary>
     public const string HeaderJson = "application/json";
+    
+    /// <summary>
+    /// HeaderJsonVndApi
+    /// </summary>
+    public const string HeaderJsonVndApi = "application/vnd.api+json";
 
     /// <summary>
     /// HeaderPdf

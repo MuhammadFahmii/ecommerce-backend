@@ -2,9 +2,11 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using netca.Infrastructure.Persistence;
 
 #nullable disable
-#pragma warning disable 1591
 
 namespace netca.Infrastructure.Persistence.Migrations
 {
@@ -15,7 +17,7 @@ namespace netca.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -26,8 +28,8 @@ namespace netca.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("Uniqueidentifier");
 
-                    b.Property<DateTime>("ChangeDate")
-                        .HasColumnType("datetime2");
+                    b.Property<long?>("ChangeDate")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("KeyValues")
                         .HasMaxLength(100)
@@ -58,20 +60,17 @@ namespace netca.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("Uniqueidentifier");
 
-                    b.Property<Guid>("CreatedBy")
+                    b.Property<Guid?>("CreatedBy")
                         .HasColumnType("Uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<long>("CreatedDate")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("Done")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("BIT");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("ListId")
                         .HasColumnType("Uniqueidentifier");
@@ -82,8 +81,8 @@ namespace netca.Infrastructure.Persistence.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("Reminder")
-                        .HasColumnType("datetime2");
+                    b.Property<long?>("Reminder")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -93,14 +92,10 @@ namespace netca.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("Uniqueidentifier");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<long?>("UpdatedDate")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DeletedDate");
-
-                    b.HasIndex("IsActive");
 
                     b.HasIndex("ListId");
 
@@ -113,17 +108,14 @@ namespace netca.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("Uniqueidentifier");
 
-                    b.Property<Guid>("CreatedBy")
+                    b.Property<Guid?>("CreatedBy")
                         .HasColumnType("Uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<long>("CreatedDate")
+                        .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("BIT");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -133,14 +125,10 @@ namespace netca.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("Uniqueidentifier");
 
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<long?>("UpdatedDate")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DeletedDate");
-
-                    b.HasIndex("IsActive");
 
                     b.ToTable("TodoLists");
                 });
@@ -187,4 +175,3 @@ namespace netca.Infrastructure.Persistence.Migrations
         }
     }
 }
-#pragma warning restore 1591

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
-#pragma warning disable 1591
+
 namespace netca.Infrastructure.Persistence.Migrations
 {
     public partial class Init : Migration
@@ -19,7 +19,7 @@ namespace netca.Infrastructure.Persistence.Migrations
                     KeyValues = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     NewValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OldValues = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ChangeDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ChangeDate = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -33,12 +33,11 @@ namespace netca.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "Uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Colour_Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedDate = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: true),
+                    UpdatedDate = table.Column<long>(type: "bigint", nullable: true),
                     UpdatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "BIT", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,14 +53,13 @@ namespace netca.Infrastructure.Persistence.Migrations
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Priority = table.Column<int>(type: "int", nullable: false),
-                    Reminder = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Reminder = table.Column<long>(type: "bigint", nullable: true),
                     Done = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedDate = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: true),
+                    UpdatedDate = table.Column<long>(type: "bigint", nullable: true),
                     UpdatedBy = table.Column<Guid>(type: "Uniqueidentifier", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "BIT", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,29 +73,9 @@ namespace netca.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TodoItems_DeletedDate",
-                table: "TodoItems",
-                column: "DeletedDate");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TodoItems_IsActive",
-                table: "TodoItems",
-                column: "IsActive");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TodoItems_ListId",
                 table: "TodoItems",
                 column: "ListId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TodoLists_DeletedDate",
-                table: "TodoLists",
-                column: "DeletedDate");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TodoLists_IsActive",
-                table: "TodoLists",
-                column: "IsActive");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -113,4 +91,3 @@ namespace netca.Infrastructure.Persistence.Migrations
         }
     }
 }
-#pragma warning restore 1591

@@ -4,16 +4,12 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using JsonApiSerializer.JsonApi;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using netca.Application.Common.Behaviours;
+using netca.Application.Common.Extensions;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Mappings;
 using netca.Application.Common.Models;
@@ -23,12 +19,13 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
     /// <summary>
     /// GetTodoItemsWithPaginationQuery
     /// </summary>
+    [RetryPolicy(RetryCount = 2, SleepDuration = 500)]
     public class GetTodoItemsWithPaginationQuery : IRequest<DocumentRootJson<List<TodoItemBriefVm>>>
     {
         /// <summary>
         /// Gets or sets listId
         /// </summary>
-        [BindRequired]
+        [Required]
         public Guid ListId { get; set; }
 
         /// <summary>

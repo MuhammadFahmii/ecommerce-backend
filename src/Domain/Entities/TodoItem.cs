@@ -4,18 +4,12 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using netca.Domain.Common;
-using netca.Domain.Enums;
-using netca.Domain.Events;
-
 namespace netca.Domain.Entities;
 
 /// <summary>
 /// TodoItem
 /// </summary>
-public class TodoItem : AuditTableEntity, IHasDomainEvent
+public class TodoItem : BaseAuditableEntity
 {
     /// <summary>
     /// Gets or sets list
@@ -45,7 +39,7 @@ public class TodoItem : AuditTableEntity, IHasDomainEvent
     /// <summary>
     /// Gets or sets reminder
     /// </summary>
-    public DateTime? Reminder { get; set; }
+    public long? Reminder { get; set; }
 
     private bool _done;
 
@@ -59,15 +53,10 @@ public class TodoItem : AuditTableEntity, IHasDomainEvent
         {
             if (value && !_done)
             {
-                DomainEvents.Add(new TodoItemCompletedEvent(this));
+                AddDomainEvent(new TodoItemCompletedEvent(this));
             }
 
             _done = value;
         }
     }
-
-    /// <summary>
-    /// Gets or sets domainEvents
-    /// </summary>
-    public List<DomainEvent> DomainEvents { get; set; } = new();
 }

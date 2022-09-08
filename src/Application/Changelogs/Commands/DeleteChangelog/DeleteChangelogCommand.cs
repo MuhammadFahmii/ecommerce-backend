@@ -4,12 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
 using Z.EntityFramework.Plus;
@@ -55,9 +50,9 @@ public class DeleteChangelogCommand : IRequest<Unit>
         public async Task<Unit> Handle(DeleteChangelogCommand request, CancellationToken cancellationToken)
         {
             var lifeTime = _appSetting.DataLifetime.Changelog;
-            await _context.Changelogs!.Where(x => DateTime.Now.AddDays(-lifeTime) > x.ChangeDate)
+            var lifeTimeEpoch  = DateTimeOffset.UtcNow.AddDays(-lifeTime).ToUnixTimeMilliseconds();
+            await _context.Changelogs.Where(x => lifeTimeEpoch > x.ChangeDate)
                 .DeleteAsync(x => x.BatchSize = 1000, cancellationToken);
-
             return await Task.FromResult(Unit.Value);
         }
     }

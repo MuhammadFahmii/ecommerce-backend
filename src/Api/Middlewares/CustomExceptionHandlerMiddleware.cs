@@ -7,11 +7,11 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using JsonApiSerializer.JsonApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Exceptions;
+using netca.Application.Common.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

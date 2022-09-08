@@ -5,6 +5,7 @@
 // -----------------------------------------------------------------------------------
 
 using System;
+using netca.Application.Common.Extensions;
 using netca.Application.Common.Interfaces;
 
 namespace netca.Infrastructure.Services;
@@ -17,10 +18,10 @@ public class DateTimeService : IDateTime
     /// <summary>
     /// Gets now
     /// </summary>
-    public DateTime Now => DateTime.Now;
+    public long Now => DateExtensions.GetUnixLocalTimestamp();
 
     /// <summary>
     /// Gets utcNow
     /// </summary>
-    public DateTime UtcNow => DateTime.UtcNow;
+    public long UtcNow => DateExtensions.GetUnixUtcTimestamp();
 }

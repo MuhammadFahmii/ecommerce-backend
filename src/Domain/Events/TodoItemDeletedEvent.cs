@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------------------
-// TodoItemCompletedEvent.cs  2021
+// TodoItemDeletedEvent.cs  2022
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
@@ -7,22 +7,14 @@
 namespace netca.Domain.Events;
 
 /// <summary>
-/// TodoItemCompletedEvent
+/// TodoItemDeletedEvent
 /// </summary>
-public class TodoItemCompletedEvent : BaseEvent
+public class TodoItemDeletedEvent : BaseEvent
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TodoItemCompletedEvent"/> class.
-    /// TodoItemCompletedEvent
-    /// </summary>
-    /// <param name="item"></param>
-    public TodoItemCompletedEvent(TodoItem item)
+    public TodoItemDeletedEvent(TodoItem item)
     {
         Item = item;
     }
 
-    /// <summary>
-    /// Gets todoItem
-    /// </summary>
     public TodoItem Item { get; }
 }

@@ -4,11 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.Linq;
-using netca.Domain.Common;
-using netca.Domain.Exceptions;
-
 namespace netca.Domain.ValueObjects;
 
 /// <summary>

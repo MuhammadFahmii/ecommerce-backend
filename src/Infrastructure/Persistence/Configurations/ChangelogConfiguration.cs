@@ -45,6 +45,6 @@ public class ChangelogConfiguration : IEntityTypeConfiguration<Changelog>
             .HasColumnType("nvarchar(max)");
 
         builder.Property(e => e.ChangeDate)
-            .HasColumnType("datetime2");
+            .HasColumnType("bigint");
     }
 }

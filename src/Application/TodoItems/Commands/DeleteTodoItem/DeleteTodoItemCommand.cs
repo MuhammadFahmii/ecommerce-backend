@@ -4,11 +4,8 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Interfaces;
 using netca.Domain.Entities;
@@ -23,7 +20,7 @@ public class DeleteTodoItemCommand : IRequest
     /// <summary>
     /// Gets or sets id
     /// </summary>
-    [BindRequired]
+    [Required]
     public Guid Id { get; set; }
 }
 
@@ -65,7 +62,7 @@ public class DeleteTodoItemCommandHandler : IRequestHandler<DeleteTodoItemComman
         }
 
         entity.UpdatedBy = _userAuthorizationService.GetAuthorizedUser().UserId;
-        entity.DeletedDate = _dateTime.UtcNow;
+        entity.IsDeleted = true;
         await _context.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;

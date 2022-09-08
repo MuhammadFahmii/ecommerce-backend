@@ -37,33 +37,41 @@ public class ApiAuthorizeFilterAttribute : ActionFilterAttribute
         var action = actionDescriptor.RouteValues["action"].NullSafeToLower();
         var permission =
             $"{appSetting.AuthorizationServer.Service}:{context.HttpContext.Request.Method}:{ctrl}_{action}";
-        try
+        if (!appSetting.IsEnableAuth)
         {
-            var policy = GetPolicy(logger, appSetting, permission);
-            if (policy is { IsCheck: true })
+            await next();
+        }
+        else
+        {
+            try
             {
-                var auth = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
-                logger.LogDebug("Checking permission {Name}", policy.Name);
-                var permissionCheck = await auth.AuthorizeAsync(context.HttpContext.User, null, policy.Name);
-                if (!permissionCheck.Succeeded)
+                var policy = GetPolicy(logger, appSetting, permission);
+                if (policy is { IsCheck: true })
                 {
-                    context.Result = new ForbidResult();
+                    var auth = context.HttpContext.RequestServices.GetRequiredService<IAuthorizationService>();
+                    logger.LogDebug("Checking permission {Name}", policy.Name);
+                    var permissionCheck = await auth.AuthorizeAsync(context.HttpContext.User, null, policy.Name);
+                    if (!permissionCheck.Succeeded)
+                    {
+                        context.Result = new ForbidResult();
+                    }
+                    else
+                    {
+                        await next();
+                    }
                 }
                 else
                 {
                     await next();
                 }
             }
-            else
+            catch (Exception e)
             {
-                await next();
+                logger.LogError("error checking permission {Message}", e.Message);
+                context.Result = new ForbidResult();
             }
         }
-        catch (Exception e)
-        {
-            logger.LogError("error checking permission {Message}", e.Message);
-            context.Result = new ForbidResult();
-        }
+
     }
 
     private static Policy? GetPolicy(ILogger logger, AppSetting appSetting, string policy)

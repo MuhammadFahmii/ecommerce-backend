@@ -4,9 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using JsonApiSerializer.JsonApi;
 using netca.Application.Common.Vms;
 
 namespace netca.Application.TodoLists.Queries.GetTodos

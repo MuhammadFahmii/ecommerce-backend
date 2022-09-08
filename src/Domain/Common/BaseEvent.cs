@@ -1,25 +1,17 @@
 // ------------------------------------------------------------------------------------
-// IDateTime.cs  2021
+// BaseEvent.cs  2022
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Application.Common.Interfaces;
+using MediatR;
+
+namespace netca.Domain.Common;
 
 /// <summary>
-/// IDateTime
+/// BaseEvent
 /// </summary>
-public interface IDateTime
+public class BaseEvent : INotification
 {
-    /// <summary>
-    /// Gets now
-    /// </summary>
-    /// <value></value>
-    long Now { get; }
-
-    /// <summary>
-    /// Gets utcNow
-    /// </summary>
-    /// <value></value>
-    long UtcNow { get; }
+    
 }

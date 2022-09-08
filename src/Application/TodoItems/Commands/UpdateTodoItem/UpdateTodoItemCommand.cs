@@ -4,11 +4,8 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Interfaces;
 using netca.Domain.Entities;
@@ -23,19 +20,19 @@ public class UpdateTodoItemCommand : IRequest
     /// <summary>
     /// Gets or sets id
     /// </summary>
-    [BindRequired]
+    [Required]
     public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets title
     /// </summary>
-    [BindRequired]
+    [Required]
     public string? Title { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether done
-    /// </summary>\
-    [BindRequired]
+    /// </summary>
+    [Required]
     public bool Done { get; set; }
 }
 

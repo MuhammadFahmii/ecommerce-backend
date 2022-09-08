@@ -4,7 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Collections.Generic;
 using netca.Application.Common.Mappings;
 using netca.Domain.Entities;
 using netca.Domain.ValueObjects;

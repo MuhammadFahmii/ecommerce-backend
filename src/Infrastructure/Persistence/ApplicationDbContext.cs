@@ -11,12 +11,14 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using netca.Application.Common.Interfaces;
-using netca.Domain.Common;
 using netca.Domain.Entities;
+using netca.Infrastructure.MediatorExtensions;
+using netca.Infrastructure.Persistence.Interceptors;
 using Newtonsoft.Json;
 
 namespace netca.Infrastructure.Persistence;
@@ -26,21 +28,24 @@ namespace netca.Infrastructure.Persistence;
 /// </summary>
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
+    private readonly IMediator _mediator;
     private readonly IDateTime _dateTime;
-    private readonly IDomainEventService _domainEventService;
+    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
     /// </summary>
     /// <param name="options"></param>
-    /// <param name="domainEventService"></param>
+    /// <param name="mediator"></param>
+    /// <param name="auditableEntitySaveChangesInterceptor"></param>
     /// <param name="dateTime"></param>
     public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options, IDomainEventService domainEventService,
+        DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
         IDateTime dateTime) : base(options)
     {
-        _domainEventService = domainEventService;
+        _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
         _dateTime = dateTime;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -99,6 +104,15 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
     }
+    
+    /// <summary>
+    /// OnConfiguring
+    /// </summary>
+    /// <param name="optionsBuilder"></param>
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
+    }
 
     /// <summary>
     /// SaveChangesAsync
@@ -108,55 +122,16 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// <exception cref="ArgumentOutOfRangeException">Exception</exception>
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        await _mediator.DispatchDomainEvents(this);
         var changelogEntries = OnBeforeSaveChanges();
         var result = await base.SaveChangesAsync(cancellationToken);
         await OnAfterSaveChanges(changelogEntries, cancellationToken);
-        await DispatchEvents();
         return result;
-    }
-
-    private async Task DispatchEvents()
-    {
-        while (true)
-        {
-            var domainEventEntity = ChangeTracker
-                .Entries<IHasDomainEvent>()
-                .Select(x => x.Entity.DomainEvents)
-                .SelectMany(x => x)
-                .FirstOrDefault(domainEvent => !domainEvent.IsPublished);
-
-            if (domainEventEntity == null)
-                break;
-            domainEventEntity.IsPublished = true;
-            await _domainEventService.Publish(domainEventEntity);
-        }
     }
 
     private List<ChangelogEntry> OnBeforeSaveChanges()
     {
-        foreach (var entry in ChangeTracker.Entries<AuditTableEntity>())
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.CreatedDate = _dateTime?.UtcNow;
-                    entry.Entity.IsActive = true;
-                    break;
-                case EntityState.Modified:
-                    entry.Entity.UpdatedDate = _dateTime?.UtcNow;
-                    break;
-                case EntityState.Detached:
-                    break;
-                case EntityState.Unchanged:
-                    break;
-                case EntityState.Deleted:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(entry.State.ToString(), "Un know entry.State.");
-            }
-        }
-
-        var ignoreTable = new List<string> { "xxx" };
+        var ignoreTable = new List<string?> { "xxx" };
 
         ChangeTracker.DetectChanges();
         var changelogEntries = new List<ChangelogEntry>();
@@ -166,10 +141,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             if (entry.Entity is Changelog || entry.State is EntityState.Detached or EntityState.Unchanged)
                 continue;
 
-            var changelogEntry = new ChangelogEntry(entry)
+            var changelogEntry = new ChangelogEntry
             {
-                ChangeDate = _dateTime?.UtcNow ?? DateTime.UtcNow,
-                TableName = entry.Metadata.GetTableName()!
+                ChangeDate = _dateTime.UtcNow,
+                TableName = entry.Metadata.GetTableName()
             };
 
             if (ignoreTable.Contains(changelogEntry.TableName))
@@ -181,7 +156,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
         foreach (var changelogEntry in changelogEntries.Where(_ => !_.HasTemporaryProperties))
         {
-            Changelogs.Add(changelogEntry.ToAudit());
+            Changelogs?.Add(changelogEntry.ToAudit());
         }
 
         return changelogEntries
@@ -306,37 +281,22 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 public class ChangelogEntry
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ChangelogEntry"/> class.
-    /// </summary>
-    /// <param name="entry"></param>
-    public ChangelogEntry(EntityEntry entry)
-    {
-        Entry = entry;
-    }
-
-    /// <summary>
-    /// Gets entry
-    /// </summary>
-    /// <value></value>
-    private EntityEntry Entry { get; }
-
-    /// <summary>
     /// Gets or sets method
     /// </summary>
     /// <value></value>
-    public string Method { get; set; } = null!;
+    public string? Method { get; set; }
 
     /// <summary>
     /// Gets or sets tableName
     /// </summary>
     /// <value></value>
-    public string TableName { get; set; } = null!;
+    public string? TableName { get; set; }
 
     /// <summary>
     /// Gets or sets changeDate
     /// </summary>
     /// <value></value>
-    public DateTime ChangeDate { get; set; }
+    public long? ChangeDate { get; set; }
 
     /// <summary>
     /// Gets keyValues

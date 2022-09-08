@@ -4,13 +4,13 @@
         <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>netca.Domain</RootNamespace>
         <AssemblyName>netca.Domain</AssemblyName>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PreserveCompilationContext>false</PreserveCompilationContext>
+        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <PackageReference Include="MediatR" Version="10.0.1" />
     </ItemGroup>
 
 </Project>

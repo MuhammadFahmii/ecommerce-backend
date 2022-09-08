@@ -4,8 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Threading;
-using System.Threading.Tasks;
 using netca.Application.Common.Models;
 
 namespace netca.Application.Common.Interfaces;
