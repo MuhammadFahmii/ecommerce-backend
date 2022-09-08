@@ -44,7 +44,7 @@ public class TodoItemVm : AuditTableVm, IMapFrom<TodoItem>
     /// <summary>
     /// Gets or sets reminder
     /// </summary>
-    public DateTime? Reminder { get; set; }
+    public long? Reminder { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether done
