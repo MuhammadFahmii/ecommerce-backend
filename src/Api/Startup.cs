@@ -88,10 +88,7 @@ public class Startup
 
         services.AddInfrastructure(Environment, AppSetting);
 
-        if (AppSetting.IsEnableAuth)
-        {
-            services.AddScoped<ApiAuthorizeFilterAttribute>();
-        }
+        services.AddScoped<ApiAuthorizeFilterAttribute>();
         services.AddScoped<ApiDevelopmentFilterAttribute>();
 
         if (Environment?.EnvironmentName == "Test")

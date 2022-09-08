@@ -80,7 +80,7 @@ public class LifetimeEventsHostedService : IHostedService
     
     private void CleanUpQuartz()
     {
-        if (!_appSetting.BackgroundJob.IsEnable || !_appSetting.BackgroundJob.UsePersistentStore)
+        if (!_appSetting.BackgroundJob.IsEnable)
             return;
         var sc = _iSchedulerFactory.GetScheduler().Result;
         var triggers = (from jobGroupName in sc.GetTriggerGroupNames().Result

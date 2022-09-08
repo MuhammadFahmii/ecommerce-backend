@@ -15,6 +15,7 @@ using netca.Application.Common.Models;
 using netca.Infrastructure.Files;
 using netca.Infrastructure.Jobs;
 using netca.Infrastructure.Persistence;
+using netca.Infrastructure.Persistence.Interceptors;
 using netca.Infrastructure.Services;
 using netca.Infrastructure.Services.Cache;
 using Quartz;
@@ -35,6 +36,7 @@ public static class DependencyInjection
     public static void AddInfrastructure(
         this IServiceCollection services, IWebHostEnvironment? environment, AppSetting appSetting)
     {
+        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
         services.AddDbContext<ApplicationDbContext>(
             options =>
                 options.UseSqlServer(

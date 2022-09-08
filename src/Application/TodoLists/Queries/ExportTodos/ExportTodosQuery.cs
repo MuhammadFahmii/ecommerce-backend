@@ -8,6 +8,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using netca.Application.Common.Behaviours;
 using netca.Application.Common.Interfaces;
 
 namespace netca.Application.TodoLists.Queries.ExportTodos
@@ -15,6 +16,7 @@ namespace netca.Application.TodoLists.Queries.ExportTodos
     /// <summary>
     /// ExportTodosQuery
     /// </summary>
+    [RetryPolicy(RetryCount = 2, SleepDuration = 500)]
     public class ExportTodosQuery : IRequest<ExportTodosVm>
     {
         /// <summary>
