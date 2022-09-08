@@ -39,7 +39,7 @@ public class TodoItem : BaseAuditableEntity
     /// <summary>
     /// Gets or sets reminder
     /// </summary>
-    public DateTime? Reminder { get; set; }
+    public long? Reminder { get; set; }
 
     private bool _done;
 
