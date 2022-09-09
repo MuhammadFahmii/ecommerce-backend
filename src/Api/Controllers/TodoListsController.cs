@@ -43,7 +43,7 @@ public class TodoListsController : ApiControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
-    [Produces(Constants.HeaderJson)]
+    [Produces(Constants.HeaderJsonVndApi)]
     [SwaggerResponse(HttpStatusCode.OK, typeof(DocumentRootJson<List<TodoListVm>>), Description = "Successfully to get todos")]
     [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = Constants.ApiErrorDescription.BadRequest)]
     [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit),
