@@ -6,6 +6,7 @@
 
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using JsonApiSerializer.JsonApi;
 using Microsoft.EntityFrameworkCore;
 using netca.Application.Common.Extensions;
 
@@ -20,13 +21,14 @@ public static class MappingExtensions
     /// PaginatedListAsync
     /// </summary>
     /// <param name="queryable"></param>
+    /// <param name="meta"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
     /// <typeparam name="TDestination"></typeparam>
     /// <returns></returns>
     public static Task<DocumentRootJson<List<TDestination>>> PaginatedListAsync<TDestination>(
-        this IQueryable<TDestination> queryable, int pageNumber, int pageSize)
-        => JsonApiExtensionPaginated.CreateAsync(queryable, pageNumber, pageSize);
+        this IQueryable<TDestination> queryable, Meta meta, int pageNumber, int pageSize)
+        => JsonApiExtensionPaginated.CreateAsync(queryable, meta, pageNumber, pageSize);
 
     /// <summary>
     /// ProjectToListAsync

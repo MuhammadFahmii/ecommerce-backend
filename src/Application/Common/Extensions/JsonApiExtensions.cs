@@ -22,14 +22,15 @@ public static class JsonApiExtensionPaginated
     /// CreateAsync
     /// </summary>
     /// <param name="source"></param>
+    /// <param name="meta"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     public static async Task<DocumentRootJson<List<T>>> CreateAsync<T>(
-        IQueryable<T> source, int pageNumber, int pageSize)
+        IQueryable<T> source, Meta meta, int pageNumber, int pageSize)
     {
-        return await JsonApiExtensions.ToJsonApiProjectTo(source, pageNumber, pageSize);
+        return await JsonApiExtensions.ToJsonApiProjectTo(source, meta, pageNumber, pageSize);
     }
 }
 
@@ -42,11 +43,12 @@ public static class JsonApiExtensions
     /// ToJsonApiProjectTo
     /// </summary>
     /// <param name="data"></param>
+    /// <param name="meta"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<DocumentRootJson<List<T>>> ToJsonApiProjectTo<T>(IQueryable<T> data, int pageNumber = 1,
+    public static async Task<DocumentRootJson<List<T>>> ToJsonApiProjectTo<T>(IQueryable<T> data, Meta meta, int pageNumber = 1,
         int pageSize = 1)
     {
         var totalItems = await data.CountAsync();
@@ -56,17 +58,15 @@ public static class JsonApiExtensions
         var hasNextPage = pageNumber < totalPages;
         var nextPageNumber = hasNextPage ? pageNumber + 1 : totalPages;
         var previousPageNumber = hasPreviousPage ? pageNumber - 1 : 1;
-        var meta = new Meta
-        {
-            { "totalItems", totalItems },
-            { "pageNumber", pageNumber },
-            { "pageSize", pageSize },
-            { "totalPages", totalPages },
-            { "hasPreviousPage", hasPreviousPage },
-            { "hasNextPage", hasNextPage },
-            { "nextPageNumber", nextPageNumber },
-            { "previousPageNumber", previousPageNumber },
-        };
+        meta.Add(key:"totalItems", value:totalItems);
+        meta.Add(key:"pageNumber", value:pageNumber);
+        meta.Add(key:"pageSize", value:pageSize);
+        meta.Add(key:"totalItems", value:totalPages);
+        meta.Add(key:"totalPages", value:totalItems);
+        meta.Add(key:"hasPreviousPage", value:hasPreviousPage);
+        meta.Add(key:"hasNextPage", value:hasNextPage);
+        meta.Add(key:"nextPageNumber", value:nextPageNumber);
+        meta.Add(key:"previousPageNumber", value:previousPageNumber);
         return new DocumentRootJson<List<T>>
         {
             Data = items,

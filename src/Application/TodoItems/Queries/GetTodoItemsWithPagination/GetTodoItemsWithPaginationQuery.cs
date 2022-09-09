@@ -7,6 +7,7 @@
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using JsonApiSerializer.JsonApi;
 using MediatR;
 using netca.Application.Common.Behaviours;
 using netca.Application.Common.Extensions;
@@ -70,7 +71,7 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
                 .Where(x => x.ListId == request.ListId)
                 .OrderBy(x => x.Title)
                 .ProjectTo<TodoItemBriefVm>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(request.PageNumber, request.PageSize);
+                .PaginatedListAsync(new Meta(),request.PageNumber, request.PageSize);
         }
     }
 }
