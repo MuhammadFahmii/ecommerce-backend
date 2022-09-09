@@ -11,7 +11,7 @@ namespace netca.Application.TodoLists.Queries.GetTodos
     /// <summary>
     /// TodosVm
     /// </summary>
-    public class TodosVm
+    public record TodosVm
     {
         /// <summary>
         /// Gets or sets id

@@ -9,7 +9,7 @@ namespace netca.Application.Dtos;
 /// <summary>
 /// EventHubRedisDto
 /// </summary>
-public class EventHubRedisDto
+public record EventHubRedisDto
 {
     /// <summary>
     /// Gets or sets eventHubName

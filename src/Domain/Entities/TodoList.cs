@@ -4,16 +4,12 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using netca.Domain.Common;
-using netca.Domain.ValueObjects;
-
 namespace netca.Domain.Entities;
 
 /// <summary>
 /// TodoList
 /// </summary>
-public class TodoList : BaseAuditableEntity
+public record TodoList : BaseAuditableEntity
 {
     /// <summary>
     /// Gets or sets title

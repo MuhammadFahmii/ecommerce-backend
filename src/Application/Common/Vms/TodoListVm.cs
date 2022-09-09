@@ -13,7 +13,7 @@ namespace netca.Application.Common.Vms;
 /// <summary>
 /// TodoListVm
 /// </summary>
-public class TodoListVm : AuditTableVm, IMapFrom<TodoList>
+public record TodoListVm : AuditTableVm, IMapFrom<TodoList>
 {
     /// <summary>
     /// Gets or sets title

@@ -9,7 +9,7 @@ namespace netca.Application.Dtos;
 /// <summary>
 /// RedisDto
 /// </summary>
-public class RedisDto
+public record RedisDto
 {
     /// <summary>
     /// Gets or sets code

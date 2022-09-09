@@ -9,7 +9,7 @@ namespace netca.Application.TodoLists.Queries.GetTodos
     /// <summary>
     /// PriorityLevelVm
     /// </summary>
-    public class PriorityLevelVm
+    public record PriorityLevelVm
     {
         /// <summary>
         /// Gets or sets value

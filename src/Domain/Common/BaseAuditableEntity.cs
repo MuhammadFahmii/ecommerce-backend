@@ -9,7 +9,7 @@ namespace netca.Domain.Common;
 /// <summary>
 /// BaseAuditableEntity
 /// </summary>
-public class BaseAuditableEntity : BaseEntity
+public abstract record BaseAuditableEntity : BaseEntity
 {
     public long CreatedDate { get; set; }
     public Guid? CreatedBy { get; set; }
