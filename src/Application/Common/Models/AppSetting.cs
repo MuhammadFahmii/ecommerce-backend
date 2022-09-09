@@ -9,7 +9,7 @@ namespace netca.Application.Common.Models;
 /// <summary>
 /// AppSetting
 /// </summary>
-public class AppSetting
+public record AppSetting
 {
     /// <summary>
     /// Gets or sets a value indicating whether isEnableAuth
@@ -98,7 +98,7 @@ public class AppSetting
 /// <summary>
 /// AuthorizationServer
 /// </summary>
-public class AuthorizationServer
+public record AuthorizationServer
 {
     /// <summary>
     /// Gets or sets gateway
@@ -145,7 +145,7 @@ public class AuthorizationServer
 /// <summary>
 /// Policy
 /// </summary>
-public class Policy
+public record Policy
 {
     /// <summary>
     /// Gets or sets name
@@ -169,7 +169,7 @@ public class Policy
 /// <summary>
 /// DatabaseSettings
 /// </summary>
-public class DatabaseSettings
+public record DatabaseSettings
 {
     /// <summary>
     /// Gets or sets maxRetryDelay
@@ -217,7 +217,7 @@ public record DataLifetime
 /// <summary>
 /// App
 /// </summary>
-public class App
+public record App
 {
     /// <summary>
     /// Gets or sets title
@@ -247,7 +247,7 @@ public class App
 /// <summary>
 /// Kestrel
 /// </summary>
-public class Kestrel
+public record Kestrel
 {
     /// <summary>
     /// Gets or sets keepAliveTimeoutInM
@@ -271,7 +271,7 @@ public class Kestrel
 /// <summary>
 /// MinRequestBodyDataRate
 /// </summary>
-public class MinRequestBodyDataRate
+public record MinRequestBodyDataRate
 {
     /// <summary>
     /// Gets or sets bytesPerSecond
@@ -289,7 +289,7 @@ public class MinRequestBodyDataRate
 /// <summary>
 /// MinResponseDataRate
 /// </summary>
-public class MinResponseDataRate
+public record MinResponseDataRate
 {
     /// <summary>
     /// Gets or sets bytesPerSecond
@@ -307,7 +307,7 @@ public class MinResponseDataRate
 /// <summary>
 /// AppContact
 /// </summary>
-public class AppContact
+public record AppContact
 {
     /// <summary>
     /// Gets or sets company
@@ -331,7 +331,7 @@ public class AppContact
 /// <summary>
 /// Bot
 /// </summary>
-public class Bot
+public record Bot
 {
     /// <summary>
     /// Gets or sets a value indicating whether isEnable
@@ -378,7 +378,7 @@ public class Bot
 /// <summary>
 /// ConnectionStrings
 /// </summary>
-public class ConnectionStrings
+public record ConnectionStrings
 {
     /// <summary>
     /// Gets or sets netcaDb
@@ -390,7 +390,7 @@ public class ConnectionStrings
 /// <summary>
 /// Messaging
 /// </summary>
-public class Messaging
+public record Messaging
 {
     /// <summary>
     /// Gets or sets azureEventHub
@@ -402,7 +402,7 @@ public class Messaging
 /// <summary>
 /// AzureEventHub
 /// </summary>
-public class AzureEventHub
+public record AzureEventHub
 {
     /// <summary>
     /// Gets or sets name
@@ -438,7 +438,7 @@ public class AzureEventHub
 /// <summary>
 /// EventHubTopic
 /// </summary>
-public class EventHubTopic
+public record EventHubTopic
 {
     /// <summary>
     /// Gets or sets name
@@ -462,7 +462,7 @@ public class EventHubTopic
 /// <summary>
 /// Topic
 /// </summary>
-public class Topic
+public record Topic
 {
     /// <summary>
     /// Gets or sets topic for Consume EquipmentMonitoring from UT Portal
@@ -474,7 +474,7 @@ public class Topic
 /// <summary>
 /// Redis
 /// </summary>
-public class Redis
+public record Redis
 {
     /// <summary>
     /// Gets or sets server
@@ -515,7 +515,7 @@ public class Redis
 /// <summary>
 /// BackgroundJob
 /// </summary>
-public class BackgroundJob
+public record BackgroundJob
 {
     /// <summary>
     /// Gets or sets a value indicating whether isEnable
@@ -551,7 +551,7 @@ public class BackgroundJob
 /// <summary>
 /// PersistentStore
 /// </summary>
-public class PersistentStore
+public record PersistentStore
 {
     /// <summary>
     /// Gets or sets connectionString
@@ -612,7 +612,7 @@ public class PersistentStore
 /// <summary>
 /// Job
 /// </summary>
-public class Job
+public record Job
 {
     /// <summary>
     /// Gets or sets name
@@ -643,4 +643,9 @@ public class Job
     /// Gets or sets description
     /// </summary>
     public string Description { get; set; } = "";
+
+    /// <summary>
+    /// Gets or sets parameters
+    /// </summary>
+    public List<object> Parameters { get; set; } = new();
 }

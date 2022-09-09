@@ -5,6 +5,7 @@
 // -----------------------------------------------------------------------------------
 
 using System;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -118,9 +119,13 @@ public static class DependencyInjection
                 });
             }
 
-            q.AddJobAndTrigger<DeleteChangelogJob>(appSetting);
-            q.AddJobAndTrigger<ProduceOrderJob>(appSetting);
-            q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
+            var jobs = appSetting.BackgroundJob.Jobs
+                .Where(x => x.IsEnable)
+                .Select(x => x.Name)
+                .ToList();
+
+            foreach (var jobName in jobs)
+                q.AddJobAndTrigger(jobName, appSetting);
         });
 
         services.AddQuartzHostedService(

@@ -20,33 +20,65 @@ public static class QuartzService
     /// AddJobAndTrigger
     /// </summary>
     /// <param name="quartz"></param>
+    /// <param name="jobName"></param>
     /// <param name="appSetting"></param>
-    /// <typeparam name="T"></typeparam>
     /// <exception cref="Exception">Exception</exception>
-    public static void AddJobAndTrigger<T>(this IServiceCollectionQuartzConfigurator quartz, AppSetting appSetting)
-        where T : IJob
+    public static void AddJobAndTrigger(this IServiceCollectionQuartzConfigurator quartz, string jobName, AppSetting appSetting)
     {
-        var jobName = typeof(T).Name;
         var job = appSetting.BackgroundJob.Jobs.FirstOrDefault(x => x.Name.Equals(jobName));
+        var type = Type.GetType($"necta.Infrastructure.Jobs.{jobName}");
 
-        if (job is { IsEnable: false })
-            return;
-
-        if (job == null || string.IsNullOrEmpty(job.Schedule))
+        if (job == null || type == null)
             throw new ArgumentNullException($"No Quartz.NET Cron schedule found for {jobName} in configuration");
-        var group = jobName + "Group";
 
-        var jobKey = new JobKey(jobName, group);
-
-        quartz.AddJob<T>(opts => opts.WithIdentity(jobKey));
-        if (job.IsParallel && appSetting.BackgroundJob.UsePersistentStore)
+        if ((job.Parameters?.Count ?? 0) > 0)
         {
-            jobName += appSetting.BackgroundJob.HostName;
+            for (byte i = 0; i < job.Parameters.Count; i++)
+                quartz.AddJob(type, job, appSetting, i, job.Parameters[i]);
         }
+        else
+        {
+            quartz.AddJob(type, job, appSetting);
+        }
+    }
+    
+    private static void AddJob(
+        this IServiceCollectionQuartzConfigurator quartz,
+        Type type,
+        Job job,
+        AppSetting appSetting,
+        byte? index = null,
+        object? parameter = null)
+    {
+        var jobName = job.Name;
+        var jobNameWithIndex = index != null ? $"{jobName}{index}" : jobName;
+        var group = $"{jobName}_Group";
+
+        var jobKey = new JobKey(jobNameWithIndex, group);
+
+        if (parameter != null)
+        {
+            var jobDataMap = new JobDataMap
+            {
+                { "parameter", parameter }
+            };
+
+            quartz.AddJob(type, jobKey, configure => configure.SetJobData(jobDataMap));
+        }
+        else
+        {
+            quartz.AddJob(type, jobKey);
+        }
+
+        var trigger = job.IsParallel && appSetting.BackgroundJob.UsePersistentStore ?
+            $"{jobNameWithIndex}:{appSetting.BackgroundJob.HostName}" :
+            jobNameWithIndex;
+        trigger = $"{trigger}_Trigger";
+
         quartz.AddTrigger(opts => opts
             .ForJob(jobKey)
             .WithDescription(job.Description)
-            .WithIdentity(jobName + "trigger", group)
+            .WithIdentity(trigger, group)
             .WithCronSchedule(job.Schedule, x =>
             {
                 if (job.IgnoreMisfire)
