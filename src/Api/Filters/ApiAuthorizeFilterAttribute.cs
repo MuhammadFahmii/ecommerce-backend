@@ -8,9 +8,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Extensions;
 using netca.Application.Common.Models;
@@ -32,12 +34,14 @@ public class ApiAuthorizeFilterAttribute : ActionFilterAttribute
     {
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ApiAuthorizeFilterAttribute>>();
         var appSetting = context.HttpContext.RequestServices.GetRequiredService<AppSetting>();
+        var environment = context.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
         var actionDescriptor = context.ActionDescriptor;
         var ctrl = actionDescriptor.RouteValues["controller"].NullSafeToLower();
         var action = actionDescriptor.RouteValues["action"].NullSafeToLower();
         var permission =
             $"{appSetting.AuthorizationServer.Service}:{context.HttpContext.Request.Method}:{ctrl}_{action}";
-        if (!appSetting.IsEnableAuth)
+        var isAuth = !environment.IsDevelopment() || appSetting.IsEnableAuth;
+        if (!isAuth)
         {
             await next();
         }
