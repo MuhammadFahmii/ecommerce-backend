@@ -61,7 +61,6 @@ public static class JsonApiExtensions
         meta.Add(key:"totalItems", value:totalItems);
         meta.Add(key:"pageNumber", value:pageNumber);
         meta.Add(key:"pageSize", value:pageSize);
-        meta.Add(key:"totalItems", value:totalPages);
         meta.Add(key:"totalPages", value:totalItems);
         meta.Add(key:"hasPreviousPage", value:hasPreviousPage);
         meta.Add(key:"hasNextPage", value:hasNextPage);
@@ -96,7 +95,6 @@ public static class JsonApiExtensions
         meta.Add(key:"totalItems", value:totalItems);
         meta.Add(key:"pageNumber", value:pageNumber);
         meta.Add(key:"pageSize", value:pageSize);
-        meta.Add(key:"totalItems", value:totalPages);
         meta.Add(key:"totalPages", value:totalItems);
         meta.Add(key:"hasPreviousPage", value:hasPreviousPage);
         meta.Add(key:"hasNextPage", value:hasNextPage);
