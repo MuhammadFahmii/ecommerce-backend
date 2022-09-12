@@ -11,7 +11,7 @@ namespace netca.Domain.Entities;
 /// <summary>
 /// Changelog
 /// </summary>
-public class Changelog
+public record Changelog
 {
     /// <summary>
     /// Gets or sets id

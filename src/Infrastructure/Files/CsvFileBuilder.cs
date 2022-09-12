@@ -24,7 +24,7 @@ public class CsvFileBuilder : ICsvFileBuilder
     /// </summary>
     /// <param name="records"></param>
     /// <returns></returns>
-    public byte[]? BuildTodoItemsFile(IEnumerable<TodoItemRecord> records)
+    public byte[] BuildTodoItemsFile(IEnumerable<TodoItemRecord> records)
     {
         using var memoryStream = new MemoryStream();
         using (var streamWriter = new StreamWriter(memoryStream))

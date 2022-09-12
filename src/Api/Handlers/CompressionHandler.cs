@@ -27,6 +27,7 @@ public static class CompressionHandler
         {
             var mimeTypes = new[]
             {
+                Constants.HeaderJsonVndApi,
                 Constants.HeaderPdf,
                 Constants.HeaderTextPlain,
                 Constants.HeaderImageJpg,

@@ -1,32 +1,83 @@
 // ------------------------------------------------------------------------------------
-// ApplicationDbContextSeed.cs  2021
+// ApplicationDbContextInitializer.cs  2022
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using netca.Domain.Entities;
 using netca.Domain.ValueObjects;
 
 namespace netca.Infrastructure.Persistence;
 
 /// <summary>
-/// ApplicationDbContextSeed
+/// ApplicationDbContextInitializer
 /// </summary>
-public static class ApplicationDbContextSeed
+public class ApplicationDbContextInitializer
 {
+    private readonly ILogger<ApplicationDbContextInitializer> _logger;
+    private readonly ApplicationDbContext _context;
+
     /// <summary>
-    /// SeedSampleDataAsync
+    /// 
     /// </summary>
+    /// <param name="logger"></param>
     /// <param name="context"></param>
-    /// <returns></returns>
-    public static async Task SeedSampleDataAsync(ApplicationDbContext context)
+    public ApplicationDbContextInitializer(ILogger<ApplicationDbContextInitializer> logger,
+        ApplicationDbContext context)
     {
-        if (!context.TodoLists.IgnoreQueryFilters().Any())
+        _logger = logger;
+        _context = context;
+    }
+
+    /// <summary>
+    /// InitialiseAsync
+    /// </summary>
+    public async Task InitialiseAsync()
+    {
+        try
         {
-            context.TodoLists.Add(new TodoList
+            if (_context.Database.IsSqlServer())
+            {
+                _logger.LogWarning("Migrating Database");
+                await _context.Database.MigrateAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while initialising the database");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// SeedAsync
+    /// </summary>
+    public async Task SeedAsync()
+    {
+        try
+        {
+            await TrySeedAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while seeding the database");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// TrySeedAsync
+    /// </summary>
+    private async Task TrySeedAsync()
+    {
+        if (!_context.TodoLists.IgnoreQueryFilters().Any())
+        {
+            _context.TodoLists.Add(new TodoList
             {
                 Title = "Shopping",
                 Colour = Colour.Blue,
@@ -67,7 +118,7 @@ public static class ApplicationDbContextSeed
                 }
             });
 
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace netca.Domain.Common;
 /// <summary>
 /// BaseEntity
 /// </summary>
-public class BaseEntity
+public record BaseEntity
 {
     public Guid Id { get; set; }
 

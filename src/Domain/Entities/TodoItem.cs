@@ -9,7 +9,7 @@ namespace netca.Domain.Entities;
 /// <summary>
 /// TodoItem
 /// </summary>
-public class TodoItem : BaseAuditableEntity
+public record TodoItem : BaseAuditableEntity
 {
     /// <summary>
     /// Gets or sets list

@@ -14,7 +14,7 @@ namespace netca.Application.Common.Vms;
 /// <summary>
 /// TodoItemVm
 /// </summary>
-public class TodoItemVm : AuditTableVm, IMapFrom<TodoItem>
+public record TodoItemVm : AuditTableVm, IMapFrom<TodoItem>
 {
     /// <summary>
     /// Gets or sets list

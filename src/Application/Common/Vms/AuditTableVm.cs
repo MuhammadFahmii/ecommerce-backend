@@ -11,7 +11,7 @@ namespace netca.Application.Common.Vms;
 /// <summary>
 /// AuditTableVm
 /// </summary>
-public abstract class AuditTableVm
+public abstract record AuditTableVm
 {
     /// <summary>
     /// Gets or sets id

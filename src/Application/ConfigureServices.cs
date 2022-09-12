@@ -1,11 +1,10 @@
-﻿// ------------------------------------------------------------------------------------
-// DependencyInjection.cs  2021
+// ------------------------------------------------------------------------------------
+// ConfigureServices.cs  2022
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
 using System.Reflection;
-using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,15 +13,16 @@ using netca.Application.Common.Behaviours;
 namespace netca.Application;
 
 /// <summary>
-/// DependencyInjection
+/// ConfigureServices
 /// </summary>
-public static class DependencyInjection
+public static class ConfigureServices
 {
     /// <summary>
-    /// AddApplication
+    /// AddApplicationServices
     /// </summary>
     /// <param name="services"></param>
-    public static void AddApplication(this IServiceCollection services)
+    /// <returns></returns>
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
@@ -32,5 +32,6 @@ public static class DependencyInjection
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RetryPolicyBehavior<,>));
+        return services;
     }
 }

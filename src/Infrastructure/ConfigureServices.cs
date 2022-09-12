@@ -1,10 +1,11 @@
-﻿// ------------------------------------------------------------------------------------
-// DependencyInjection.cs  2021
+// ------------------------------------------------------------------------------------
+// ConfigureServices.cs  2022
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
 using System;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,6 @@ using Microsoft.Extensions.Hosting;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
 using netca.Infrastructure.Files;
-using netca.Infrastructure.Jobs;
 using netca.Infrastructure.Persistence;
 using netca.Infrastructure.Persistence.Interceptors;
 using netca.Infrastructure.Services;
@@ -23,17 +23,17 @@ using Quartz;
 namespace netca.Infrastructure;
 
 /// <summary>
-/// DependencyInjection
+/// ConfigureServices
 /// </summary>
-public static class DependencyInjection
+public static class ConfigureServices
 {
     /// <summary>
-    /// AddInfrastructure
+    /// AddInfrastructureServices
     /// </summary>
     /// <param name="services"></param>
     /// <param name="environment"></param>
     /// <param name="appSetting"></param>
-    public static void AddInfrastructure(
+    public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services, IWebHostEnvironment? environment, AppSetting appSetting)
     {
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
@@ -60,16 +60,17 @@ public static class DependencyInjection
         );
 
         services.AddTransient<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<ApplicationDbContextInitializer>();
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
         services.AddScoped<IUserAuthorizationService, UserAuthorizationService>();
         services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandlerService>();
         services.AddSingleton<IRedisService, RedisService>();
-        services.AddHostedService<LifetimeEventsHostedService>();
+        //services.AddHostedService<LifetimeEventsHostedService>();
         services.AddHostedService<OrderProcessService>();
 
-        if (!appSetting.BackgroundJob.IsEnable)
-            return;
+        if (appSetting.BackgroundJob.IsEnable)
+            return services;
 
         services.Configure<QuartzOptions>(options =>
         {
@@ -83,7 +84,10 @@ public static class DependencyInjection
         {
             q.UseMicrosoftDependencyInjectionJobFactory();
             q.UseSimpleTypeLoader();
-            q.UseJobAutoInterrupt(options => { options.DefaultMaxRunTime = TimeSpan.FromMinutes(appSetting.BackgroundJob.DefaultMaxRunTime); });
+            q.UseJobAutoInterrupt(options =>
+            {
+                options.DefaultMaxRunTime = TimeSpan.FromMinutes(appSetting.BackgroundJob.DefaultMaxRunTime);
+            });
             q.InterruptJobsOnShutdown = false;
             q.InterruptJobsOnShutdownWithWait = true;
             if (appSetting.BackgroundJob.UsePersistentStore)
@@ -107,23 +111,30 @@ public static class DependencyInjection
                             cfg.CheckinInterval =
                                 TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.CheckinInterval);
                             cfg.CheckinMisfireThreshold =
-                                TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.CheckinMisfireThreshold);
+                                TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore
+                                    .CheckinMisfireThreshold);
                         });
                     }
                 });
-                q.MisfireThreshold = TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.MisfireThreshold);
+                q.MisfireThreshold =
+                    TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.MisfireThreshold);
                 q.UseDefaultThreadPool(tp =>
                 {
                     tp.MaxConcurrency = appSetting.BackgroundJob.PersistentStore.MaxConcurrency;
                 });
             }
 
-            q.AddJobAndTrigger<DeleteChangelogJob>(appSetting);
-            q.AddJobAndTrigger<ProduceOrderJob>(appSetting);
-            q.AddJobAndTrigger<CacheTeamsJob>(appSetting);
+            var jobs = appSetting.BackgroundJob.Jobs
+                .Where(x => x.IsEnable)
+                .Select(x => x.Name)
+                .ToList();
+
+            foreach (var jobName in jobs)
+                q.AddJobAndTrigger(jobName, appSetting);
         });
 
         services.AddQuartzHostedService(
             q => q.WaitForJobsToComplete = true);
+        return services;
     }
 }

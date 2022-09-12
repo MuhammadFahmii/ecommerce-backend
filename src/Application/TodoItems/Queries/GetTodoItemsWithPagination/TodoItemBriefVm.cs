@@ -13,7 +13,7 @@ namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
     /// <summary>
     /// TodoItemBriefVm
     /// </summary>
-    public class TodoItemBriefVm : AuditTableVm, IMapFrom<TodoItem>
+    public record TodoItemBriefVm : AuditTableVm, IMapFrom<TodoItem>
     {
         /// <summary>
         /// Gets or sets listId
