@@ -37,11 +37,11 @@ namespace netca.Infrastructure.Jobs;
         using (var scope = ServiceScopeFactory.CreateScope())
         {
             var data = context.Trigger;
-            // var redisService = scope.ServiceProvider.GetRequiredService<IRedisService>();
+            var redisService = scope.ServiceProvider.GetRequiredService<IRedisService>();
             var dt = scope.ServiceProvider.GetRequiredService<IDateTime>();
-            for (var index = 1; index <= 1; index++)
+            for (var index = 1; index <= 5; index++)
             {
-               // redisService.ListLeftPushAsync("order", "{ 'order': " + index + "}");
+                redisService.ListLeftPushAsync("order", "{ 'order': " + index + "}");
                 Logger.LogWarning("{Now} -> sending order {I}", dt.Now, data.Key.Name);
                 Thread.Sleep(100);
             }
