@@ -105,7 +105,7 @@ public class OverrideResponseHandlerMiddleware
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogCritical("Error Overriding Response {Ex}", ex.Message);
+                    _logger.LogWarning("Error Overriding Response {Ex}", ex.Message);
                     throw;
                 }
                 finally
