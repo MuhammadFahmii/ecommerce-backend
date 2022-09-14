@@ -66,10 +66,10 @@ public static class ConfigureServices
         services.AddScoped<IUserAuthorizationService, UserAuthorizationService>();
         services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandlerService>();
         services.AddSingleton<IRedisService, RedisService>();
-        //services.AddHostedService<LifetimeEventsHostedService>();
+        services.AddHostedService<LifetimeEventsHostedService>();
         services.AddHostedService<OrderProcessService>();
 
-        if (appSetting.BackgroundJob.IsEnable)
+        if (!appSetting.BackgroundJob.IsEnable)
             return services;
 
         services.Configure<QuartzOptions>(options =>

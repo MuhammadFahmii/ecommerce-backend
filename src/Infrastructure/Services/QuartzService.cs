@@ -26,12 +26,12 @@ public static class QuartzService
     public static void AddJobAndTrigger(this IServiceCollectionQuartzConfigurator quartz, string jobName, AppSetting appSetting)
     {
         var job = appSetting.BackgroundJob.Jobs.FirstOrDefault(x => x.Name.Equals(jobName));
-        var type = Type.GetType($"necta.Infrastructure.Jobs.{jobName}");
+        var type = Type.GetType($"netca.Infrastructure.Jobs.{jobName}");
 
         if (job == null || type == null)
             throw new ArgumentNullException($"No Quartz.NET Cron schedule found for {jobName} in configuration");
 
-        if ((job.Parameters?.Count ?? 0) > 0)
+        if (job.Parameters.Count > 0)
         {
             for (byte i = 0; i < job.Parameters.Count; i++)
                 quartz.AddJob(type, job, appSetting, i, job.Parameters[i]);

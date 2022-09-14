@@ -6,21 +6,17 @@
 
 using System.Buffers;
 using System.Linq;
+using System.Reflection;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using JsonApiSerializer;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using netca.Api.Filters;
 using netca.Api.Handlers;
 using netca.Api.Middlewares;
-using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -51,6 +47,7 @@ public static class ConfigureServices
         services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
         services.AddScoped<ApiDevelopmentFilterAttribute>();
         services.AddScoped<ApiAuthenticationFilterAttribute>();
+        services.AddScoped<ApiAuthorizeFilterAttribute>();
         if (environment?.EnvironmentName == "Test")
         {
             services.AddLocalPermissions(appSetting);
@@ -91,12 +88,8 @@ public static class ConfigureServices
                 {
                     NamingStrategy = new CamelCaseNamingStrategy()
                 };
-            }); 
-            services.AddFluentValidationAutoValidation(config => 
-            {
-                config.DisableDataAnnotationsValidation = true;
-            }).AddFluentValidationClientsideAdapters();
-            services.AddValidatorsFromAssemblyContaining<IApplicationDbContext>();
+            });
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         services.AddCors();
 
