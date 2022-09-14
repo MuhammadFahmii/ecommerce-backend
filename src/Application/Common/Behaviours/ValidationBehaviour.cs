@@ -4,10 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
 using ValidationException = netca.Application.Common.Exceptions.ValidationException;

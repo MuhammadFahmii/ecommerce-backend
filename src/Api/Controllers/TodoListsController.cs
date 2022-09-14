@@ -15,6 +15,7 @@ using netca.Api.Filters;
 using netca.Application.Common.Extensions;
 using netca.Application.Common.Models;
 using netca.Application.Common.Vms;
+using netca.Application.TodoLists.Commands.CreateTodoList;
 using netca.Application.TodoLists.Queries.ExportTodos;
 using netca.Application.TodoLists.Queries.GetTodos;
 using NSwag.Annotations;
@@ -26,7 +27,7 @@ namespace netca.Api.Controllers;
 /// </summary>
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/todoLists")]
-[ServiceFilter(typeof(ApiAuthorizeFilterAttribute))]
+[ServiceFilter(typeof(ApiAuthenticationFilterAttribute))]
 public class TodoListsController : ApiControllerBase
 {
     /// <summary>
@@ -58,11 +59,33 @@ public class TodoListsController : ApiControllerBase
     }
 
     /// <summary>
+    /// CreateAsync
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Produces(Constants.HeaderJson)]
+    [SwaggerResponse(HttpStatusCode.OK, typeof(FileResult),
+        Description = "Successfully to create todoLists")]
+    [SwaggerResponse(HttpStatusCode.BadRequest, typeof(Unit), Description = Constants.ApiErrorDescription.BadRequest)]
+    [SwaggerResponse(HttpStatusCode.Unauthorized, typeof(Unit),
+        Description = Constants.ApiErrorDescription.Unauthorized)]
+    [SwaggerResponse(HttpStatusCode.Forbidden, typeof(Unit), Description = Constants.ApiErrorDescription.Forbidden)]
+    [SwaggerResponse(HttpStatusCode.InternalServerError, typeof(Unit),
+        Description = Constants.ApiErrorDescription.InternalServerError)]
+    public async Task<Unit> CreateAsync([FromBody] CreateTodoListCommand command, CancellationToken cancellationToken)
+    {
+        return await Mediator.Send(command, cancellationToken);
+    }
+
+    /// <summary>
     /// Get Todos csv
     /// </summary>
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
+    [ServiceFilter(typeof(ApiAuthorizeFilterAttribute))]
     [HttpGet("{id:guid}")]
     [Produces(Constants.HeaderTextCsv)]
     [SwaggerResponse(HttpStatusCode.OK, typeof(FileResult),
