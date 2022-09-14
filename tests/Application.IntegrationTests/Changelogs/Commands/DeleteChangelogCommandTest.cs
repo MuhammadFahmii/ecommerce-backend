@@ -29,9 +29,9 @@ public class DeleteChangelogCommandTest : TestBase
     /// <param name="changeDate"></param>
     /// <param name="shouldDelete"></param>
     [Test]
-    [TestCase("2000-01-01", true)]
-    [TestCase("2100-01-01", false)]
-    public async Task ShouldDeleteChangelog(DateTime changeDate, bool shouldDelete)
+    [TestCase(946659600000, true)]
+    [TestCase(4102419600000, false)]
+    public async Task ShouldDeleteChangelog(long changeDate, bool shouldDelete)
     {
         using var scope = ScopeFactory?.CreateScope();
         var context = scope?.ServiceProvider.GetRequiredService<ApplicationDbContext>();
