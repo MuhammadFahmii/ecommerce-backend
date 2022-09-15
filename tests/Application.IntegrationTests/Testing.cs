@@ -5,18 +5,12 @@
 // -----------------------------------------------------------------------------------
 
 using System;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using netca.Api;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
 using netca.Infrastructure.Persistence;
 using NUnit.Framework;
 using Respawn;
@@ -30,13 +24,12 @@ namespace netca.Application.IntegrationTests;
 [SetUpFixture]
 public class Testing
 {
-    private static IConfigurationRoot? _configuration;
+    private static WebApplicationFactory<Program> _factory = null!;
+    private static IConfiguration _configuration = null!;
     /// <summary>
     /// ScopeFactory
     /// </summary>
     public static IServiceScopeFactory? ScopeFactory { get; private set; }
-    private static Mock<IUserAuthorizationService>? _auth;
-    private static Mock<IRedisService>? _redis;
     private static Checkpoint? _checkpoint;
 
     /// <summary>
@@ -48,41 +41,10 @@ public class Testing
     {
         try
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.Test.json", false, true)
-                .AddJsonFile($"appsettings.Test.Local.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables();
+            _factory = new CustomWebApplicationFactory();
+            ScopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
+            _configuration = _factory.Services.GetRequiredService<IConfiguration>();
 
-            _configuration = builder.Build();
-
-            var startup = new Startup(_configuration);
-
-            var services = new ServiceCollection();
-            startup.ConfigureServices(services);
-            
-            services.AddSingleton(Mock.Of<IWebHostEnvironment>(x => x.EnvironmentName == "Test" && x.ApplicationName == "netca.Api"));
-
-            services.AddLogging();
-
-            startup.ConfigureServices(services);
-
-            var currentUserServiceDescriptor =
-                services.FirstOrDefault(d => d.ServiceType == typeof(IUserAuthorizationService));
-
-            if (currentUserServiceDescriptor != null) services.Remove(currentUserServiceDescriptor);
-
-            _auth = new Mock<IUserAuthorizationService>();
-            _auth.Setup(x => x.GetAuthorizedUser()).Returns(MockData.GetAuthorizedUser());
-            services.AddTransient(_ => _auth.Object);
-
-            _redis = new Mock<IRedisService>();
-            _redis.Setup(x => x.SaveAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync("KEYS");
-            services.AddSingleton(_ => _redis.Object);
-
-            ScopeFactory = services.BuildServiceProvider().GetService<IServiceScopeFactory>();
-            
             _checkpoint = new Checkpoint
             {
                 TablesToIgnore = new Table[] { "__EFMigrationsHistory" }
