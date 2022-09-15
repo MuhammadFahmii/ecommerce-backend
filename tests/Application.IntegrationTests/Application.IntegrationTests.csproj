@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.9" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
         <PackageReference Include="nunit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1">
@@ -37,7 +38,6 @@
         </Content>
         <Content Include="appsettings.Test.Local.json" Condition="Exists('appsettings.Test.Local.json')">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </Content>
     </ItemGroup>
