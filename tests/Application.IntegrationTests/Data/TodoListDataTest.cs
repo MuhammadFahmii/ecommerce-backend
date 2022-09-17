@@ -28,6 +28,19 @@ public class TodoListDataTest
     }
     
     /// <summary>
+    /// ShouldRequireValidTodoListId
+    /// </summary>
+    public static IEnumerable<TestCaseData> ShouldRequireValidTodoListId
+    {
+        get
+        {
+            yield return new TestCaseData(null, "Title", false);
+            yield return new TestCaseData(Guid.NewGuid(), null, false);
+            yield return new TestCaseData(Guid.NewGuid(), "Title", true);
+        }
+    }
+    
+    /// <summary>
     /// ShouldCreated
     /// </summary>
     public static IEnumerable<TestCaseData> ShouldCreated
