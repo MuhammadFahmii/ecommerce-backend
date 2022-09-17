@@ -5,6 +5,8 @@
 // -----------------------------------------------------------------------------------
 
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using netca.Application.Common.Interfaces;
 
 namespace netca.Application.TodoItems.Commands.CreateTodoItem;
 
@@ -13,15 +15,28 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem;
 /// </summary>
 public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCommand>
 {
+    private readonly IApplicationDbContext _context;
+    
     /// <summary>
     /// Initializes a new instance of the <see cref="CreateTodoItemCommandValidator"/> class.
     /// </summary>
-    public CreateTodoItemCommandValidator()
+    /// <param name="context"></param>
+    public CreateTodoItemCommandValidator(IApplicationDbContext context)
     {
+        _context = context;
         RuleFor(v => v.Id)
             .NotEmpty().NotEmpty();
+        RuleFor(v => v.ListId)
+            .NotEmpty().NotEmpty()
+            .MustAsync(BeExistTodoList).WithMessage("The todolist not exists.");
         RuleFor(x => x.Title)
             .MaximumLength(200)
             .NotEmpty();
+    }
+    
+    private async Task<bool> BeExistTodoList(Guid id, CancellationToken cancellationToken)
+    {
+        return await _context.TodoLists
+            .AnyAsync(l => l.Id == id, cancellationToken);
     }
 }

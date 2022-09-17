@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Models;
+using netca.Application.IntegrationTests.Data;
 using netca.Application.TodoItems.Commands.CreateTodoItem;
 using netca.Application.TodoLists.Commands.CreateTodoList;
 using netca.Domain.Entities;
 using NUnit.Framework;
+using Shouldly;
 
 namespace netca.Application.IntegrationTests.TodoItems.Commands;
 
@@ -27,9 +29,10 @@ public class CreateTodoItemTests : TestBase
     /// ShouldRequireMinimumFields
     /// </summary>
     [Test]
-    public async Task ShouldRequireMinimumFields()
+    [TestCaseSource(typeof(TodoItemDataTests), nameof(TodoItemDataTests.ShouldRequireMinimumFields))]
+    public async Task ShouldRequireMinimumFields(Guid id, Guid listId, string title)
     {
-        var command = new CreateTodoItemCommand();
+        var command = new CreateTodoItemCommand{ListId = listId, Id = id, Title = title};
 
         await FluentActions.Invoking(() =>
             SendAsync(command)).Should().ThrowAsync<ValidationException>();
@@ -39,32 +42,35 @@ public class CreateTodoItemTests : TestBase
     /// ShouldCreateTodoItem
     /// </summary>
     [Test]
-    public async Task ShouldCreateTodoItem()
+    [TestCaseSource(typeof(TodoItemDataTests), nameof(TodoItemDataTests.ShouldCreated))]
+    public async Task ShouldCreateTodoItem(Guid id, Guid listId, string title)
     {
-        var listId = await SendAsync(new CreateTodoListCommand
+         await SendAsync(new CreateTodoListCommand
         {
-            Title = "New List"
+            Id = listId,
+            Title = $"{title} List"
         });
 
         var command = new CreateTodoItemCommand
         {
-            ListId = listId.Data.Id,
-            Title = "Tasks"
+            Id = id,
+            ListId = listId,
+            Title = title
         };
 
-        var itemId = await SendAsync(command);
-        var list = Find<TodoList>(listId.Data.Id);
+        await SendAsync(command);
+        var list = Find<TodoList>(listId);
         list.Should().NotBeNull();
-        list?.Id.Should().Be(listId.Data.Id);
-        var item =  Find<TodoItem>(itemId.Data.Id);
+        list?.Id.Should().Be(listId);
+        var item =  Find<TodoItem>(id);
         
         item.Should().NotBeNull();
         item!.ListId.Should().Be(command.ListId);
-        item.Title.Should().Be("Tasks");
+        item.Title.Should().Be(title);
         item.CreatedBy.Should().Be(MockData.GetAuthorizedUser().UserId);
-        item.CreatedDate.Should().NotBeNull();
-        item.CreatedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(10000));
-        item.UpdatedBy.Should().BeNull();
-        item.UpdatedDate.Should().BeNull();
+        item.CreatedDate.Should().ShouldNotBeNull();
+        item.CreatedDate.Should().BeCloseTo(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), 10000);
+        item.UpdatedBy.Should().Be(MockData.GetAuthorizedUser().UserId);
+        item.UpdatedDate.Should().NotBeNull();
     }
 }
