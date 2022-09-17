@@ -15,9 +15,10 @@ using netca.Application.IntegrationTests.Data;
 using netca.Domain.Entities;
 using netca.Infrastructure.Persistence;
 using NUnit.Framework;
-using static netca.Application.IntegrationTests.Testing;
 
 namespace netca.Application.IntegrationTests.Changelogs.Commands;
+
+using static Testing;
 
 /// <summary>
 /// DeleteChangelogCommandTest
