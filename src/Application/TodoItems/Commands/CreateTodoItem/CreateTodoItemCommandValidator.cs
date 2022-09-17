@@ -18,6 +18,8 @@ public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCo
     /// </summary>
     public CreateTodoItemCommandValidator()
     {
+        RuleFor(v => v.Id)
+            .NotEmpty().NotEmpty();
         RuleFor(x => x.Title)
             .MaximumLength(200)
             .NotEmpty();

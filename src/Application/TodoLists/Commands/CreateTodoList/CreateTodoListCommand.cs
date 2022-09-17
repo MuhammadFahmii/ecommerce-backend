@@ -17,6 +17,12 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
     public class CreateTodoListCommand : IRequest<Unit>
     {
         /// <summary>
+        /// Gets or sets id
+        /// </summary>
+        [Required]
+        public Guid Id { get; set; }
+        
+        /// <summary>
         /// Gets or sets title
         /// </summary>
         [Required]
@@ -52,6 +58,7 @@ namespace netca.Application.TodoLists.Commands.CreateTodoList
         {
             var entity = new TodoList
             {
+                Id = request.Id,
                 Title = request.Title,
                 CreatedBy = _userAuthorizationService.GetAuthorizedUser().UserId
             };

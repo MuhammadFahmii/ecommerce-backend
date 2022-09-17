@@ -18,6 +18,12 @@ namespace netca.Application.TodoItems.Commands.CreateTodoItem;
 public class CreateTodoItemCommand : IRequest<Unit>
 {
     /// <summary>
+    /// Gets or sets Id
+    /// </summary>
+    [Required]
+    public Guid Id { get; set; }
+    
+    /// <summary>
     /// Gets or sets listId
     /// </summary>
     [Required]
@@ -60,6 +66,7 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
     {
         var entity = new TodoItem
         {
+            Id = request.Id,
             ListId = request.ListId,
             Title = request.Title,
             Done = false,
