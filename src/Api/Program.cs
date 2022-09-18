@@ -67,6 +67,8 @@ else
 {
     app.UseHsts();
 }
+
+app.UseHealthCheck();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -98,3 +100,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 });
 Log.Information("Starting host");
 app.Run();
+
+/// <summary>
+/// Program
+/// </summary>
+public partial class Program { }
