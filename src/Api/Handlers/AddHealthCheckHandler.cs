@@ -117,7 +117,7 @@ public class SystemCpuHealthCheck : IHealthCheck
 
         var status = HealthStatus.Healthy;
 
-        var data = new Dictionary<string, object> { { "Cpu_Usage", cpuUsageTotal } };
+        var data = new Dictionary<string, object> { { "cpu_Usage", cpuUsageTotal } };
 
         if (cpuUsageTotal > Constants.DefaultHealthCheckPercentageUsedDegraded)
             status = HealthStatus.Degraded;
@@ -139,22 +139,20 @@ public class SystemMemoryHealthCheck : IHealthCheck
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = default)
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-        var client = new MemoryMetricsClient();
-        var metrics = client.GetMetrics();
+        var metrics = MemoryMetricsClient.GetMetrics();
         var percentUsed = 100 * metrics.Used / metrics.Total;
 
         var status = HealthStatus.Healthy;
-        if (percentUsed > Constants.DefaultHealthCheckPercentageUsedDegraded)
+        if (percentUsed > 90)
             status = HealthStatus.Degraded;
 
         var data = new Dictionary<string, object>
         {
-            { "Total_MB", metrics.Total },
-            { "Used_MB", metrics.Used },
-            { "Free_MB", metrics.Free }
+            { "total_MB", metrics.Total },
+            { "used_MB", metrics.Used },
+            { "free_MB", metrics.Free }
         };
 
         var result = new HealthCheckResult(status, null, null, data);
@@ -193,15 +191,15 @@ public class MemoryMetricsClient
     /// GetMetrics
     /// </summary>
     /// <returns></returns>
-    public MemoryMetrics GetMetrics()
+    public static MemoryMetrics GetMetrics()
     {
         var metrics = IsUnix() ? GetUnixMetrics() : GetWindowsMetrics();
 
         return metrics;
     }
 
-    private bool IsUnix() => RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
-                             RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+    private static bool IsUnix() => RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
+                                    RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
     private static MemoryMetrics GetWindowsMetrics()
     {
@@ -213,16 +211,16 @@ public class MemoryMetricsClient
         };
 
         using var process = Process.Start(info);
-        var output = process!.StandardOutput.ReadToEnd();
+        var output = process?.StandardOutput.ReadToEnd();
 
-        var lines = output.Trim().Split("\n");
-        var freeMemoryParts = lines[0].Split("=", StringSplitOptions.RemoveEmptyEntries);
-        var totalMemoryParts = lines[1].Split("=", StringSplitOptions.RemoveEmptyEntries);
+        var lines = output?.Trim().Split("\n");
+        var freeMemoryParts = lines?[0].Split("=", StringSplitOptions.RemoveEmptyEntries);
+        var totalMemoryParts = lines?[1].Split("=", StringSplitOptions.RemoveEmptyEntries);
 
         var metrics = new MemoryMetrics
         {
-            Total = Math.Round(double.Parse(totalMemoryParts[1]) / 1024, 0),
-            Free = Math.Round(double.Parse(freeMemoryParts[1]) / 1024, 0)
+            Total = Math.Round(double.Parse(totalMemoryParts?[1] ?? "0") / 1024, 0),
+            Free = Math.Round(double.Parse(freeMemoryParts?[1] ?? "0" )/ 1024, 0)
         };
         metrics.Used = metrics.Total - metrics.Free;
 
@@ -239,16 +237,16 @@ public class MemoryMetricsClient
         };
 
         using var process = Process.Start(info);
-        var output = process!.StandardOutput.ReadToEnd();
+        var output = process?.StandardOutput.ReadToEnd();
 
-        var lines = output.Split("\n");
-        var memory = lines[1].Split(" ", StringSplitOptions.RemoveEmptyEntries);
+        var lines = output?.Split("\n");
+        var memory = lines?[1].Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
         var metrics = new MemoryMetrics
         {
-            Total = double.Parse(memory[1]),
-            Used = double.Parse(memory[2]),
-            Free = double.Parse(memory[3])
+            Total = double.Parse(memory?[1]??"0"),
+            Used = double.Parse(memory?[2]?? "0"),
+            Free = double.Parse(memory?[3]??"0")
         };
 
         return metrics;
@@ -310,8 +308,7 @@ public class UiHealthReport
 
             if (value.Exception != null)
             {
-                var message = value.Exception?
-                    .Message;
+                var message = value.Exception?.Message;
 
                 entry.Exception = message;
                 entry.Description = value.Description ?? message;
@@ -319,6 +316,30 @@ public class UiHealthReport
 
             uiReport.Entries.Add(key, entry);
         }
+
+        return uiReport;
+    }
+
+    /// <summary>
+    /// CreateFrom
+    /// </summary>
+    /// <param name="exception"></param>
+    /// <param name="entryName"></param>
+    /// <returns></returns>
+    public static UiHealthReport CreateFrom(Exception exception, string entryName = "Endpoint")
+    {
+        var uiReport = new UiHealthReport(new Dictionary<string, UiHealthReportEntry>(), TimeSpan.FromSeconds(0))
+        {
+            Status = UiHealthStatus.Unhealthy,
+        };
+
+        uiReport.Entries.Add(entryName, new UiHealthReportEntry
+        {
+            Exception = exception.Message,
+            Description = exception.Message,
+            Duration = TimeSpan.FromSeconds(0),
+            Status = UiHealthStatus.Unhealthy
+        });
 
         return uiReport;
     }
@@ -402,7 +423,10 @@ public static class UiResponseWriter
             .CreateFrom(report);
 
         await using var responseStream = new MemoryStream();
-
+        if (uiReport.Status != UiHealthStatus.Healthy)
+        {
+            httpContext.Response.StatusCode = 500;
+        }
         await JsonSerializer.SerializeAsync(responseStream, uiReport, Options.Value);
         await httpContext.Response.BodyWriter.WriteAsync(responseStream.ToArray());
     }

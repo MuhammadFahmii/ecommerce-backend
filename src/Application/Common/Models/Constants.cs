@@ -28,37 +28,37 @@ public static class Constants
     /// <summary>
     /// DefaultHealthCheckUmsName
     /// </summary>
-    public const string DefaultHealthCheckUmsName = "UserManagementService";
+    public const string DefaultHealthCheckUmsName = "userManagementService";
 
     /// <summary>
     /// DefaultHealthCheckGateWayName
     /// </summary>
-    public const string DefaultHealthCheckGateWayName = "Gateway";
+    public const string DefaultHealthCheckGateWayName = "gateway";
 
     /// <summary>
     /// DefaultHealthCheckMessageName
     /// </summary>
-    public const string DefaultHealthCheckMessageName = "Message";
+    public const string DefaultHealthCheckMessageName = "message";
 
     /// <summary>
     /// DefaultHealthCheckRedisName
     /// </summary>
-    public const string DefaultHealthCheckRedisName = "Redis";
+    public const string DefaultHealthCheckRedisName = "redis";
 
     /// <summary>
     /// DefaultHealthCheckCpuUsage
     /// </summary>
-    public const string DefaultHealthCheckCpuUsage = "CpuUsage";
+    public const string DefaultHealthCheckCpuUsage = "vpuUsage";
 
     /// <summary>
     /// DefaultHealthCheckMemoryUsage
     /// </summary>
-    public const string DefaultHealthCheckMemoryUsage = "Memory";
+    public const string DefaultHealthCheckMemoryUsage = "memory";
 
     /// <summary>
     /// DefaultHealthCheckDatabaseName
     /// </summary>
-    public const string DefaultHealthCheckDatabaseName = "DB";
+    public const string DefaultHealthCheckDatabaseName = "db";
 
     /// <summary>
     /// DefaultPercentageUsedDegraded
