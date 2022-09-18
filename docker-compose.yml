@@ -7,7 +7,27 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - "ConnectionStrings__DefaultConnection=Server=db;Database=netcaDb;User=sa;Password=Your_password123;MultipleActiveResultSets=true"
+      - "ConnectionStrings__DefaultConnection=Server=mssql;Initial Catalog=netcaDb;Persist Security Info=False;TrustServerCertificate=True;User ID=sa;Password=${PG_PASSWORD:-Admin123};MultipleActiveResultSets=False;Connection Timeout=60;pooling=true;max pool size=20;"
+      - "DatabaseSettings__Migrations=true"
+      - "DatabaseSettings__SeedData=true"
+      - "IsEnableAuth=false"
+      - "Redis__Server=redis:6379,password=${REDIS_PASSWORD:-Admin123}"
+      - "BackgroundJob__IsEnable=false"
     ports:
-      - "8080:8080"
+      - "5000:5000"
+    healthcheck:
+#      disable: true
+      test: curl --fail http://localhost:5000/health || exit 1
+      interval: 30s
+      retries: 2
+      start_period: 1s
+      timeout: 3s
     restart: on-failure
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+networks:
+  default:
+    external:
+      name: local

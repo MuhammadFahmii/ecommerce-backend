@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Models;
+using netca.Application.IntegrationTests.Data;
 using netca.Application.TodoLists.Commands.CreateTodoList;
 using netca.Domain.Entities;
 using NUnit.Framework;
@@ -25,51 +26,25 @@ public class CreateTodoListTests : TestBase
     /// ShouldRequireMinimumFields
     /// </summary>
     [Test]
-    public async Task ShouldRequireMinimumFields()
+    [TestCaseSource(typeof(TodoListDataTest), nameof(TodoListDataTest.ShouldRequireMinimumFields))]
+    public async Task ShouldRequireMinimumFields(Guid id, string title)
     {
-        var command = new CreateTodoListCommand();
+        var command = new CreateTodoListCommand{Id = id, Title = title};
         await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<ValidationException>();
-    }
-    
-    /// <summary>
-    /// ShouldRequireUniqueTitle
-    /// </summary>
-    [Test]
-    public async Task ShouldRequireUniqueTitle()
-    {
-        await SendAsync(new CreateTodoListCommand
-        {
-            Title = "Shopping"
-        });
-
-        var command = new CreateTodoListCommand
-        {
-            Title = "Shopping"
-        };
-
-        await FluentActions.Invoking(() =>
-            SendAsync(command)).Should().ThrowAsync<ValidationException>();
     }
     
     /// <summary>
     /// ShouldCreateTodoList
     /// </summary>
     [Test]
-    public async Task ShouldCreateTodoList()
+    [TestCaseSource(typeof(TodoListDataTest), nameof(TodoListDataTest.ShouldCreated))]
+    public async Task ShouldCreateTodoList(Guid id, string  title)
     {
-
-        var command = new CreateTodoListCommand
-        {
-            Title = "Tasks"
-        };
-
-        var listId = await SendAsync(command);
-
-        var list = Find<TodoList>(listId.Data.Id);
-
+        await SendAsync(new CreateTodoListCommand{Id = id, Title = title});
+        var list = Find<TodoList>(id);
         list.Should().NotBeNull();
-        list!.Title.Should().Be(command.Title);
+        list!.Title.Should().Be(title);
         list.CreatedBy.Should().Be(MockData.GetAuthorizedUser().UserId);
-        list.CreatedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(10000));
+        list.CreatedDate.Should().BeCloseTo(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), 10000);
     }
 }

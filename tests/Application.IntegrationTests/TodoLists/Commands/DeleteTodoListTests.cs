@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using netca.Application.Common.Exceptions;
+using netca.Application.IntegrationTests.Data;
 using netca.Application.TodoLists.Commands.CreateTodoList;
 using netca.Application.TodoLists.Commands.DeleteTodoList;
 using netca.Domain.Entities;
@@ -26,9 +27,10 @@ public class DeleteTodoListTests : TestBase
     /// ShouldRequireValidTodoListId
     /// </summary>
     [Test]
-    public async Task ShouldRequireValidTodoListId()
+    [TestCaseSource(typeof(TodoListDataTest), nameof(TodoListDataTest.ShouldCreated))]
+    public async Task ShouldRequireValidTodoListId(Guid id, string title)
     {
-        var command = new DeleteTodoListCommand { Id = Guid.NewGuid() };
+        var command = new DeleteTodoListCommand{Id = id};
         await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
     }
     
@@ -36,19 +38,21 @@ public class DeleteTodoListTests : TestBase
     /// ShouldDeleteTodoList
     /// </summary>
     [Test]
-    public async Task ShouldDeleteTodoList()
+    [TestCaseSource(typeof(TodoListDataTest), nameof(TodoListDataTest.ShouldCreated))]
+    public async Task ShouldDeleteTodoList(Guid id, string title)
     {
-        var listId = await SendAsync(new CreateTodoListCommand
+        await SendAsync(new CreateTodoListCommand
         {
-            Title = "New List"
+            Id = id,
+            Title = title
         });
 
         await SendAsync(new DeleteTodoListCommand
         {
-            Id = listId.Data.Id
+            Id = id
         });
 
-        var list = Find<TodoList>(listId.Data.Id);
+        var list = Find<TodoList>(id);
 
         list.Should().BeNull();
     }

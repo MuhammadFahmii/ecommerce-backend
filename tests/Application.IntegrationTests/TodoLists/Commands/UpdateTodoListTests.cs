@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Models;
+using netca.Application.IntegrationTests.Data;
 using netca.Application.TodoLists.Commands.CreateTodoList;
 using netca.Application.TodoLists.Commands.UpdateTodoList;
 using netca.Domain.Entities;
@@ -27,33 +28,48 @@ public class UpdateTodoListTests : TestBase
     /// ShouldRequireValidTodoListId
     /// </summary>
     [Test]
-    public async Task ShouldRequireValidTodoListId()
+    [TestCaseSource(typeof(TodoListDataTest), nameof(TodoListDataTest.ShouldRequireValidTodoListId))]
+    public async Task ShouldRequireValidTodoListId(Guid id, string title, bool check)
     {
-        var command = new UpdateTodoListCommand { Id = Guid.NewGuid(), Title = "New Title" };
-        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+        if (check)
+        {
+            var command = new UpdateTodoListCommand { Id = id, Title = title };
+            await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+        }
+        else
+        {
+            var command = new UpdateTodoListCommand{Id = id, Title = title};
+            await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<ValidationException>();
+        }
+
+
     }
     
     /// <summary>
     /// ShouldRequireUniqueTitle
     /// </summary>
     [Test]
-    public async Task ShouldRequireUniqueTitle()
+    [TestCaseSource(typeof(TodoListDataTest), nameof(TodoListDataTest.ShouldCreated))]
+    public async Task ShouldRequireUniqueTitle(Guid id, string title)
     {
-        var listId = await SendAsync(new CreateTodoListCommand
-        {
-            Title = "New List"
-        });
-
         await SendAsync(new CreateTodoListCommand
         {
-            Title = "Other List"
+            Id = id,
+            Title = title
+        });
+        var newId = Guid.NewGuid();
+        var nweTitle = $"{title} unique check";
+        await SendAsync(new CreateTodoListCommand
+        {
+            Id = newId,
+            Title = nweTitle
         });
 
         (await FluentActions.Invoking(() =>
                     SendAsync(new UpdateTodoListCommand
                     {
-                        Id = listId.Data.Id,
-                        Title = "Other List"
+                        Id = id,
+                        Title = nweTitle
                     }))
                 .Should().ThrowAsync<ValidationException>().Where(ex => ex.Errors.ContainsKey("Title")))
             .And.Errors["Title"].Should().Contain("The specified title already exists.");
@@ -63,28 +79,29 @@ public class UpdateTodoListTests : TestBase
     /// ShouldUpdateTodoList
     /// </summary>
     [Test]
-    public async Task ShouldUpdateTodoList()
+    [TestCaseSource(typeof(TodoListDataTest), nameof(TodoListDataTest.ShouldCreated))]
+    public async Task ShouldUpdateTodoList(Guid id, string title)
     {
-        var listId = await SendAsync(new CreateTodoListCommand
+        await SendAsync(new CreateTodoListCommand
         {
-            Title = "New List"
+            Id = id,
+            Title = title
         });
 
         var command = new UpdateTodoListCommand
         {
-            Id = listId.Data.Id,
-            Title = "Updated List Title"
+            Id = id,
+            Title = $"Updated List {title}"
         };
 
         await SendAsync(command);
 
-        var list = Find<TodoList>(listId.Data.Id);
+        var list = Find<TodoList>(id);
 
         list.Should().NotBeNull();
         list!.Title.Should().Be(command.Title);
         list.UpdatedBy.Should().NotBeNull();
         list.UpdatedBy.Should().Be(MockData.GetAuthorizedUser().UserId);
-        list.UpdatedDate.Should().NotBeNull();
-        list.UpdatedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(10000));
+
     }
 }

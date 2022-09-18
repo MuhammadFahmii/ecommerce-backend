@@ -11,27 +11,40 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using netca.Application.Changelogs.Commands.DeleteChangelog;
+using netca.Application.IntegrationTests.Data;
 using netca.Domain.Entities;
 using netca.Infrastructure.Persistence;
 using NUnit.Framework;
-using static netca.Application.IntegrationTests.Testing;
 
 namespace netca.Application.IntegrationTests.Changelogs.Commands;
+
+using static Testing;
 
 /// <summary>
 /// DeleteChangelogCommandTest
 /// </summary>
+[TestFixtureSource(typeof(ChangelogDataTest), nameof(ChangelogDataTest.FixtureParams))]
 public class DeleteChangelogCommandTest : TestBase
 {
+    private readonly long _changeDate;
+    private readonly bool _shouldDelete;
+    
     /// <summary>
-    /// ShouldDeleteChangelog
+    /// DeleteChangelogCommandTest
     /// </summary>
     /// <param name="changeDate"></param>
     /// <param name="shouldDelete"></param>
+    public DeleteChangelogCommandTest(long changeDate, bool shouldDelete)
+    {
+        _changeDate = changeDate;
+        _shouldDelete = shouldDelete;
+    }
+    
+    /// <summary>
+    /// ShouldDeleteChangelog
+    /// </summary>
     [Test]
-    [TestCase("2000-01-01", true)]
-    [TestCase("2100-01-01", false)]
-    public async Task ShouldDeleteChangelog(DateTime changeDate, bool shouldDelete)
+    public async Task ShouldDeleteChangelog()
     {
         using var scope = ScopeFactory?.CreateScope();
         var context = scope?.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -42,7 +55,7 @@ public class DeleteChangelogCommandTest : TestBase
         await AddAsync(new Changelog
         {
             Id = id,
-            ChangeDate = changeDate
+            ChangeDate = _changeDate
         });
 
         var test = await context?.Changelogs
@@ -56,7 +69,7 @@ public class DeleteChangelogCommandTest : TestBase
         test = await context.Changelogs
             .FirstOrDefaultAsync(x => x.Id.Equals(id));
 
-        if (shouldDelete)
+        if (_shouldDelete)
             test.Should().BeNull();
         else
             test.Should().NotBeNull();

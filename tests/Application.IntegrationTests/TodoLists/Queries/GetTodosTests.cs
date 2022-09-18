@@ -32,7 +32,7 @@ public class GetTodosTests : TestBase
 
         var result = await SendAsync(query);
 
-        result.Data.PriorityLevels.Should().NotBeEmpty();
+        result.Meta["PriorityLevels"].Should().NotBeEmpty();
     }
     
     /// <summary>
@@ -61,7 +61,7 @@ public class GetTodosTests : TestBase
 
         var result = await SendAsync(query);
 
-        result.Data.Lists.Should().HaveCount(1);
-        (result.Data.Lists ?? throw new InvalidOperationException()).First().Items.Should().HaveCount(7);
+        result.Data.Should().HaveCount(1);
+        (result.Data ?? throw new InvalidOperationException()).First().Items.Should().HaveCount(7);
     }
 }

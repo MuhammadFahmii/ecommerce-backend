@@ -75,14 +75,14 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
             var userId = _currentUserService.GetUserId();
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedBy = userId;
+                entry.Entity.CreatedBy ??= userId;
                 entry.Entity.CreatedDate = _dateTime.UtcNow;
                 entry.Entity.IsDeleted = false;
             }
 
             if (entry.State != EntityState.Added && entry.State != EntityState.Modified &&
                 !entry.HasChangedOwnedEntities()) continue;
-            entry.Entity.UpdatedBy = userId;
+            entry.Entity.UpdatedBy ??= userId;
             entry.Entity.UpdatedDate = _dateTime.UtcNow;
         }
     }

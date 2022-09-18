@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Models;
+using netca.Application.IntegrationTests.Data;
 using netca.Application.TodoItems.Commands.CreateTodoItem;
-using netca.Application.TodoItems.Commands.UpdateTodoItem;
 using netca.Application.TodoItems.Commands.UpdateTodoItemDetail;
 using netca.Application.TodoLists.Commands.CreateTodoList;
 using netca.Domain.Entities;
@@ -30,42 +30,47 @@ public class UpdateTodoItemDetailTests : TestBase
     /// ShouldRequireValidTodoItemId
     /// </summary>
     [Test]
-    public async Task ShouldRequireValidTodoItemId()
+    [TestCaseSource(typeof(TodoItemDataTests), nameof(TodoItemDataTests.ShouldRequireMinimumFieldsUpdateDetail))]
+    public async Task ShouldRequireValidTodoItemId(Guid id, Guid listId, PriorityLevel priority)
     {
-        var command = new UpdateTodoItemCommand { Id = Guid.NewGuid(), Title = "New Title" };
-        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+        var command = new UpdateTodoItemDetailCommand { Id = id, ListId = listId, Priority = priority };
+        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<ValidationException>();
+
     }
 
     /// <summary>
     /// ShouldUpdateTodoItem
     /// </summary>
     [Test]
-    public async Task ShouldUpdateTodoItem()
+    [TestCaseSource(typeof(TodoItemDataTests), nameof(TodoItemDataTests.ShouldCreated))]
+    public async Task ShouldUpdateTodoItem(Guid id, Guid listId, string title)
     {
-
-        var listId = await SendAsync(new CreateTodoListCommand
+    
+        await SendAsync(new CreateTodoListCommand
         {
-            Title = "New List"
+            Id = listId,
+            Title = $"{title} List"
         });
 
-        var itemId = await SendAsync(new CreateTodoItemCommand
+        await SendAsync(new CreateTodoItemCommand
         {
-            ListId = listId.Data.Id,
-            Title = "New Item"
+            Id = id,
+            ListId = listId,
+            Title = title
         });
-
+        
         var command = new UpdateTodoItemDetailCommand
         {
-            Id = itemId.Data.Id,
-            ListId = listId.Data.Id,
+            Id = id,
+            ListId = listId,
             Note = "This is the note.",
             Priority = PriorityLevel.High
         };
-
+    
         await SendAsync(command);
-
-        var item = Find<TodoItem>(itemId.Data.Id);
-
+    
+        var item = Find<TodoItem>(id);
+    
         item.Should().NotBeNull();
         item!.ListId.Should().Be(command.ListId);
         item.Note.Should().Be(command.Note);
@@ -73,6 +78,6 @@ public class UpdateTodoItemDetailTests : TestBase
         item.UpdatedBy.Should().NotBeNull();
         item.UpdatedBy.Should().Be(MockData.GetAuthorizedUser().UserId);
         item.UpdatedDate.Should().NotBeNull();
-        item.UpdatedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(10000));
+        item.CreatedDate.Should().BeCloseTo(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), 10000);
     }
 }

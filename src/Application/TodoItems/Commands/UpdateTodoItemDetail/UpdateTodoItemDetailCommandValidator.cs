@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------------------
-// CreateTodoItemCommandValidator.cs  2021
+// UpdateTodoItemDetailCommandValidator.cs  2022
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
@@ -8,30 +8,28 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using netca.Application.Common.Interfaces;
 
-namespace netca.Application.TodoItems.Commands.CreateTodoItem;
+namespace netca.Application.TodoItems.Commands.UpdateTodoItemDetail;
 
 /// <summary>
-/// CreateTodoItemCommandValidator
+/// UpdateTodoItemDetailCommandValidator
 /// </summary>
-public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCommand>
+public class UpdateTodoItemDetailCommandValidator : AbstractValidator<UpdateTodoItemDetailCommand>
 {
     private readonly IApplicationDbContext _context;
-    
     /// <summary>
-    /// Initializes a new instance of the <see cref="CreateTodoItemCommandValidator"/> class.
+    /// Initializes a new instance of the <see cref="UpdateTodoItemDetailCommandValidator"/> class.
     /// </summary>
     /// <param name="context"></param>
-    public CreateTodoItemCommandValidator(IApplicationDbContext context)
+    public UpdateTodoItemDetailCommandValidator(IApplicationDbContext context)
     {
         _context = context;
         RuleFor(v => v.Id)
-            .NotEmpty().NotEmpty();
+            .NotNull().NotEmpty();
         RuleFor(v => v.ListId)
-            .NotEmpty().NotEmpty()
+            .NotNull().NotEmpty()
             .MustAsync(BeExistTodoList).WithMessage("The todolist not exists.");
-        RuleFor(x => x.Title)
-            .MaximumLength(200)
-            .NotEmpty();
+        RuleFor(v => v.Priority)
+            .Must(x => x >= 0);
     }
     
     private async Task<bool> BeExistTodoList(Guid id, CancellationToken cancellationToken)

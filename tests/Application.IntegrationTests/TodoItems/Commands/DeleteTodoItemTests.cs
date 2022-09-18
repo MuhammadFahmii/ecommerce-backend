@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using netca.Application.Common.Exceptions;
+using netca.Application.IntegrationTests.Data;
 using netca.Application.TodoItems.Commands.CreateTodoItem;
 using netca.Application.TodoItems.Commands.DeleteTodoItem;
 using netca.Application.TodoLists.Commands.CreateTodoList;
@@ -26,38 +27,48 @@ public class DeleteTodoItemTests : TestBase
     /// ShouldRequireValidTodoItemId
     /// </summary>
     [Test]
-    public async Task ShouldRequireValidTodoItemId()
+    [TestCaseSource(typeof(TodoItemDataTests), nameof(TodoItemDataTests.Delete))]
+    public async Task ShouldRequireValidTodoItemId(Guid id, bool check)
     {
-        var command = new DeleteTodoItemCommand { Id = Guid.NewGuid() };
-
-        await FluentActions.Invoking(() =>
-            SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+        var command = new DeleteTodoItemCommand { Id = id};
+        if (check)
+        {
+            await FluentActions.Invoking(() =>
+                SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+        }
+        else
+        {
+            await FluentActions.Invoking(() =>
+                SendAsync(command)).Should().ThrowAsync<ValidationException>();
+        }
     }
 
     /// <summary>
     /// ShouldDeleteTodoItem
     /// </summary>
     [Test]
-    public async Task ShouldDeleteTodoItem()
+    [TestCaseSource(typeof(TodoItemDataTests), nameof(TodoItemDataTests.ShouldCreated))]
+    public async Task ShouldDeleteTodoItem(Guid id, Guid listId, string title)
     {
-        var listId = await SendAsync(new CreateTodoListCommand
+        await SendAsync(new CreateTodoListCommand
         {
-            Title = "New List"
+            Id = listId,
+            Title = $"{title} List"
         });
 
-        var itemId = await SendAsync(new CreateTodoItemCommand
+        await SendAsync(new CreateTodoItemCommand
         {
-            ListId = listId.Data.Id,
-            Title = "New Item"
+            Id = id,
+            ListId = listId,
+            Title = title
         });
 
         await SendAsync(new DeleteTodoItemCommand
         {
-            Id = itemId.Data.Id
+            Id = id
         });
 
-        var item =  Find<TodoItem>(itemId.Data.Id
-        );
+        var item =  Find<TodoItem>(id);
 
         item.Should().BeNull();
     }
