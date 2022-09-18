@@ -25,7 +25,7 @@ public class LifetimeEventsHostedService : IHostedService
 {
     private readonly ILogger<LifetimeEventsHostedService> _logger;
     private readonly IHostApplicationLifetime _appLifetime;
-    private readonly ISchedulerFactory _iSchedulerFactory;
+    private readonly ISchedulerFactory? _iSchedulerFactory;
     private readonly AppSetting _appSetting;
     private readonly string _appName;
     private readonly bool _isEnable;
@@ -41,14 +41,17 @@ public class LifetimeEventsHostedService : IHostedService
     /// <param name="iSchedulerFactory"></param>
     public LifetimeEventsHostedService(
         ILogger<LifetimeEventsHostedService> logger, IHostApplicationLifetime appLifetime, AppSetting appSetting,
-        ISchedulerFactory iSchedulerFactory)
+        ISchedulerFactory? iSchedulerFactory = null)
     {
         _logger = logger;
         _appLifetime = appLifetime;
         _appSetting = appSetting;
         _isEnable = _appSetting.Bot.IsEnable;
         _appName = $"[{_appSetting.Bot.ServiceName}](http://{_appSetting.Bot.ServiceDomain})";
-        _iSchedulerFactory = iSchedulerFactory;
+        if (iSchedulerFactory != null)
+        {
+            _iSchedulerFactory = iSchedulerFactory;
+        }
     }
 
     /// <summary>
@@ -82,8 +85,8 @@ public class LifetimeEventsHostedService : IHostedService
     {
         if (!_appSetting.BackgroundJob.IsEnable)
             return;
-        var sc = _iSchedulerFactory.GetScheduler().Result;
-        var triggers = (from jobGroupName in sc.GetTriggerGroupNames().Result
+        var sc = _iSchedulerFactory?.GetScheduler().Result;
+        var triggers = (from jobGroupName in sc?.GetTriggerGroupNames().Result
             from triggerKey in sc.GetTriggerKeys(GroupMatcher<TriggerKey>.GroupEquals(jobGroupName)).Result
             select sc.GetTrigger(triggerKey).Result).ToList();
         List<JobKey> jobs;
@@ -98,7 +101,7 @@ public class LifetimeEventsHostedService : IHostedService
                 .Select(x => x!.JobKey).ToList();
         }
 
-        sc.DeleteJobs(jobs);
+        sc?.DeleteJobs(jobs);
     }
 
     private void OnStarted()
