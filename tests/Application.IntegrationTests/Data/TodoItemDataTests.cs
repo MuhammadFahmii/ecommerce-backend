@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using netca.Domain.Enums;
 using NUnit.Framework;
 
 namespace netca.Application.IntegrationTests.Data;
@@ -35,6 +36,43 @@ public class TodoItemDataTests
         get
         {
             yield return new TestCaseData(Guid.NewGuid(), Guid.NewGuid(), "Shopping");
+        }
+    }
+    
+    /// <summary>
+    /// ShouldRequireMinimumFieldsUpdateDetail
+    /// </summary>
+    public static IEnumerable<TestCaseData> ShouldRequireMinimumFieldsUpdateDetail
+    {
+        get
+        {
+            yield return new TestCaseData(Guid.NewGuid(), null, PriorityLevel.High);
+            yield return new TestCaseData(null, Guid.NewGuid(), PriorityLevel.High);
+            yield return new TestCaseData(Guid.NewGuid(), Guid.NewGuid(), PriorityLevel.High);
+            yield return new TestCaseData(Guid.NewGuid(), Guid.NewGuid(), 5);
+            
+        }
+    }
+    
+    /// <summary>
+    /// UpdateDetail
+    /// </summary>
+    public static IEnumerable<TestCaseData> UpdateDetail
+    {
+        get
+        {
+            yield return new TestCaseData(Guid.NewGuid(), Guid.NewGuid(), "Shopping");
+        }
+    }
+    /// <summary>
+    /// Delete
+    /// </summary>
+    public static IEnumerable<TestCaseData> Delete
+    {
+        get
+        {
+            yield return new TestCaseData(null, false);
+            yield return new TestCaseData(Guid.NewGuid(), true);
         }
     }
 }

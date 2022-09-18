@@ -23,7 +23,7 @@ public class TodoListDataTest
         get
         {
             yield return new TestCaseData(null, "Title");
-            yield return new TestCaseData(Guid.NewGuid());
+            yield return new TestCaseData(Guid.NewGuid(), null);
         }
     }
     

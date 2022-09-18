@@ -40,7 +40,7 @@ public class RedisService : BaseService, IRedisService
     private static string? ConnectionString { get; set; }
 
     private readonly Lazy<ConnectionMultiplexer> _lazyConnection =
-        new(() => ConnectionMultiplexer.Connect(ConnectionString));
+        new(() => ConnectionMultiplexer.Connect(ConnectionString!));
 
     /// <summary>
     /// Gets connections
@@ -105,7 +105,7 @@ public class RedisService : BaseService, IRedisService
     public async Task<string> GetAsync(string key)
     {
         _logger.LogDebug("Process Redis key : {K}", key);
-        return await Database.StringGetAsync(key);
+        return await Database.StringGetAsync(key)!;
     }
 
     /// <summary>

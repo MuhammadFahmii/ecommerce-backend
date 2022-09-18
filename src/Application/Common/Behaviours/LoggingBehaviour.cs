@@ -41,7 +41,7 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
         var requestName = typeof(TRequest).Name;
         var user = _userAuthorizationService.GetAuthorizedUser();
         await Task.Delay(0, cancellationToken);
-        _logger.LogDebug("CleanArchitecture Request: {Name} {@UserId} {@UserName} {@Request}",
+        _logger.LogDebug("netca Request: {Name} {@UserId} {@UserName} {@Request}",
             requestName, user.UserId, user.UserName, request);
     }
 }
