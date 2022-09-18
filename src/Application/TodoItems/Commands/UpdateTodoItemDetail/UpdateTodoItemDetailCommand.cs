@@ -4,6 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System.ComponentModel.DataAnnotations;
 using MediatR;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Interfaces;
@@ -20,16 +21,19 @@ public class UpdateTodoItemDetailCommand : IRequest
     /// <summary>
     /// Gets or sets id
     /// </summary>
+    [Required]
     public Guid Id { get; set; }
 
     /// <summary>
     /// Gets or sets listId
     /// </summary>
+    [Required]
     public Guid ListId { get; set; }
 
     /// <summary>
     /// Gets or sets priority
     /// </summary>
+    [Required]
     public PriorityLevel Priority { get; set; }
 
     /// <summary>
