@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using netca.Application.Common.Extensions;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
+using netca.Application.Dtos;
 using Newtonsoft.Json;
 
 namespace netca.Infrastructure.Services;
@@ -35,6 +36,7 @@ public class UserAuthorizationService : IUserAuthorizationService
     private readonly HttpClient _httpClient;
     private readonly bool _isAuthenticated;
     private readonly string? _permissionName;
+    private readonly string _authorization;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserAuthorizationService"/> class.
@@ -52,8 +54,9 @@ public class UserAuthorizationService : IUserAuthorizationService
         _user = httpContextAccessor.HttpContext?.User;
         _appSetting = appSetting;
         _environment = environment;
+        _authorization = httpContextAccessor?.HttpContext?.Request?.Headers?["Authorization"] ?? string.Empty;
         
-        if (httpContextAccessor.HttpContext?.Items.TryGetValue("CurrentPolicyName", out _) == true)
+        if (httpContextAccessor?.HttpContext?.Items.TryGetValue("CurrentPolicyName", out _) == true)
         {
             _permissionName = (string)httpContextAccessor.HttpContext?.Items["CurrentPolicyName"]!;
         }
@@ -498,5 +501,300 @@ public class UserAuthorizationService : IUserAuthorizationService
 
         var url = _appSetting.AuthorizationServer.Gateway + $"/api/deviceid/{deviceId}";
         await _httpClient.DeleteAsync(url);
+    }
+
+    /// <summary>
+    /// GetPermissionListAsync
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<List<PermissionUms>> GetPermissionListAsync(
+        Guid applicationId, CancellationToken cancellationToken)
+    {
+        var result = new List<PermissionUms>();
+
+        if (string.IsNullOrEmpty(_authorization))
+            return null;
+
+        if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
+
+        var url = $"/api/permission/all?applicationId={applicationId}";
+        var response = await _httpClient.GetAsync(new Uri(_httpClient.BaseAddress + url), cancellationToken);
+
+        _logger.LogDebug("Response: \n {response}", response.ToString());
+
+        if (!response.IsSuccessStatusCode)
+            return result;
+
+        var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        try
+        {
+            result = JsonConvert.DeserializeObject<List<PermissionUms>>(responseString);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// CreatePermissionsAsync
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="permissions"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<List<ResponsePermissionUmsDto>> CreatePermissionsAsync(
+        Guid applicationId,
+        List<PermissionDto> permissions,
+        CancellationToken cancellationToken)
+    {
+        var result = new List<ResponsePermissionUmsDto>();
+
+        if (string.IsNullOrEmpty(_authorization))
+            return null;
+
+        if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
+
+        var url = new Uri(_httpClient.BaseAddress + $"api/permission?applicationId={applicationId}");
+
+        foreach (var permission in permissions)
+        {
+            var jsonString = JsonConvert.SerializeObject(permission);
+            var response = await _httpClient.PostAsync(
+                url,
+                new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
+                cancellationToken);
+
+            _logger.LogDebug("Response: \n {response}", response.ToString());
+
+            result.Add(new ResponsePermissionUmsDto
+            {
+                Name = permission.Path,
+                Status = response.ReasonPhrase
+            });
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// GetGroupListAsync
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<List<GroupUms>> GetGroupListAsync(Guid applicationId, CancellationToken cancellationToken)
+    {
+        var result = new List<GroupUms>();
+
+        if (string.IsNullOrEmpty(_authorization))
+            return null;
+
+        if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
+
+        var url = $"/api/group/all/{applicationId}?status=1";
+        var response = await _httpClient.GetAsync(new Uri(_httpClient.BaseAddress + url), cancellationToken);
+
+        _logger.LogDebug("Response: \n {response}", response.ToString());
+
+        if (!response.IsSuccessStatusCode)
+            return result;
+
+        var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        try
+        {
+            result = JsonConvert.DeserializeObject<List<GroupUms>>(responseString);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// CreateGroupAsync
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="groupCode"></param>
+    /// <param name="groupId"></param>
+    /// <param name="permissionIds"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<ResponseGroupRoleUmsDto> CreateGroupAsync(
+        Guid applicationId,
+        string groupCode,
+        Guid? groupId,
+        List<Guid> permissionIds,
+        CancellationToken cancellationToken)
+    {
+        var result = new ResponseGroupRoleUmsDto();
+
+        if (string.IsNullOrEmpty(_authorization))
+            return result;
+
+        if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
+
+        var data = new GroupUms
+        {
+            GroupId = groupId,
+            ApplicationId = applicationId,
+            GroupCode = groupCode,
+            PermissionIds = permissionIds,
+            Status = true
+        };
+
+        var jsonString = JsonConvert.SerializeObject(data);
+
+        if (groupId != null)
+        {
+            var url = new Uri(_httpClient.BaseAddress + $"/api/group/{groupId}");
+
+            var response = await _httpClient.PutAsync(
+                url,
+                new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
+                cancellationToken);
+
+            _logger.LogDebug("Response: \n {response}", response.ToString());
+
+            result.Request = "PUT";
+            result.Status = response.ReasonPhrase;
+        }
+        else
+        {
+            var url = new Uri(_httpClient.BaseAddress + "/api/group");
+
+            var response = await _httpClient.PostAsync(
+                url,
+                new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
+                cancellationToken);
+
+            _logger.LogDebug("Response: \n {response}", response.ToString());
+
+            result.Request = "POST";
+            result.Status = response.ReasonPhrase;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// GetRoleListAsync
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<List<RoleUms>> GetRoleListAsync(Guid applicationId, CancellationToken cancellationToken)
+    {
+        var result = new List<RoleUms>();
+
+        if (string.IsNullOrEmpty(_authorization))
+            return null;
+
+        if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
+
+        var url = $"/api/role/all/{applicationId}";
+        var response = await _httpClient.GetAsync(new Uri(_httpClient.BaseAddress + url), cancellationToken);
+
+        _logger.LogDebug("Response: \n {response}", response.ToString());
+
+        if (!response.IsSuccessStatusCode)
+            return result;
+
+        var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        try
+        {
+            result = JsonConvert.DeserializeObject<List<RoleUms>>(responseString);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// CreateRoleAsync
+    /// </summary>
+    /// <param name="applicationId"></param>
+    /// <param name="roleCode"></param>
+    /// <param name="roleId"></param>
+    /// <param name="groupIds"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<ResponseGroupRoleUmsDto> CreateRoleAsync(
+        Guid applicationId,
+        string roleCode,
+        Guid? roleId,
+        List<Guid> groupIds,
+        CancellationToken cancellationToken)
+    {
+        var result = new ResponseGroupRoleUmsDto();
+
+        if (string.IsNullOrEmpty(_authorization))
+            return result;
+
+        if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
+
+        var data = new RoleUms
+        {
+            RoleId = roleId,
+            ApplicationId = applicationId,
+            RoleCode = roleCode,
+            RoleLevel = 6,
+            RoleType = "User",
+            PublicInformation = false,
+            GroupIds = groupIds,
+            Status = true,
+            UpdatedDate = DateTime.UtcNow
+        };
+
+        var jsonString = JsonConvert.SerializeObject(data);
+
+        if (roleId != null)
+        {
+            var url = new Uri(_httpClient.BaseAddress + $"/api/role/{roleId}");
+
+            var response = await _httpClient.PutAsync(
+                url,
+                new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
+                cancellationToken);
+
+            _logger.LogDebug("Response: \n {response}", response.ToString());
+
+            result.Request = "PUT";
+            result.Status = response.ReasonPhrase;
+        }
+        else
+        {
+            var url = new Uri(_httpClient.BaseAddress + $"/api/role");
+
+            var response = await _httpClient.PostAsync(
+                url,
+                new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
+                cancellationToken);
+
+            _logger.LogDebug("Response: \n {response}", response.ToString());
+
+            result.Request = "POST";
+            result.Status = response.ReasonPhrase;
+        }
+
+        return result;
     }
 }

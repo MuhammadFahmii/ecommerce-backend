@@ -96,6 +96,24 @@ public record AppSetting
 }
 
 /// <summary>
+/// Role
+/// </summary>
+public record Role
+{
+    /// <summary>
+    /// Gets or sets name
+    /// </summary>
+    /// <value></value>
+    public string Name { get; set; }
+
+    /// <summary>
+    /// Gets or sets name
+    /// </summary>
+    /// <value></value>
+    public List<string> Group { get; set; }
+}
+
+/// <summary>
 /// AuthorizationServer
 /// </summary>
 public record AuthorizationServer
@@ -140,6 +158,12 @@ public record AuthorizationServer
     /// </summary>
     /// <value></value>
     public List<Policy?> Policy { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets role
+    /// </summary>
+    /// <value></value>
+    public List<Role?> Role { get; set; }
 }
 
 /// <summary>
