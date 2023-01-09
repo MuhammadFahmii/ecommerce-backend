@@ -80,7 +80,7 @@ public class RedisService : BaseService, IRedisService
     public async Task<string> ListLeftPopAsync(string key)
     {
         key += _appSetting.Redis.InstanceName;
-        return await Database.ListLeftPopAsync(key);
+        return (await Database.ListLeftPopAsync(key))!;
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public class RedisService : BaseService, IRedisService
     public async Task<string> GetAsync(string key)
     {
         _logger.LogDebug("Process Redis key : {K}", key);
-        return await Database.StringGetAsync(key)!;
+        return (await Database.StringGetAsync(key))!;
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ public class RedisService : BaseService, IRedisService
 
             foreach (var k in Servers.SelectMany(redisServer => redisServer.Keys(pattern: key)))
             {
-                var value = await this.GetAsync(k);
+                var value = await this.GetAsync(k!);
                 data.Add(new RedisDto
                 {
                     Key = k,

@@ -87,8 +87,8 @@ public class LifetimeEventsHostedService : IHostedService
             return;
         var sc = _iSchedulerFactory?.GetScheduler().Result;
         var triggers = (from jobGroupName in sc?.GetTriggerGroupNames().Result
-            from triggerKey in sc.GetTriggerKeys(GroupMatcher<TriggerKey>.GroupEquals(jobGroupName)).Result
-            select sc.GetTrigger(triggerKey).Result).ToList();
+            from triggerKey in sc?.GetTriggerKeys(GroupMatcher<TriggerKey>.GroupEquals(jobGroupName))?.Result!
+            select sc?.GetTrigger(triggerKey).Result).ToList();
         List<JobKey> jobs;
         if (_appSetting.BackgroundJob.UsePersistentStore)
         {

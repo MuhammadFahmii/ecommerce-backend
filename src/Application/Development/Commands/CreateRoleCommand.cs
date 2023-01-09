@@ -22,7 +22,7 @@ public class CreateRoleCommand : IRequest<DocumentRootJson<ResponseGroupRoleUmsV
     /// Gets or sets ControllerList
     /// </summary>
     [BindRequired]
-    public List<ControllerListDto> ControllerList { get; set; }
+    public List<ControllerListDto>? ControllerList { get; set; }
 
     /// <summary>
     /// Handling CreateActivityMasterCommand
@@ -59,7 +59,7 @@ public class CreateRoleCommand : IRequest<DocumentRootJson<ResponseGroupRoleUmsV
             var roleList = await _userAuthorizationService.GetRoleListAsync(request.ApplicationId, cancellationToken);
             var groupList = await _userAuthorizationService.GetGroupListAsync(request.ApplicationId, cancellationToken);
 
-            var groupNameList = request.ControllerList
+            var groupNameList = request?.ControllerList?
                 .SelectMany(x => x.Groups)
                 .Distinct()
                 .OrderBy(x => x)
@@ -67,35 +67,35 @@ public class CreateRoleCommand : IRequest<DocumentRootJson<ResponseGroupRoleUmsV
 
             var responsePermission = new List<ResponseGroupRoleUms>();
 
-            foreach (var itemRole in roleSettingList)
+            foreach (var itemRole in roleSettingList!)
             {
                 var isGroupValid = true;
 
-                itemRole.Group = itemRole.Group.Distinct().ToList();
+                itemRole!.Group = itemRole?.Group?.Distinct().ToList();
 
-                var isAllGroup = itemRole.Group.Any(x => x.Equals("*"));
+                var isAllGroup = itemRole?.Group?.Any(x => x.Equals("*"));
 
-                if (!isAllGroup)
-                    isGroupValid = groupNameList.All(itemRole.Group.Contains);
+                if (!isAllGroup!.Value)
+                    isGroupValid = groupNameList!.All(itemRole!.Group!.Contains);
 
-                var groupIds = itemRole.Group.Any(x => x.Equals("*")) ?
-                    groupList.Where(x => groupNameList.Contains(x.GroupCode))
-                        .Select(x => x.GroupId.Value)
+                var groupIds = itemRole!.Group!.Any(x => x.Equals("*")) ?
+                    groupList.Where(x => groupNameList!.Contains(x.GroupCode))
+                        .Select(x => x.GroupId!.Value)
                         .ToList() :
-                    groupList.Where(x => itemRole.Group.Contains(x.GroupCode))
-                        .Select(x => x.GroupId.Value)
+                    groupList.Where(x => itemRole!.Group!.Contains(x.GroupCode))
+                        .Select(x => x.GroupId!.Value)
                         .ToList();
 
-                isGroupValid &= isAllGroup ?
-                    groupIds.Count == groupNameList.Count :
-                    groupIds.Count == itemRole.Group.Count;
+                isGroupValid &= isAllGroup.Value ?
+                    groupIds.Count == groupNameList?.Count :
+                    groupIds.Count == itemRole?.Group?.Count;
 
                 if (!isGroupValid)
                 {
                     responsePermission.Add(new ResponseGroupRoleUms
                     {
-                        Name = itemRole.Name,
-                        ItemList = itemRole.Group,
+                        Name = itemRole?.Name!,
+                        ItemList = itemRole?.Group!,
                         Response = new ResponseGroupRoleUmsDto
                         {
                             Request = "Failed",
@@ -106,21 +106,21 @@ public class CreateRoleCommand : IRequest<DocumentRootJson<ResponseGroupRoleUmsV
                     continue;
                 }
 
-                var roleId = roleList.Where(x => x.RoleCode.ToLower().Contains(itemRole.Name.ToLower()))
+                var roleId = roleList.Where(x => x.RoleCode.ToLower().Contains(itemRole?.Name?.ToLower()!))
                     .Select(x => x.RoleId)
                     .FirstOrDefault();
 
                 var response = await _userAuthorizationService.CreateRoleAsync(
-                    request.ApplicationId,
-                    itemRole.Name,
+                    request!.ApplicationId,
+                    itemRole?.Name!,
                     roleId,
                     groupIds,
                     cancellationToken);
 
                 responsePermission.Add(new ResponseGroupRoleUms
                 {
-                    Name = itemRole.Name,
-                    ItemList = itemRole.Group,
+                    Name = itemRole?.Name!,
+                    ItemList = itemRole?.Group!,
                     Response = response
                 });
             }

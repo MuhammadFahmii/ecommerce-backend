@@ -27,7 +27,7 @@ public class CreateGroupCommand : IRequest<DocumentRootJson<ResponseGroupRoleUms
     /// Gets or sets ControllerList
     /// </summary>
     [BindRequired]
-    public List<ControllerListDto> ControllerList { get; set; }
+    public List<ControllerListDto>? ControllerList { get; set; }
 
     /// <summary>
     /// Handling CreateGroupCommand
@@ -60,7 +60,7 @@ public class CreateGroupCommand : IRequest<DocumentRootJson<ResponseGroupRoleUms
             var permissionList = await _userAuthorizationService.GetPermissionListAsync(request.ApplicationId, cancellationToken);
             var groupList = await _userAuthorizationService.GetGroupListAsync(request.ApplicationId, cancellationToken);
 
-            var groupNameList = request.ControllerList
+            var groupNameList = request?.ControllerList?
                 .SelectMany(x => x.Groups)
                 .Distinct()
                 .OrderBy(x => x)
@@ -68,19 +68,19 @@ public class CreateGroupCommand : IRequest<DocumentRootJson<ResponseGroupRoleUms
 
             var responseGroups = new List<ResponseGroupRoleUms>();
 
-            foreach (var groupName in groupNameList)
+            foreach (var groupName in groupNameList!)
             {
                 var permissionIds = new List<Guid>();
-                var controllerMethodList = request.ControllerList
+                var controllerMethodList = request?.ControllerList?
                     .Where(x => x.Groups.Contains(groupName))
                     .ToList();
 
-                foreach (var item in controllerMethodList)
+                foreach (var item in controllerMethodList!)
                 {
                     var permissionId = permissionList
                         .Where(x => x.PermissionCode == $"{item.Controller}_{item.Action}" &&
                             x.RequestType.ToLower().Equals(item.Method.ToLower()) &&
-                            x.Service.ServiceId.Equals(request.ServiceId))
+                            x.Service.ServiceId.Equals(request?.ServiceId))
                         .Select(x => x.PermissionId)
                         .ToList();
 
@@ -92,7 +92,7 @@ public class CreateGroupCommand : IRequest<DocumentRootJson<ResponseGroupRoleUms
                     .FirstOrDefault();
 
                 var response = await _userAuthorizationService.CreateGroupAsync(
-                    request.ApplicationId,
+                    request!.ApplicationId,
                     groupName,
                     groupId,
                     permissionIds,

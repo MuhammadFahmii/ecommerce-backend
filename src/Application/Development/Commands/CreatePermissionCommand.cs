@@ -27,7 +27,7 @@ public class CreatePermissionCommand : IRequest<DocumentRootJson<ResponsePermiss
     /// Gets or sets ControllerList
     /// </summary>
     [BindRequired]
-    public List<ControllerListDto> ControllerList { get; set; }
+    public List<ControllerListDto>? ControllerList { get; set; }
 
     /// <summary>
     /// Handling CreatePermissionCommand
@@ -59,7 +59,7 @@ public class CreatePermissionCommand : IRequest<DocumentRootJson<ResponsePermiss
         {
             var permissionList = new List<PermissionDto>();
 
-            foreach (var item in request.ControllerList)
+            foreach (var item in request?.ControllerList!)
             {
                 permissionList.Add(new PermissionDto
                 {

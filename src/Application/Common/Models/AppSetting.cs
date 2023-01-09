@@ -104,13 +104,13 @@ public record Role
     /// Gets or sets name
     /// </summary>
     /// <value></value>
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// Gets or sets name
     /// </summary>
     /// <value></value>
-    public List<string> Group { get; set; }
+    public List<string>? Group { get; set; }
 }
 
 /// <summary>
@@ -163,7 +163,7 @@ public record AuthorizationServer
     /// Gets or sets role
     /// </summary>
     /// <value></value>
-    public List<Role?> Role { get; set; }
+    public List<Role>? Role { get; set; }
 }
 
 /// <summary>

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using netca.Application.Common.Exceptions;
 using netca.Application.Common.Extensions;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
@@ -60,7 +61,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         {
             _permissionName = (string)httpContextAccessor.HttpContext?.Items["CurrentPolicyName"]!;
         }
-        _isAuthenticated = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) != null;
+        _isAuthenticated = httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) != null;
 
         _httpClient.DefaultRequestHeaders.Add(
             _appSetting.AuthorizationServer.Header,
@@ -515,7 +516,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         var result = new List<PermissionUms>();
 
         if (string.IsNullOrEmpty(_authorization))
-            return null;
+            throw new BadRequestException("Token cannot be empty");
 
         if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
             _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
@@ -539,7 +540,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
-        return result;
+        return result!;
     }
 
     /// <summary>
@@ -557,7 +558,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         var result = new List<ResponsePermissionUmsDto>();
 
         if (string.IsNullOrEmpty(_authorization))
-            return null;
+            throw new BadRequestException("Token cannot be empty");
 
         if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
             _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
@@ -577,7 +578,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             result.Add(new ResponsePermissionUmsDto
             {
                 Name = permission.Path,
-                Status = response.ReasonPhrase
+                Status = response?.ReasonPhrase!
             });
         }
 
@@ -595,7 +596,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         var result = new List<GroupUms>();
 
         if (string.IsNullOrEmpty(_authorization))
-            return null;
+            throw new BadRequestException("Token cannot be empty");
 
         if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
             _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
@@ -619,7 +620,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
-        return result;
+        return result!;
     }
 
     /// <summary>
@@ -641,7 +642,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         var result = new ResponseGroupRoleUmsDto();
 
         if (string.IsNullOrEmpty(_authorization))
-            return result;
+            throw new BadRequestException("Token cannot be empty");
 
         if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
             _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
@@ -669,7 +670,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             _logger.LogDebug("Response: \n {response}", response.ToString());
 
             result.Request = "PUT";
-            result.Status = response.ReasonPhrase;
+            result.Status = response?.ReasonPhrase!;
         }
         else
         {
@@ -683,7 +684,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             _logger.LogDebug("Response: \n {response}", response.ToString());
 
             result.Request = "POST";
-            result.Status = response.ReasonPhrase;
+            result.Status = response?.ReasonPhrase!;
         }
 
         return result;
@@ -700,7 +701,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         var result = new List<RoleUms>();
 
         if (string.IsNullOrEmpty(_authorization))
-            return null;
+            throw new BadRequestException("Token cannot be empty");
 
         if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
             _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
@@ -724,7 +725,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
-        return result;
+        return result!;
     }
 
     /// <summary>
@@ -746,7 +747,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         var result = new ResponseGroupRoleUmsDto();
 
         if (string.IsNullOrEmpty(_authorization))
-            return result;
+            throw new BadRequestException("Token cannot be empty");
 
         if (!_httpClient.DefaultRequestHeaders.Contains("Authorization"))
             _httpClient.DefaultRequestHeaders.Add("Authorization", _authorization);
@@ -778,7 +779,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             _logger.LogDebug("Response: \n {response}", response.ToString());
 
             result.Request = "PUT";
-            result.Status = response.ReasonPhrase;
+            result.Status = response?.ReasonPhrase!;
         }
         else
         {
@@ -792,7 +793,7 @@ public class UserAuthorizationService : IUserAuthorizationService
             _logger.LogDebug("Response: \n {response}", response.ToString());
 
             result.Request = "POST";
-            result.Status = response.ReasonPhrase;
+            result.Status = response?.ReasonPhrase!;
         }
 
         return result;
