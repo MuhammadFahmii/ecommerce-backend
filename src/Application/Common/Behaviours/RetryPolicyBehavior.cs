@@ -91,11 +91,11 @@ public class RetryPolicyBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
     /// Handle
     /// </summary>
     /// <param name="request"></param>
-    /// <param name="cancellationToken"></param>
     /// <param name="next"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public async Task<TResponse> Handle(
-        TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         var retryAttr = typeof(TRequest).GetCustomAttribute<RetryPolicyAttribute>();
 

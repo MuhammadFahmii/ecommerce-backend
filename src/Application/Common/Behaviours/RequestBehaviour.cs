@@ -10,55 +10,54 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Exceptions;
 
-namespace netca.Application.Common.Behaviours
+namespace netca.Application.Common.Behaviours;
+
+/// <summary>
+/// RequestBehaviour
+/// </summary>
+/// <typeparam name="TRequest"></typeparam>
+/// <typeparam name="TResponse"></typeparam>
+public class RequestBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
+    private readonly ILogger<RequestBehaviour<TRequest, TResponse>> _logger;
+
     /// <summary>
-    /// RequestBehaviour
+    /// Initializes a new instance of the <see cref="RequestBehaviour{TRequest, TResponse}"/> class.
     /// </summary>
-    /// <typeparam name="TRequest"></typeparam>
-    /// <typeparam name="TResponse"></typeparam>
-    public class RequestBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+    /// <param name="logger"></param>
+    public RequestBehaviour(ILogger<RequestBehaviour<TRequest, TResponse>> logger)
     {
-        private readonly ILogger<RequestBehaviour<TRequest, TResponse>> _logger;
+        _logger = logger;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestBehaviour{TRequest, TResponse}"/> class.
-        /// </summary>
-        /// <param name="logger"></param>
-        public RequestBehaviour(ILogger<RequestBehaviour<TRequest, TResponse>> logger)
+    /// <summary>
+    /// Handle
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="next"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<TResponse> Handle(
+        TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    {
+        var requestType = typeof(TRequest).Name;
+        var response = await next();
+
+        if (requestType.EndsWith("Command"))
         {
-            _logger = logger;
+            _logger.LogDebug("Command Request: {R}", request);
+        }
+        else if (requestType.EndsWith("Query"))
+        {
+            _logger.LogDebug("Query Request: {R}", request);
+            _logger.LogDebug("Query Response: {R}", request);
+        }
+        else
+        {
+            throw new ThrowException("The request is not the Command or Query type");
         }
 
-        /// <summary>
-        /// Handle
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <param name="next"></param>
-        /// <returns></returns>
-        public async Task<TResponse> Handle(
-            TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
-        {
-            var requestType = typeof(TRequest).Name;
-            var response = await next();
-
-            if (requestType.EndsWith("Command"))
-            {
-                _logger.LogDebug("Command Request: {R}", request);
-            }
-            else if (requestType.EndsWith("Query"))
-            {
-                _logger.LogDebug("Query Request: {R}", request);
-                _logger.LogDebug("Query Response: {R}", request);
-            }
-            else
-            {
-                throw new ThrowException("The request is not the Command or Query type");
-            }
-
-            return response;
-        }
+        return response;
     }
 }

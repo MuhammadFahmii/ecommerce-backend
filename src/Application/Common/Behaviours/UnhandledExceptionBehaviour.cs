@@ -4,9 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Exceptions;
@@ -36,10 +33,11 @@ namespace netca.Application.Common.Behaviours
         /// Handle
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
         /// <param name="next"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(
+            TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             try
             {

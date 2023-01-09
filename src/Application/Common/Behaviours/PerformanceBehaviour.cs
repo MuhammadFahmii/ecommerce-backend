@@ -48,11 +48,11 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     /// Handle
     /// </summary>
     /// <param name="request"></param>
-    /// <param name="cancellationToken"></param>
     /// <param name="next"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public async Task<TResponse> Handle(
-        TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         _timer.Start();
 
