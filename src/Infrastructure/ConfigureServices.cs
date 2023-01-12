@@ -66,6 +66,7 @@ public static class ConfigureServices
         services.AddScoped<IUserAuthorizationService, UserAuthorizationService>();
         services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandlerService>();
         services.AddSingleton<IRedisService, RedisService>();
+        services.AddSingleton<ICache, CacheService>();
         services.AddHostedService<LifetimeEventsHostedService>();
         services.AddHostedService<OrderProcessService>();
 

@@ -5,6 +5,7 @@
 // -----------------------------------------------------------------------------------
 
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -103,6 +104,13 @@ public static class AuthHandlerMiddlewareExtensions
                 options.Authority = appSetting.AuthorizationServer.Address;
                 options.Audience = appSetting.AuthorizationServer.Service;
                 options.RequireHttpsMetadata = false;
+                options.BackchannelHttpHandler = new HttpHandler(new HttpClientHandler())
+                {
+                    UsingCircuitBreaker = true,
+                    UsingWaitRetry = true,
+                    RetryCount = 4,
+                    SleepDuration = 1000
+                };
             });
 
         services.AddAuthorization(options =>

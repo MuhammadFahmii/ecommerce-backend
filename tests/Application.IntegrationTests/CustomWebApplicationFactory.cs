@@ -41,7 +41,7 @@ internal class CustomWebApplicationFactory : WebApplicationFactory<Program>
                     s.GetAuthorizedUser() == MockData.GetAuthorizedUser()));
             
             var redis = new Mock<IRedisService>();
-            redis.Setup(x => x.SaveAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            redis.Setup(x => x.SaveSubAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), true))
                 .ReturnsAsync("KEYS");
             services.AddSingleton(_ => redis.Object);
 

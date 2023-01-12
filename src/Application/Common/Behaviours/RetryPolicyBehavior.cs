@@ -111,7 +111,7 @@ public class RetryPolicyBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
         return await Policy<TResponse>
             .Handle<Exception>(ex =>
             {
-                if (ex.GetType() == retryAttr.HandleType)
+                if (ex.GetType() == retryAttr?.HandleType)
                     return true;
 
                 return ex switch

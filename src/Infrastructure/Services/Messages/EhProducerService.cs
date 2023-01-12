@@ -25,6 +25,7 @@ public class EhProducerService : IEhProducerService
 {
     private readonly ILogger<EhProducerService> _logger;
     private readonly IRedisService _redisService;
+    private readonly EventHubProducerClientOptions _options;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EhProducerService"/> class.
@@ -32,10 +33,28 @@ public class EhProducerService : IEhProducerService
     /// </summary>
     /// <param name="redisService"></param>
     /// <param name="logger"></param>
-    public EhProducerService(IRedisService redisService, ILogger<EhProducerService> logger)
+    /// <param name="appSetting"></param>
+    public EhProducerService(
+        IRedisService redisService,
+        ILogger<EhProducerService> logger,
+        AppSetting appSetting)
     {
         _logger = logger;
         _redisService = redisService;
+
+        var messaging = appSetting?.Messaging?.Configuration;
+
+        _options = new EventHubProducerClientOptions
+        {
+            RetryOptions = new()
+            {
+                Mode = EventHubsRetryMode.Exponential,
+                MaximumRetries = messaging!.MaximumRetries,
+                Delay = TimeSpan.FromMilliseconds(messaging.Delay),
+                MaximumDelay = TimeSpan.FromSeconds(messaging.MaximumDelay),
+                TryTimeout = TimeSpan.FromSeconds(messaging.TryTimeout)
+            }
+        };
     }
 
     /// <summary>
@@ -58,7 +77,7 @@ public class EhProducerService : IEhProducerService
         {
             try
             {
-                await using var producerClient = new EventHubProducerClient(az.ConnectionString, topic);
+                await using var producerClient = new EventHubProducerClient(az.ConnectionString, topic, _options);
                 var data = new EventData(Encoding.UTF8.GetBytes(message));
                 using (var eventBatch = await producerClient.CreateBatchAsync(cancellationToken))
                 {

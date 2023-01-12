@@ -34,10 +34,17 @@ public class UserAuthorizationService : IUserAuthorizationService
     private readonly AppSetting _appSetting;
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger<UserAuthorizationService> _logger;
-    private readonly HttpClient _httpClient;
     private readonly bool _isAuthenticated;
     private readonly string? _permissionName;
     private readonly string _authorization;
+
+    private static readonly HttpClient _httpClient = new(new HttpHandler(new HttpClientHandler())
+    {
+        UsingCircuitBreaker = true,
+        UsingWaitRetry = true,
+        RetryCount = 4,
+        SleepDuration = 1000
+    });
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserAuthorizationService"/> class.
@@ -51,7 +58,6 @@ public class UserAuthorizationService : IUserAuthorizationService
         IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
-        _httpClient = new HttpClient(new HttpHandler(new HttpClientHandler()));
         _user = httpContextAccessor.HttpContext?.User;
         _appSetting = appSetting;
         _environment = environment;

@@ -12,8 +12,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Exceptions;
 using netca.Application.Common.Extensions;
+using netca.Application.Common.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Polly.Bulkhead;
+using Polly.CircuitBreaker;
+using Polly.RateLimit;
 
 namespace netca.Api.Middlewares;
 
@@ -70,8 +74,7 @@ public class CustomExceptionHandlerMiddleware
                         {
                             Code = (int)code,
                             Desc = validationException.Errors
-                        }
-                    ),
+                        }),
                     JsonExtensions.ErrorSerializerSettings());
                 break;
             case BadRequestException badRequestException:
@@ -83,11 +86,10 @@ public class CustomExceptionHandlerMiddleware
                         {
                             Code = (int)code,
                             Desc = badRequestException.Message
-                        }
-                    ),
+                        }),
                     JsonExtensions.ErrorSerializerSettings());
                 break;
-            case NotFoundException _:
+            case NotFoundException:
                 code = HttpStatusCode.NotFound;
                 result = JsonConvert.SerializeObject(
                     JsonApiExtensions.ToJsonApi(
@@ -96,13 +98,38 @@ public class CustomExceptionHandlerMiddleware
                         {
                             Code = (int)code,
                             Desc = exception.Message
-                        }
-                    ),
+                        }),
                     JsonExtensions.ErrorSerializerSettings());
+                break;
+            case BulkheadRejectedException:
+            case BrokenCircuitException:
+                code = HttpStatusCode.ServiceUnavailable;
+                result = JsonConvert.SerializeObject(
+                    JsonApiExtensions.ToJsonApi(
+                        new object(),
+                        new Status
+                        {
+                            Code = (int)code,
+                            Desc = exception.Message
+                        }),
+                    JsonExtensions.ErrorSerializerSettings());
+                break;
+            case RateLimitRejectedException rateLimitRejected:
+                code = HttpStatusCode.TooManyRequests;
+                result = JsonConvert.SerializeObject(
+                    JsonApiExtensions.ToJsonApi(
+                        new object(),
+                        new Status
+                        {
+                            Code = (int)code,
+                            Desc = exception.Message
+                        }),
+                    JsonExtensions.ErrorSerializerSettings());
+                context.Response.Headers.Add("Retry-After", rateLimitRejected.RetryAfter.Seconds.ToString());
                 break;
         }
 
-        context.Response.ContentType = "application/json";
+        context.Response.ContentType = Constants.HeaderJson;
         context.Response.StatusCode = (int)code;
 
         if (!string.IsNullOrEmpty(result))
@@ -115,10 +142,11 @@ public class CustomExceptionHandlerMiddleware
                 {
                     Code = (int)code,
                     Desc = "Internal Server Error"
-                }
-            ),
+                }),
             JsonExtensions.ErrorSerializerSettings());
-        logger.LogWarning("Internal Server Error:{Ex} {Msg}", exception.Source, exception.Message);
+
+        logger.LogError(exception, "Internal Server Error: {source} - {message}", exception.Source, exception.Message);
+
         return context.Response.WriteAsync(result);
     }
 }

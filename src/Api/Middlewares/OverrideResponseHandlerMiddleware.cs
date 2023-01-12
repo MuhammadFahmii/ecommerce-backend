@@ -152,7 +152,7 @@ public class OverrideResponseHandlerMiddleware
         if (policy is not { IsCache: true })
             return context;
 
-        var key = await _redisService.SaveAsync(policy.Name, Constants.RedisSubKeyHttpRequest, responseBody);
+        var key = await _redisService.SaveSubAsync(policy.Name, Constants.RedisSubKeyHttpRequest, responseBody);
         context.Response.Headers[Constants.HeaderETag] = key;
         return context;
     }

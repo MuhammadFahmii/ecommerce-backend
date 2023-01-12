@@ -261,6 +261,11 @@ public static class Constants
     /// SystemClientId
     /// </summary>
     public const string SystemClientId = "datacaptureapps01";
+    
+    /// <summary>
+    /// Max data
+    /// </summary>
+    public const int MaxData = 300;
 
     #endregion system
 

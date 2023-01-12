@@ -36,6 +36,12 @@ public record AppSetting
     public int RequestPerformanceInMs { get; set; } = 500;
 
     /// <summary>
+    /// Gets or sets resiliency policy
+    /// </summary>
+    /// <returns></returns>
+    public ResiliencyPolicy? ResiliencyPolicy { get; set; }
+
+    /// <summary>
     /// Gets or sets connectionStrings
     /// </summary>
     /// <returns></returns>
@@ -72,6 +78,12 @@ public record AppSetting
     public DatabaseSettings DatabaseSettings { get; set; } = new();
 
     /// <summary>
+    /// Gets or sets messaging
+    /// </summary>
+    /// <returns></returns>
+    public Messaging? Messaging { get; set; }
+
+    /// <summary>
     /// Gets or sets dataLifetime
     /// </summary>
     /// <returns></returns>
@@ -94,6 +106,133 @@ public record AppSetting
     /// </summary>
     public BackgroundJob BackgroundJob { get; set; } = new();
 }
+
+/// <summary>
+/// ResiliencyPolicy
+/// </summary>
+public record ResiliencyPolicy
+{
+    /// <summary>
+    /// Gets or sets Bulkhead
+    /// </summary>
+    /// <value></value>
+    public Bulkhead? Bulkhead { get; set; }
+
+    /// <summary>
+    /// Gets or sets CircuitBreaker
+    /// </summary>
+    /// <value></value>
+    public CircuitBreaker? CircuitBreaker { get; set; }
+
+    /// <summary>
+    /// Gets or sets RateLimit
+    /// </summary>
+    /// <value></value>
+    public RateLimit? RateLimit { get; set; }
+
+    /// <summary>
+    /// Gets or sets Timeout
+    /// </summary>
+    /// <value></value>
+    public Timeout? Timeout { get; set; }
+}
+
+/// <summary>
+/// Bulkhead
+/// </summary>
+public record Bulkhead
+{
+    /// <summary>
+    /// Gets or sets a value indicating whether is enabled
+    /// </summary>
+    /// <value></value>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets MaxParallelization
+    /// </summary>
+    /// <value></value>
+    public int MaxParallelization { get; set; } = 120;
+
+    /// <summary>
+    /// Gets or sets MaxQueuingActions
+    /// </summary>
+    /// <value></value>
+    public int MaxQueuingActions { get; set; } = 60;
+}
+
+/// <summary>
+/// Bulkhead
+/// </summary>
+public record CircuitBreaker
+{
+    /// <summary>
+    /// Gets or sets a value indicating whether is enabled
+    /// </summary>
+    /// <value></value>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets ExceptionAllowed
+    /// </summary>
+    /// <value></value>
+    public int ExceptionAllowed { get; set; } = 10;
+
+    /// <summary>
+    /// Gets or sets DurationOfBreak
+    /// </summary>
+    /// <value></value>
+    public int DurationOfBreak { get; set; } = 30;
+}
+
+/// <summary>
+/// RateLimit
+/// </summary>
+public record RateLimit
+{
+    /// <summary>
+    /// Gets or sets a value indicating whether is enabled
+    /// </summary>
+    /// <value></value>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets NumberOfAllowedExecutions
+    /// </summary>
+    /// <value></value>
+    public int NumberOfAllowedExecutions { get; set; } = 100;
+
+    /// <summary>
+    /// Gets or sets DurationLimit
+    /// </summary>
+    /// <value></value>
+    public int DurationLimit { get; set; } = 1;
+
+    /// <summary>
+    /// Gets or sets Burst
+    /// </summary>
+    /// <value></value>
+    public int Burst { get; set; } = 1;
+}
+
+/// <summary>
+/// Timeout
+/// </summary>
+public record Timeout
+{
+    /// <summary>
+    /// Gets or sets a value indicating whether is enabled
+    /// </summary>
+    /// <value></value>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets Duration
+    /// </summary>
+    /// <value></value>
+    public int Duration { get; set; } = 180;
+}
+
 
 /// <summary>
 /// Role
@@ -266,6 +405,12 @@ public record App
     /// </summary>
     /// <value></value>
     public AppContact AppContact { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets namespace
+    /// </summary>
+    /// <value></value>
+    public string Namespace { get; set; } = "MsCbm";
 }
 
 /// <summary>
@@ -421,6 +566,12 @@ public record Messaging
     /// </summary>
     /// <value></value>
     public List<AzureEventHub> AzureEventHub { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets configuration
+    /// </summary>
+    /// <value></value>
+    public Configuration? Configuration { get; set; }
 }
 
 /// <summary>
@@ -496,6 +647,52 @@ public record Topic
 }
 
 /// <summary>
+/// Configuration
+/// </summary>
+public record Configuration
+{
+    /// <summary>
+    /// Gets or sets maximum retries
+    /// </summary>
+    public int MaximumRetries { get; set; } = 4;
+
+    /// <summary>
+    /// Gets or sets delay in milliseconds
+    /// </summary>
+    public int Delay { get; set; } = 1000;
+
+    /// <summary>
+    /// Gets or sets delay in seconds
+    /// </summary>
+    public int MaximumDelay { get; set; } = 30;
+
+    /// <summary>
+    /// Gets or sets try timeout in seconds
+    /// </summary>
+    public int TryTimeout { get; set; } = 60;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether saveToDb For Debug Message
+    /// </summary>
+    public bool SaveToDb { get; set; }
+
+    /// <summary>
+    /// Gets or sets max data
+    /// </summary>
+    public int MaxData { get; set; } = Constants.MaxData;
+
+    /// <summary>
+    /// Gets or sets message To Process
+    /// </summary>
+    public int MessageToProcess { get; set; } = 25;
+
+    /// <summary>
+    /// Gets or sets process delay
+    /// </summary>
+    public int ProcessDelay { get; set; } = 30;
+}
+
+/// <summary>
 /// Redis
 /// </summary>
 public record Redis
@@ -504,7 +701,7 @@ public record Redis
     /// Gets or sets server
     /// </summary>
     /// <value></value>
-    public string? Server { get; set; } = "";
+    public string? Server { get; set; } = "localhost";
 
     /// <summary>
     /// Gets or sets instanceName
@@ -516,6 +713,37 @@ public record Redis
     /// Gets or sets databaseNumber
     /// </summary>
     public int DatabaseNumber { get; set; } = 0;
+
+    /// <summary>
+    /// Gets or sets databaseNumber
+    /// </summary>
+    public int? ConnectRetry { get; set; }
+
+    /// <summary>
+    /// Gets or sets databaseNumber
+    /// </summary>
+    public int? ConnectTimeout { get; set; }
+
+    /// <summary>
+    /// Gets or sets databaseNumber
+    /// </summary>
+    public int? OperationTimeout { get; set; }
+
+    /// <summary>
+    /// Gets or sets delta back off in milliseconds
+    /// </summary>
+    public int DeltaBackOff { get; set; } = 1000;
+
+    /// <summary>
+    /// Gets or sets max delta back off in milliseconds
+    /// </summary>
+    public int MaxDeltaBackOff { get; set; } = 30000;
+
+    /// <summary>
+    /// Gets or sets defaultExpiryInDays
+    /// </summary>
+    /// <value></value>
+    public int DefaultExpiryInDays { get; set; } = 30;
 
     /// <summary>
     /// Gets or sets requestExpiryInMinutes

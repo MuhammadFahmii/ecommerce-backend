@@ -21,8 +21,14 @@ namespace netca.Infrastructure.Services;
 /// </summary>
 public class UserAuthorizationHandlerService : AuthorizationHandler<Permission>
 {
-    private readonly HttpClient _httpClient;
     private readonly ILogger<UserAuthorizationHandlerService> _logger;
+    private static readonly HttpClient _httpClient = new(new HttpHandler(new HttpClientHandler())
+    {
+        UsingCircuitBreaker = true,
+        UsingWaitRetry = true,
+        RetryCount = 4,
+        SleepDuration = 1000
+    });
     private readonly AppSetting _appSetting;
 
     /// <summary>
@@ -37,7 +43,6 @@ public class UserAuthorizationHandlerService : AuthorizationHandler<Permission>
     {
         _logger = logger;
         _appSetting = appSetting;
-        _httpClient = new HttpClient(new HttpHandler(new HttpClientHandler()));
         _httpClient.DefaultRequestHeaders.Add(_appSetting.AuthorizationServer.Header,
             _appSetting.AuthorizationServer.Secret);
     }
