@@ -4,13 +4,14 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using netca.Application.Common.Models;
 using netca.Infrastructure.Persistence;
+using Serilog;
 
 namespace netca.Api.Handlers;
 
@@ -26,20 +27,40 @@ public static class MigrationsHandler
     /// <param name="environment"></param>
     /// <param name="appSetting"></param>
     /// <returns></returns>
-    public static async Task ApplyMigration(IApplicationBuilder app, IWebHostEnvironment environment, AppSetting appSetting)
+    public static async Task ApplyMigration(
+        IApplicationBuilder app, IWebHostEnvironment environment, AppSetting appSetting)
     {
+        if (!appSetting.DatabaseSettings.Migrations && !appSetting.DatabaseSettings.SeedData)
+            return;
+
         using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();
-        var initializer = serviceScope?.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
-        if (appSetting.DatabaseSettings.Migrations)
-        {
-            await initializer?.InitialiseAsync()!;
-        }
+        var logger = Log.ForContext(typeof(MigrationsHandler));
 
-        if (appSetting.DatabaseSettings.SeedData && environment.IsDevelopment())
+        try
         {
-            await initializer?.SeedAsync()!;
-        }
+            if (serviceScope != null)
+            {
+                var initializer = serviceScope?.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
 
+                if (appSetting.DatabaseSettings.Migrations)
+                {
+                    logger.Information("Migration Database");
+
+                    await initializer?.InitializeAsync()!;
+                }
+
+                if (appSetting.DatabaseSettings.SeedData)
+                {
+                    logger.Information("Seeding Database");
+
+                    await initializer?.SeedAsync()!;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "An error occurred while migrating the database.");
+        }
     }
 }
 
@@ -54,7 +75,8 @@ public static class UseMigrationsHandlerExtensions
     /// <param name="builder"></param>
     /// <param name="environment"></param>
     /// <param name="appSetting"></param>
-    public static void UseMigrationsHandler(this IApplicationBuilder builder, IWebHostEnvironment environment,AppSetting appSetting)
+    public static void UseMigrationsHandler(
+        this IApplicationBuilder builder, IWebHostEnvironment environment,AppSetting appSetting)
     {
         MigrationsHandler.ApplyMigration(builder, environment, appSetting).ConfigureAwait(false);
     }

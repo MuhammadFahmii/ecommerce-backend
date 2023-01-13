@@ -26,8 +26,7 @@ public static class CorsOriginHandler
             options => options.WithOrigins(origin)
                 .SetIsOriginAllowedToAllowWildcardSubdomains()
                 .AllowAnyMethod()
-                .AllowAnyHeader()
-        );
+                .AllowAnyHeader());
     }
 }
 

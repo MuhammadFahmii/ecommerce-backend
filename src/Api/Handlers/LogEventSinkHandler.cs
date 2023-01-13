@@ -45,19 +45,31 @@ public class LogEventSinkHandler : ILogEventSink
     {
         if (!_appSetting.Bot.IsEnable)
             return;
+
         if (!logEvent.Level.Equals(LogEventLevel.Error))
             return;
+
         var cacheMsTeam = GetCounter();
         var hours = (DateTime.UtcNow - cacheMsTeam.Date).TotalHours;
+
         if (cacheMsTeam.Counter >= _appSetting.Bot.CacheMsTeam.Counter || hours >= _appSetting.Bot.CacheMsTeam.Hours)
             return;
+
         SetCounter(cacheMsTeam);
+
         var facts = new List<Fact>();
         var sections = new List<Section>();
         var serviceName = _appSetting.Bot.ServiceName;
         var serviceDomain = _appSetting.Bot.ServiceDomain;
-        facts.Add(new Fact { Name = "Date", Value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}" });
+
+        facts.Add(new Fact
+        {
+            Name = "Date",
+            Value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}"
+        });
+
         var app = $"[{serviceName}](http://{serviceDomain})";
+
         sections.Add(new Section
         {
             ActivityTitle = app,
@@ -65,13 +77,21 @@ public class LogEventSinkHandler : ILogEventSink
             Facts = facts,
             ActivityImage = Constants.MsTeamsImageError
         });
-        facts.Add(new Fact { Name = "Message", Value = logEvent.RenderMessage() });
+
+        facts.Add(new Fact
+        {
+            Name = "Message",
+            Value = logEvent.RenderMessage()
+        });
+
         var tmpl = new MsTeamTemplate
         {
             Sections = sections,
             Summary = $"{Constants.MsTeamsSummaryError} with {app}"
         };
+
         Logger.Debug("Sending message to MsTeam with color {ThemeColor}", tmpl.ThemeColor);
+
         SendToMsTeams.Send(_appSetting, tmpl).ConfigureAwait(false);
     }
 
@@ -85,12 +105,16 @@ public class LogEventSinkHandler : ILogEventSink
     private CacheMsTeam GetCounter()
     {
         var isExist = _memoryCache.TryGetValue("CacheMsTeams", out CacheMsTeam cacheMsTeam);
-        if (isExist)
-        {
-            return cacheMsTeam;
-        }
 
-        cacheMsTeam = new CacheMsTeam { Counter = 0, Date = DateTime.UtcNow };
+        if (isExist)
+            return cacheMsTeam;
+
+        cacheMsTeam = new CacheMsTeam
+        {
+            Counter = 0,
+            Date = DateTime.UtcNow
+        };
+
         return cacheMsTeam;
     }
 }

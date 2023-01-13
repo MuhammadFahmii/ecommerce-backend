@@ -110,6 +110,16 @@ public static class Constants
     public const string HeaderTextCsv = "text/csv";
 
     /// <summary>
+    /// HeaderExcelXls
+    /// </summary>
+    public const string HeaderExcelXls = "application/vnd.ms-excel";
+
+    /// <summary>
+    /// HeaderExcelXlsx
+    /// </summary>
+    public const string HeaderExcelXlsx = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+    /// <summary>
     /// HeaderImageJpg
     /// </summary>
     public const string HeaderImageJpg = "image/jpg";

@@ -35,9 +35,9 @@ public class ApplicationDbContextInitializer
     }
 
     /// <summary>
-    /// InitialiseAsync
+    /// InitializeAsync
     /// </summary>
-    public async Task InitialiseAsync()
+    public async Task InitializeAsync()
     {
         try
         {

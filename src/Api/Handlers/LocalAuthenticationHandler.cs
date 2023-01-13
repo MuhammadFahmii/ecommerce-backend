@@ -40,7 +40,9 @@ public class LocalAuthenticationHandler : AuthenticationHandler<AuthenticationSc
     /// <param name="encoder"></param>
     /// <param name="clock"></param>
     public LocalAuthenticationHandler(
-        IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder,
+        IOptionsMonitor<AuthenticationSchemeOptions> options,
+        ILoggerFactory logger,
+        UrlEncoder encoder,
         ISystemClock clock)
         : base(options, logger, encoder, clock)
     {

@@ -34,7 +34,9 @@ public static class CompressionHandler
                 Constants.HeaderJson,
                 Constants.HeaderOctetStream,
                 Constants.HeaderProblemJson,
-                Constants.HeaderTextCsv
+                Constants.HeaderTextCsv,
+                Constants.HeaderExcelXls,
+                Constants.HeaderExcelXlsx
             };
             options.EnableForHttps = true;
             options.MimeTypes = mimeTypes;
@@ -42,8 +44,14 @@ public static class CompressionHandler
             options.Providers.Add<BrotliCompressionProvider>();
         });
 
-        services.Configure<BrotliCompressionProviderOptions>(options => { options.Level = CompressionLevel.Optimal; });
-        services.Configure<GzipCompressionProviderOptions>(options => { options.Level = CompressionLevel.Optimal; });
+        services.Configure<BrotliCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Optimal;
+        });
+        services.Configure<GzipCompressionProviderOptions>(options =>
+        {
+            options.Level = CompressionLevel.Optimal;
+        });
     }
 }
 
