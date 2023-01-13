@@ -26,9 +26,11 @@ public static class ConfigureServices
     /// <returns></returns>
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        services.AddMediatR(Assembly.GetExecutingAssembly());
+        var assembly = typeof(ConfigureServices).Assembly;
+
+        services.AddAutoMapper(assembly);
+        services.AddValidatorsFromAssembly(assembly);
+        services.AddMediatR(assembly);
         services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(RateLimitPolicyBehavior<,>));
         services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(BulkheadPolicyBehavior<,>));
         services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(CircuitBreakerPolicyBehavior<,>));
@@ -37,18 +39,18 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingPolicyBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(FallbackBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RetryPolicyBehavior<,>));
 
         services.Scan(scan => scan
-            .FromAssemblies(Assembly.GetExecutingAssembly())
+            .FromAssemblies(assembly)
             .AddClasses(classes => classes.AssignableTo(typeof(ICachePolicy<,>)))
             .AsImplementedInterfaces()
             .WithTransientLifetime());
 
         services.Scan(scan => scan
-            .FromAssemblies(Assembly.GetExecutingAssembly())
+            .FromAssemblies(assembly)
             .AddClasses(classes => classes.AssignableTo(typeof(IFallbackHandler<,>)))
             .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsImplementedInterfaces()

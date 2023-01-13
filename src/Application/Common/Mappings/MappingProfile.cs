@@ -19,7 +19,7 @@ public class MappingProfile : Profile
     /// </summary>
     public MappingProfile()
     {
-        ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+        ApplyMappingsFromAssembly(typeof(ConfigureServices).Assembly);
     }
 
     /// <summary>

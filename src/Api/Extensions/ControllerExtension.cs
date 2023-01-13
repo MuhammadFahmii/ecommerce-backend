@@ -26,7 +26,7 @@ public static class ControllerExtension
     /// <returns></returns>
     public static List<ControllerListDto> GetControllerList()
     {
-        var controllerActionList = Assembly.GetExecutingAssembly().GetTypes()
+        var controllerActionList = typeof(ConfigureServices).Assembly.GetTypes()
             .Where(type => typeof(ControllerBase).IsAssignableFrom(type) &&
                 type.GetCustomAttributes<ServiceFilterAttribute>().Any(x => x.ServiceType.Equals(typeof(ApiAuthorizeFilterAttribute))) &&
                 !type.GetCustomAttributes<ServiceFilterAttribute>().Any(x => x.ServiceType.Equals(typeof(ApiDevelopmentFilterAttribute))))

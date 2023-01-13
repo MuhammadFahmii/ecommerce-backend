@@ -89,7 +89,7 @@ public static class ConfigureServices
                     NamingStrategy = new CamelCaseNamingStrategy()
                 };
             });
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
         services.AddCors();
 

@@ -101,7 +101,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// <param name="modelBuilder"></param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ConfigureServices).Assembly);
         base.OnModelCreating(modelBuilder);
     }
     

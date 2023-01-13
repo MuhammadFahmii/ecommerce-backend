@@ -231,7 +231,7 @@ public class MemoryMetrics
 /// <summary>
 /// MemoryMetricsClient
 /// </summary>
-public class MemoryMetricsClient
+public static class MemoryMetricsClient
 {
     /// <summary>
     /// GetMetrics

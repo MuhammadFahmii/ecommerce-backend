@@ -11,29 +11,29 @@ using netca.Application.Common.Interfaces;
 namespace netca.Application.Common.Behaviours;
 
 /// <summary>
-/// MediatR Caching Policy Pipeline Behavior
+/// MediatR Caching Pipeline Behavior
 /// </summary>
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
-public class CachingPolicyBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
     private readonly IEnumerable<ICachePolicy<TRequest, TResponse>> _cachePolicies;
     private readonly ICache _cache;
     private readonly IUserAuthorizationService _userAuthorizationService;
-    private readonly ILogger<CachingPolicyBehavior<TRequest, TResponse>> _logger;
+    private readonly ILogger<CachingBehavior<TRequest, TResponse>> _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CachingPolicyBehavior{TRequest, TResponse}"/> class.
+    /// Initializes a new instance of the <see cref="CachingBehavior{TRequest, TResponse}"/> class.
     /// </summary>
     /// <param name="cache"></param>
     /// <param name="userAuthorizationService"></param>
     /// <param name="logger"></param>
     /// <param name="cachePolicies"></param>
-    public CachingPolicyBehavior(
+    public CachingBehavior(
         ICache cache,
         IUserAuthorizationService userAuthorizationService,
-        ILogger<CachingPolicyBehavior<TRequest, TResponse>> logger,
+        ILogger<CachingBehavior<TRequest, TResponse>> logger,
         IEnumerable<ICachePolicy<TRequest, TResponse>> cachePolicies)
     {
         _cache = cache;
