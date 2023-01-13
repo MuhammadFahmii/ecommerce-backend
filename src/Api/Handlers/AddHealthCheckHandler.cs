@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -19,6 +20,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
 
 namespace netca.Api.Handlers;
@@ -28,7 +30,7 @@ namespace netca.Api.Handlers;
 /// </summary>
 public static class AddHealthCheckHandler
 {
-    private const string HealthQuery = Constants.DefaultHealthCheckQuery;
+    private const string _healthQuery = Constants.DefaultHealthCheckQuery;
 
     /// <summary>
     /// AddHealthCheck
@@ -37,42 +39,46 @@ public static class AddHealthCheckHandler
     /// <param name="appSetting"></param>
     public static void AddHealthCheck(this IServiceCollection services, AppSetting appSetting)
     {
-        var ums = new Uri(appSetting.AuthorizationServer.Address);
-        var gateWay = new Uri(appSetting.AuthorizationServer.Gateway);
+        services.AddHealthChecks().AddCheck<SystemCpuHealthCheck>(Constants.DefaultHealthCheckCpuUsage);
+        services.AddHealthChecks().AddCheck<SystemMemoryHealthCheck>(Constants.DefaultHealthCheckMemoryUsage);
+        services.AddHealthChecks().AddCheck<UmsHealthCheck>(Constants.DefaultHealthCheckUmsName);
 
-        void UmsSetup(TcpHealthCheckOptions x) => x.AddHost(ums.Host,
-            Convert.ToInt32(appSetting.AuthorizationServer.Address.Split(":")[2]));
+        services.AddHealthChecks()
+            .AddSqlServer(
+                appSetting.ConnectionStrings.DefaultConnection,
+                name: Constants.DefaultHealthCheckDatabaseName,
+                healthQuery: _healthQuery,
+                failureStatus: HealthStatus.Degraded,
+                timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds));
 
+        foreach (var eventHub in appSetting?.Messaging?.AzureEventHub!)
+        {
+            foreach (var topic in eventHub.Topics)
+            {
+                services.AddHealthChecks().AddAzureEventHub(
+                    eventHub.ConnectionString,
+                    topic.Value,
+                    $"{Constants.DefaultHealthCheckEventHub}_{eventHub.Name}_{topic.Name}",
+                    HealthStatus.Degraded,
+                    timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds));
+            }
+        }
+
+        services.AddHealthChecks()
+            .AddRedis(
+                appSetting?.Redis?.Server!,
+                Constants.DefaultHealthCheckRedisName,
+                HealthStatus.Degraded,
+                timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds));
+
+        var gateWay = new Uri(appSetting?.AuthorizationServer?.Gateway!);
         void GateWaySetup(TcpHealthCheckOptions x) => x.AddHost(gateWay.Host, 443);
-        services.AddHealthChecks().AddCheck<SystemMemoryHealthCheck>(Constants.DefaultHealthCheckMemoryUsage,
-            timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds));
-        services.AddHealthChecks().AddCheck<SystemCpuHealthCheck>(Constants.DefaultHealthCheckCpuUsage,
-            timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds));
-        services.AddHealthChecks().AddSqlServer(
-            appSetting.ConnectionStrings.DefaultConnection,
-            name: Constants.DefaultHealthCheckDatabaseName,
-            healthQuery: HealthQuery,
-            failureStatus: HealthStatus.Degraded,
-            timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)
-        );
-        services.AddHealthChecks().AddTcpHealthCheck(
-            UmsSetup,
-            Constants.DefaultHealthCheckUmsName,
-            HealthStatus.Degraded,
-            timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)
-        );
-        services.AddHealthChecks().AddTcpHealthCheck(
-            GateWaySetup,
-            Constants.DefaultHealthCheckGateWayName,
-            HealthStatus.Degraded,
-            timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)
-        );
-        services.AddHealthChecks().AddRedis(
-            appSetting.Redis.Server ?? string.Empty,
-            Constants.DefaultHealthCheckRedisName,
-            HealthStatus.Degraded,
-            timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds)
-        );
+        services.AddHealthChecks()
+            .AddTcpHealthCheck(
+                GateWaySetup,
+                Constants.DefaultHealthCheckGateWayName,
+                HealthStatus.Degraded,
+                timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds));
     }
 
     /// <summary>
@@ -100,8 +106,8 @@ public class SystemCpuHealthCheck : IHealthCheck
     /// <param name="context"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = default)
+    public async Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         var startTime = DateTime.UtcNow;
         var startCpuUsage = Process.GetCurrentProcess().TotalProcessorTime;
@@ -115,14 +121,9 @@ public class SystemCpuHealthCheck : IHealthCheck
         var totalMsPassed = (endTime - startTime).TotalMilliseconds;
         var cpuUsageTotal = cpuUsedMs / (Environment.ProcessorCount * totalMsPassed);
 
-        var status = HealthStatus.Healthy;
-
         var data = new Dictionary<string, object> { { "cpu_Usage", cpuUsageTotal } };
 
-        if (cpuUsageTotal > Constants.DefaultHealthCheckPercentageUsedDegraded)
-            status = HealthStatus.Degraded;
-
-        var result = new HealthCheckResult(status, null, null, data);
+        var result = new HealthCheckResult(HealthStatus.Healthy, null, null, data);
 
         return await Task.FromResult(result);
     }
@@ -145,7 +146,7 @@ public class SystemMemoryHealthCheck : IHealthCheck
         var percentUsed = 100 * metrics.Used / metrics.Total;
 
         var status = HealthStatus.Healthy;
-        if (percentUsed > 90)
+        if (percentUsed > Constants.DefaultHealthCheckPercentageUsedDegraded)
             status = HealthStatus.Degraded;
 
         var data = new Dictionary<string, object>
@@ -156,6 +157,51 @@ public class SystemMemoryHealthCheck : IHealthCheck
         };
 
         var result = new HealthCheckResult(status, null, null, data);
+
+        return await Task.FromResult(result);
+    }
+}
+
+/// <summary>
+/// UmsHealthCheck
+/// </summary>
+public class UmsHealthCheck : IHealthCheck
+{
+    private readonly IUserAuthorizationService _userAuthorizationService;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UmsHealthCheck"/> class.
+    /// </summary>
+    /// <param name="userAuthorizationService">Set userAuthorizationService to get User's Attributes</param>
+    public UmsHealthCheck(IUserAuthorizationService userAuthorizationService)
+    {
+        _userAuthorizationService = userAuthorizationService;
+    }
+
+    /// <summary>
+    /// CheckHealthAsync
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context, CancellationToken cancellationToken = default)
+    {
+        var status = HealthStatus.Healthy;
+
+        try
+        {
+            var statusCode = await _userAuthorizationService.CheckHealthAsync(cancellationToken);
+
+            if (statusCode != HttpStatusCode.OK)
+                status = HealthStatus.Degraded;
+        }
+        catch
+        {
+            status = HealthStatus.Degraded;
+        }
+
+        var result = new HealthCheckResult(status, null, null);
 
         return await Task.FromResult(result);
     }
@@ -407,6 +453,7 @@ public class UiHealthReportEntry
 /// </summary>
 public static class UiResponseWriter
 {
+    private static readonly byte[] EmptyResponse = { (byte)'{', (byte)'}' };
     private static readonly Lazy<JsonSerializerOptions> Options = new(CreateJsonOptions);
 
     /// <summary>
@@ -417,18 +464,25 @@ public static class UiResponseWriter
     /// <returns></returns>
     public static async Task WriteHealthCheckUiResponse(HttpContext httpContext, HealthReport report)
     {
-        httpContext.Response.ContentType = Constants.HeaderJson;
-
-        var uiReport = UiHealthReport
-            .CreateFrom(report);
-
-        await using var responseStream = new MemoryStream();
-        if (uiReport.Status != UiHealthStatus.Healthy)
+        if (report != null)
         {
-            httpContext.Response.StatusCode = 500;
+            httpContext.Response.ContentType = Constants.HeaderJson;
+
+            var uiReport = UiHealthReport
+                .CreateFrom(report);
+
+            await using var responseStream = new MemoryStream();
+
+            if (uiReport.Status != UiHealthStatus.Healthy)
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            await JsonSerializer.SerializeAsync(responseStream, uiReport, Options.Value);
+            await httpContext.Response.BodyWriter.WriteAsync(responseStream.ToArray());
         }
-        await JsonSerializer.SerializeAsync(responseStream, uiReport, Options.Value);
-        await httpContext.Response.BodyWriter.WriteAsync(responseStream.ToArray());
+        else
+        {
+            await httpContext.Response.BodyWriter.WriteAsync(EmptyResponse);
+        }
     }
 
     private static JsonSerializerOptions CreateJsonOptions()
@@ -436,7 +490,8 @@ public static class UiResponseWriter
         var jsonSerializeOptions = new JsonSerializerOptions
         {
             AllowTrailingCommas = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
         jsonSerializeOptions.Converters.Add(new JsonStringEnumConverter());

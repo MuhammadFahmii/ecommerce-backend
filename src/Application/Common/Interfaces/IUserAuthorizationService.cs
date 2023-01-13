@@ -4,6 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System.Net;
 using netca.Application.Common.Models;
 using netca.Application.Dtos;
 
@@ -185,6 +186,13 @@ public interface IUserAuthorizationService
     /// <returns></returns>
     Task<ResponseGroupRoleUmsDto> CreateRoleAsync(
         Guid applicationId, string roleCode, Guid? roleId, List<Guid> groupIds, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Health Check
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<HttpStatusCode> CheckHealthAsync(CancellationToken cancellationToken);
 }
 
 #pragma warning disable

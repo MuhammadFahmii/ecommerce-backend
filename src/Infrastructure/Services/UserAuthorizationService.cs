@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
@@ -803,5 +804,18 @@ public class UserAuthorizationService : IUserAuthorizationService
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Health Check
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<HttpStatusCode> CheckHealthAsync(CancellationToken cancellationToken)
+    {
+        return (await _httpClient.GetAsync(
+            new Uri(_httpClient.BaseAddress + "swagger/index.html"),
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken)).StatusCode;
     }
 }

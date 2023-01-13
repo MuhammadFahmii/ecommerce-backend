@@ -48,7 +48,7 @@ public static class Constants
     /// <summary>
     /// DefaultHealthCheckCpuUsage
     /// </summary>
-    public const string DefaultHealthCheckCpuUsage = "vpuUsage";
+    public const string DefaultHealthCheckCpuUsage = "cpuUsage";
 
     /// <summary>
     /// DefaultHealthCheckMemoryUsage
@@ -59,6 +59,11 @@ public static class Constants
     /// DefaultHealthCheckDatabaseName
     /// </summary>
     public const string DefaultHealthCheckDatabaseName = "db";
+
+    /// <summary>
+    /// DefaultHealthCheckEventHub
+    /// </summary>
+    public const string DefaultHealthCheckEventHub = "eventHub";
 
     /// <summary>
     /// DefaultPercentageUsedDegraded
