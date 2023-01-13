@@ -34,14 +34,12 @@ public class ApiDevelopmentFilterAttribute : ActionFilterAttribute
         var ctrl = actionDescriptor.RouteValues["controller"].NullSafeToLower();
         var action = actionDescriptor.RouteValues["action"].NullSafeToLower();
         var env = environment.IsProduction();
+
         logger.LogDebug("Accessing {Ctrl} {Action}", ctrl, action);
+
         if (!env)
-        {
             await next();
-        }
         else
-        {
             context.Result = new NotFoundResult();
-        }
     }
 }
