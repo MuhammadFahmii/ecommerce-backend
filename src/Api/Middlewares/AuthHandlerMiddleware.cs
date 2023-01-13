@@ -4,15 +4,19 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using netca.Application.Common.Models;
 using netca.Infrastructure.Services;
 
@@ -47,7 +51,9 @@ public class AuthHandlerMiddleware
     /// <returns></returns>
     public async Task Invoke(HttpContext context)
     {
-        var whitelistPathSegment = _appSetting.AuthorizationServer.WhiteListPathSegment.Split(",").ToList();
+        var whitelistPathSegment = _appSetting
+            .AuthorizationServer
+            .WhiteListPathSegment?.Split(",").ToList() ?? new List<string>();
         var requiredCheck = !whitelistPathSegment.Any(item => context.Request.Path.StartsWithSegments(item));
 
         if (requiredCheck)
@@ -93,7 +99,8 @@ public static class AuthHandlerMiddlewareExtensions
     /// <param name="appSetting"></param>
     public static void AddPermissions(this IServiceCollection services, AppSetting appSetting)
     {
-        services.AddAuthentication(options =>
+        services
+            .AddAuthentication(options =>
             {
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -115,12 +122,54 @@ public static class AuthHandlerMiddlewareExtensions
 
         services.AddAuthorization(options =>
         {
-            var policy = appSetting.AuthorizationServer.Policy;
+            var policy = appSetting.AuthorizationServer.Policy ?? new List<Policy>()!;
             policy.ForEach(p =>
             {
                 if (p != null)
                     options.AddPolicy(p.Name, pol => pol.Requirements.Add(new Permission(p.Name)));
             });
         });
+
+        services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
+    }
+}
+
+/// <summary>
+/// AuthorizationPolicyProvider
+/// </summary>
+public class AuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
+{
+    private readonly AuthorizationOptions _options;
+    private static readonly SemaphoreSlim SemaphoreSlim = new(1);
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthorizationPolicyProvider"/> class.
+    /// </summary>
+    /// <param name="options"></param>
+    public AuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
+        : base(options)
+    {
+        _options = options.Value;
+    }
+
+    /// <inheritdoc/>
+    public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
+    {
+        SemaphoreSlim.Wait();
+
+        var policy = await base.GetPolicyAsync(policyName);
+
+        if (policy == null)
+        {
+            policy = new AuthorizationPolicyBuilder()
+                .AddRequirements(new Permission(policyName))
+                .Build();
+
+            _options.AddPolicy(policyName, policy);
+        }
+
+        SemaphoreSlim.Release();
+
+        return policy;
     }
 }

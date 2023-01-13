@@ -30,7 +30,9 @@ public class OverrideRequestHandlerMiddleware
     /// <param name="redisService"></param>
     /// <param name="logger"></param>
     /// <returns></returns>
-    public OverrideRequestHandlerMiddleware(RequestDelegate next, IRedisService redisService,
+    public OverrideRequestHandlerMiddleware(
+        RequestDelegate next,
+        IRedisService redisService,
         ILogger<OverrideRequestHandlerMiddleware> logger)
     {
         _next = next;

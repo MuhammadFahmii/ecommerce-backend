@@ -53,7 +53,7 @@ public class CustomExceptionHandlerMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogDebug("Something went wrong:{Ex} {Msg}", ex.Source, ex.Message);
+            _logger.LogDebug("Something went wrong: {source} - {message}", ex.Source, ex.Message);
             await HandleExceptionAsync(httpContext, _logger, ex);
         }
     }

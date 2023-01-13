@@ -4,7 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -38,7 +37,10 @@ public class OverrideResponseHandlerMiddleware
     /// <param name="appSetting"></param>
     /// <param name="logger"></param>
     /// <returns></returns>
-    public OverrideResponseHandlerMiddleware(RequestDelegate next, IRedisService redisService, AppSetting appSetting,
+    public OverrideResponseHandlerMiddleware(
+        RequestDelegate next,
+        IRedisService redisService,
+        AppSetting appSetting,
         ILogger<OverrideResponseHandlerMiddleware> logger)
     {
         _next = next;
@@ -54,73 +56,69 @@ public class OverrideResponseHandlerMiddleware
     /// <returns></returns>
     public async Task InvokeAsync(HttpContext context)
     {
-        if (context.Request.Path.StartsWithSegments("/api"))
-        {
-            _logger.LogDebug($"Overriding Response");
-            do
-            {
-                var watch = new Stopwatch();
-                watch.Start();
-                var originalBody = context.Response.Body;
-                try
-                {
-                    int statusCode;
-                    string responseBody;
-                    string policyName;
-                    await using (var memStream = new MemoryStream())
-                    {
-                        context.Response.Body = memStream;
-                        await _next(context);
-                        policyName = (string)context.Items["CurrentPolicyName"]!;
-                        statusCode = context.Response.StatusCode;
-                        memStream.Position = 0;
-
-                        if (statusCode != 200)
-                        {
-                            await memStream.CopyToAsync(originalBody);
-                            break;
-                        }
-
-                        if (!context.Response.ContentType.Contains("application/json"))
-                        {
-                            await memStream.CopyToAsync(originalBody);
-                            break;
-                        }
-
-                        responseBody = await new StreamReader(memStream).ReadToEndAsync();
-                    }
-
-                    watch.Stop();
-                    var responseTimeForCompleteRequest = watch.ElapsedMilliseconds;
-                    context = await RedisCachingAsync(policyName, context, responseBody);
-                    var buffer =
-                        Encoding.UTF8.GetBytes(ToJsonApi(statusCode, responseTimeForCompleteRequest, responseBody));
-
-                    context.Response.ContentLength = buffer.Length;
-                    await using var output = new MemoryStream(buffer);
-                    output.Position = 0;
-                    await output.CopyToAsync(originalBody);
-
-                    context.Response.Body = originalBody;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("Error Overriding Response {Ex}", ex.Message);
-                    throw;
-                }
-                finally
-                {
-                    context.Response.Body = originalBody;
-                }
-            } while (false);
-        }
-        else
+        if (!context.Request.Path.StartsWithSegments("/api"))
         {
             await _next(context);
+            return;
+        }
+
+        _logger.LogDebug("Overriding Response");
+
+        var watch = new Stopwatch();
+        watch.Start();
+
+        var originalBody = context.Response.Body;
+
+        try
+        {
+            int statusCode;
+            string responseBody;
+            var policyName = string.Empty;
+
+            await using var memStream = new MemoryStream();
+            context.Response.Body = memStream;
+
+            await _next(context);
+
+            policyName = (string)context.Items["CurrentPolicyName"]!;
+            statusCode = context.Response.StatusCode;
+            memStream.Position = 0;
+
+            if (statusCode != 200 || !context.Response.ContentType.Contains(Constants.HeaderJson))
+            {
+                await memStream.CopyToAsync(originalBody);
+                return;
+            }
+
+            responseBody = await new StreamReader(memStream).ReadToEndAsync();
+
+            watch.Stop();
+            var responseTimeForCompleteRequest = watch.ElapsedMilliseconds;
+
+            context = await RedisCachingAsync(policyName, context, responseBody);
+            var buffer = Encoding.UTF8.GetBytes(
+                ToJsonApi(statusCode, responseTimeForCompleteRequest, responseBody));
+
+            context.Response.ContentLength = buffer.Length;
+
+            await using var output = new MemoryStream(buffer);
+            output.Position = 0;
+            await output.CopyToAsync(originalBody);
+        }
+        catch
+        {
+            watch.Stop();
+
+            throw;
+        }
+        finally
+        {
+            context.Response.Body = originalBody;
         }
     }
 
-    private string ToJsonApi(int statusCode, long responseTimeForCompleteRequest, string responseBody)
+    private static string ToJsonApi(
+	    int statusCode, long responseTimeForCompleteRequest, string responseBody)
     {
         var json = JObject.Parse(responseBody);
         json["responseTime"] = responseTimeForCompleteRequest;
@@ -152,7 +150,7 @@ public class OverrideResponseHandlerMiddleware
         if (policy is not { IsCache: true })
             return context;
 
-        var key = await _redisService.SaveSubAsync(policy.Name, Constants.RedisSubKeyHttpRequest, responseBody);
+        var key = await _redisService.SaveSubAsync(Constants.RedisSubKeyHttpRequest, policy.Name, responseBody);
         context.Response.Headers[Constants.HeaderETag] = key;
         return context;
     }
@@ -160,9 +158,9 @@ public class OverrideResponseHandlerMiddleware
     private Policy IsCache(string policy)
     {
         var policyList = _appSetting.Redis.Policy;
-        return (policyList.Count.Equals(0)
-            ? null
-            : policyList.SingleOrDefault(x => x.Name.ToLower().Equals(policy.ToLower())))!;
+        return policyList.Count.Equals(0) ?
+            null! :
+            policyList.SingleOrDefault(x => x.Name.ToLower().Equals(policy.ToLower()))!;
     }
 }
 
