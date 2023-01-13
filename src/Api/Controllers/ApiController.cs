@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace netca.Api.Controllers;
 
 /// <summary>
-/// ApiController
+/// Base class for object controllers.
 /// </summary>
 [ApiController]
 public abstract class ApiControllerBase : ControllerBase
