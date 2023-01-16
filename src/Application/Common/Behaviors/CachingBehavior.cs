@@ -8,7 +8,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Interfaces;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
 /// MediatR Caching Pipeline Behavior

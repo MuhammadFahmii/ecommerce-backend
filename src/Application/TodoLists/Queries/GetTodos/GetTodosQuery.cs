@@ -9,7 +9,7 @@ using AutoMapper.QueryableExtensions;
 using JsonApiSerializer.JsonApi;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using netca.Application.Common.Behaviours;
+using netca.Application.Common.Behaviors;
 using netca.Application.Common.Extensions;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;

@@ -11,7 +11,7 @@ using netca.Application.Common.Models;
 using Polly.Timeout;
 using Timeout = netca.Application.Common.Models.Timeout;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a timeout policy on the MediatR request.

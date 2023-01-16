@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------------------
-// PerformanceBehaviour.cs  2021
+// PerformanceBehavior.cs  2021
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
@@ -12,14 +12,14 @@ using Microsoft.Extensions.Logging;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
-/// PerformanceBehaviour
+/// PerformanceBehavior
 /// </summary>
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
-public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class PerformanceBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
     private readonly Stopwatch _timer;
@@ -28,12 +28,12 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     private readonly AppSetting _appSetting;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PerformanceBehaviour{TRequest, TResponse}"/> class.
+    /// Initializes a new instance of the <see cref="PerformanceBehavior{TRequest, TResponse}"/> class.
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="userAuthorizationService"></param>
     /// <param name="appSetting"></param>
-    public PerformanceBehaviour(
+    public PerformanceBehavior(
         ILogger<TRequest> logger,
         IUserAuthorizationService userAuthorizationService,
         AppSetting appSetting)
@@ -66,15 +66,16 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
             return response;
 
         var requestName = typeof(TRequest).Name;
-        var userName = _userAuthorizationService.GetAuthorizedUser().UserName;
+        var user = _userAuthorizationService.GetAuthorizedUser();
+        var userName = user.UserName ?? Constants.SystemName;
 
         _logger.LogWarning(
-            "netca Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserName} {@Request}",
+            "{Namespace} Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserName} {@Request}",
+            _appSetting.App.Namespace,
             requestName,
             elapsedMilliseconds,
             userName,
-            request
-        );
+            request);
 
         return response;
     }

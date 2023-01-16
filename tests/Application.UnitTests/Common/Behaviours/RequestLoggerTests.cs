@@ -9,13 +9,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
-using netca.Application.Common.Behaviours;
+using netca.Application.Common.Behaviors;
 using netca.Application.Common.Interfaces;
 using netca.Application.Common.Models;
 using netca.Application.TodoItems.Commands.CreateTodoItem;
 using NUnit.Framework;
 
-namespace netca.Application.UnitTests.Common.Behaviours;
+namespace netca.Application.UnitTests.Common.Behaviors;
 
 /// <summary>
 /// RequestLoggerTests
@@ -24,6 +24,7 @@ public class RequestLoggerTests
 {
     private Mock<ILogger<CreateTodoItemCommand>> _logger = null!;
     private Mock<IUserAuthorizationService> _userAuthorizationService = null!;
+    private Mock<AppSetting> _appSetting = null!;
 
     /// <summary>
     /// 
@@ -34,6 +35,7 @@ public class RequestLoggerTests
         _logger = new Mock<ILogger<CreateTodoItemCommand>>();
         _userAuthorizationService = new Mock<IUserAuthorizationService>();
         _userAuthorizationService.Setup(x => x.GetAuthorizedUser()).Returns(MockData.GetAuthorizedUser());
+        _appSetting = new Mock<AppSetting>();
     }
 
     /// <summary>
@@ -42,7 +44,7 @@ public class RequestLoggerTests
     [Test]
     public async Task ShouldCallGetUserNameAsyncOnceIfAuthenticated()
     {
-        var requestLogger = new LoggingBehaviour<CreateTodoItemCommand>(_logger.Object, _userAuthorizationService.Object);
+        var requestLogger = new LoggingBehavior<CreateTodoItemCommand>(_logger.Object, _userAuthorizationService.Object, _appSetting.Object);
         await requestLogger.Process(new CreateTodoItemCommand { ListId = Guid.NewGuid(), Title = "title" }, new CancellationToken());
         _userAuthorizationService.Verify(i => i.GetAuthorizedUser(), Times.Once);
     }
@@ -53,7 +55,7 @@ public class RequestLoggerTests
     [Test]
     public async Task ShouldAuthorizedUseSameAsMockAuthorizedUser()
     {
-        var requestLogger = new LoggingBehaviour<CreateTodoItemCommand>(_logger.Object, _userAuthorizationService.Object);
+        var requestLogger = new LoggingBehavior<CreateTodoItemCommand>(_logger.Object, _userAuthorizationService.Object, _appSetting.Object);
         await requestLogger.Process(new CreateTodoItemCommand { ListId = Guid.NewGuid(), Title = "title" },
             new CancellationToken());
         var user = _userAuthorizationService.Object.GetAuthorizedUser();

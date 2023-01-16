@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------------------
-// RequestBehaviour.cs  2021
+// RequestBehavior.cs  2021
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
@@ -10,23 +10,23 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Exceptions;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
-/// RequestBehaviour
+/// RequestBehavior
 /// </summary>
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
-public class RequestBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class RequestBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly ILogger<RequestBehaviour<TRequest, TResponse>> _logger;
+    private readonly ILogger<RequestBehavior<TRequest, TResponse>> _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RequestBehaviour{TRequest, TResponse}"/> class.
+    /// Initializes a new instance of the <see cref="RequestBehavior{TRequest, TResponse}"/> class.
     /// </summary>
     /// <param name="logger"></param>
-    public RequestBehaviour(ILogger<RequestBehaviour<TRequest, TResponse>> logger)
+    public RequestBehavior(ILogger<RequestBehavior<TRequest, TResponse>> logger)
     {
         _logger = logger;
     }
@@ -42,16 +42,17 @@ public class RequestBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest,
         TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         var requestType = typeof(TRequest).Name;
+
         var response = await next();
 
         if (requestType.EndsWith("Command"))
         {
-            _logger.LogDebug("Command Request: {R}", request);
+            _logger.LogDebug("Command Request: {request}", request);
         }
         else if (requestType.EndsWith("Query"))
         {
-            _logger.LogDebug("Query Request: {R}", request);
-            _logger.LogDebug("Query Response: {R}", request);
+            _logger.LogDebug("Query Request: {request}", request);
+            _logger.LogDebug("Query Response: {response}", response);
         }
         else
         {

@@ -11,7 +11,7 @@ using netca.Application.Common.Exceptions;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a retry policy on the MediatR request.

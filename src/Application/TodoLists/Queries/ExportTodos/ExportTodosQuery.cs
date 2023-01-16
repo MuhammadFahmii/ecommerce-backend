@@ -8,7 +8,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using netca.Application.Common.Behaviours;
+using netca.Application.Common.Behaviors;
 using netca.Application.Common.Interfaces;
 
 namespace netca.Application.TodoLists.Queries.ExportTodos

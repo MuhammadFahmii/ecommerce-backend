@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------------------
-// ValidationBehaviour.cs  2021
+// ValidationBehavior.cs  2021
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
@@ -8,23 +8,23 @@ using FluentValidation;
 using MediatR;
 using ValidationException = netca.Application.Common.Exceptions.ValidationException;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
-/// ValidationBehaviour
+/// ValidationBehavior
 /// </summary>
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
-public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ValidationBehaviour{TRequest, TResponse}"/> class.
+    /// Initializes a new instance of the <see cref="ValidationBehavior{TRequest, TResponse}"/> class.
     /// </summary>
     /// <param name="validators"></param>
-    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
     {
         _validators = validators;
     }
@@ -45,9 +45,13 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
 
         var context = new ValidationContext<TRequest>(request);
 
-        var validationResults =
-            await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-        var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
+        var validationResults = await Task
+            .WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+
+        var failures = validationResults
+            .SelectMany(r => r.Errors)
+            .Where(f => f != null)
+            .ToList();
 
         if (failures.Count != 0)
             throw new ValidationException(failures);

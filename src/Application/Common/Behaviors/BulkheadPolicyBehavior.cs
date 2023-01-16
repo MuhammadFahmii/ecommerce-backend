@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using netca.Application.Common.Models;
 using Polly.Bulkhead;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a fallback policy on the MediatR request.

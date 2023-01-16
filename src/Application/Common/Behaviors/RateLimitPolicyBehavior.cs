@@ -9,7 +9,7 @@ using MediatR;
 using netca.Application.Common.Models;
 using Polly.RateLimit;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a rate limit policy on the MediatR request.

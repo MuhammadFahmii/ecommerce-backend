@@ -1,47 +1,60 @@
 // ------------------------------------------------------------------------------------
-// LoggingBehaviour.cs  2022
+// LoggingBehavior.cs  2022
 // Copyright Ahmad Ilman Fadilah. All rights reserved.
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 using netca.Application.Common.Interfaces;
+using netca.Application.Common.Models;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
-/// LoggingBehaviour
+/// LoggingBehavior
 /// </summary>
-public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull
+/// <typeparam name="TRequest"></typeparam>
+public class LoggingBehavior<TRequest> : IRequestPreProcessor<TRequest>
+    where TRequest : notnull
 {
     private readonly ILogger _logger;
     private readonly IUserAuthorizationService _userAuthorizationService;
-    
+    private readonly AppSetting _appSetting;
+
     /// <summary>
-    /// LoggingBehaviour
+    /// Initializes a new instance of the <see cref="LoggingBehavior{TRequest}"/> class.
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="currentUserService"></param>
-    public LoggingBehaviour(ILogger<TRequest> logger, IUserAuthorizationService currentUserService)
+    /// <param name="appSetting"></param>
+    public LoggingBehavior(
+        ILogger<TRequest> logger,
+        IUserAuthorizationService currentUserService,
+        AppSetting appSetting)
     {
         _logger = logger;
         _userAuthorizationService = currentUserService;
+        _appSetting = appSetting;
     }
-    
+
     /// <summary>
     /// Process
     /// </summary>
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task Process(TRequest request, CancellationToken cancellationToken)
     {
         var requestName = typeof(TRequest).Name;
         var user = _userAuthorizationService.GetAuthorizedUser();
         await Task.Delay(0, cancellationToken);
-        _logger.LogDebug("netca Request: {Name} {@UserId} {@UserName} {@Request}",
-            requestName, user.UserId, user.UserName, request);
+        _logger.LogDebug(
+            "{Namespace} Request: {Name} {@UserId} {@UserName} {@Request}",
+            _appSetting.App.Namespace,
+            requestName,
+            user.UserId,
+            user.UserName,
+            request);
     }
 }

@@ -15,7 +15,7 @@ using Polly.CircuitBreaker;
 using Polly.RateLimit;
 using Polly.Timeout;
 
-namespace netca.Application.Common.Behaviours;
+namespace netca.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a circuit breaker policy on the MediatR request.
