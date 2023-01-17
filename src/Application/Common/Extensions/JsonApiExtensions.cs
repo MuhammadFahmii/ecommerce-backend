@@ -48,8 +48,8 @@ public static class JsonApiExtensions
     /// <param name="pageSize"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<DocumentRootJson<List<T>>> ToJsonApiProjectTo<T>(IQueryable<T> data, Meta meta, int pageNumber = 1,
-        int pageSize = 1)
+    public static async Task<DocumentRootJson<List<T>>> ToJsonApiProjectTo<T>(
+        IQueryable<T> data, Meta meta, int pageNumber = 1, int pageSize = 1)
     {
         var totalItems = await data.CountAsync();
         var items = await data.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -58,24 +58,26 @@ public static class JsonApiExtensions
         var hasNextPage = pageNumber < totalPages;
         var nextPageNumber = hasNextPage ? pageNumber + 1 : totalPages;
         var previousPageNumber = hasPreviousPage ? pageNumber - 1 : 1;
-        meta.Add(key:"totalItems", value:totalItems);
-        meta.Add(key:"pageNumber", value:pageNumber);
-        meta.Add(key:"pageSize", value:pageSize);
-        meta.Add(key:"totalPages", value:totalItems);
-        meta.Add(key:"hasPreviousPage", value:hasPreviousPage);
-        meta.Add(key:"hasNextPage", value:hasNextPage);
-        meta.Add(key:"nextPageNumber", value:nextPageNumber);
-        meta.Add(key:"previousPageNumber", value:previousPageNumber);
+
+        meta.Add("totalItems", totalItems);
+        meta.Add("pageNumber", pageNumber);
+        meta.Add("pageSize", pageSize);
+        meta.Add("totalPages", totalItems);
+        meta.Add("hasPreviousPage", hasPreviousPage);
+        meta.Add("hasNextPage", hasNextPage);
+        meta.Add("nextPageNumber", nextPageNumber);
+        meta.Add("previousPageNumber", previousPageNumber);
+
         return new DocumentRootJson<List<T>>
         {
             Data = items,
             Meta = meta,
-            Status = new Status(),
+            Status = new Status()
         };
     }
 
     /// <summary>
-    /// ToJsonApiPaginated.
+    /// ToJsonApiPaginated
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="data"></param>
@@ -84,28 +86,33 @@ public static class JsonApiExtensions
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
     /// <returns></returns>
-    public static DocumentRootJson<T> ToJsonApiPaginated<T>(T data, Meta meta, int totalItems = 1, int pageNumber = 1,
-        int pageSize = 1)
+    public static DocumentRootJson<T> ToJsonApiPaginated<T>(
+        T data, Meta meta, int totalItems = 1, int pageNumber = 1, int pageSize = 1)
     {
-        var totalPages = totalItems > 0 ? (int)Math.Ceiling(totalItems / (double)pageSize) : 0;
+        var totalPages = 1;
+
+        if (pageSize > 0)
+            totalPages = totalItems > 0 ? (int)Math.Ceiling(totalItems / (double)pageSize) : totalPages;
+
         var hasPreviousPage = pageNumber > 1;
         var hasNextPage = pageNumber < totalPages;
         var nextPageNumber = hasNextPage ? pageNumber + 1 : totalPages;
         var previousPageNumber = hasPreviousPage ? pageNumber - 1 : 1;
-        meta.Add(key:"totalItems", value:totalItems);
-        meta.Add(key:"pageNumber", value:pageNumber);
-        meta.Add(key:"pageSize", value:pageSize);
-        meta.Add(key:"totalPages", value:totalItems);
-        meta.Add(key:"hasPreviousPage", value:hasPreviousPage);
-        meta.Add(key:"hasNextPage", value:hasNextPage);
-        meta.Add(key:"nextPageNumber", value:nextPageNumber);
-        meta.Add(key:"previousPageNumber", value:previousPageNumber);
-        
+
+        meta.Add("totalItems", totalItems);
+        meta.Add("pageNumber", pageNumber);
+        meta.Add("pageSize", pageSize);
+        meta.Add("totalPages", totalItems);
+        meta.Add("hasPreviousPage", hasPreviousPage);
+        meta.Add("hasNextPage", hasNextPage);
+        meta.Add("nextPageNumber", nextPageNumber);
+        meta.Add("previousPageNumber", previousPageNumber);
+
         return new DocumentRootJson<T>
         {
             Data = data,
             Meta = meta,
-            Status = new Status(),
+            Status = new Status()
         };
     }
 
@@ -121,7 +128,7 @@ public static class JsonApiExtensions
         {
             Data = data,
             Meta = new Meta(),
-            Status = new Status(),
+            Status = new Status()
         };
     }
 
@@ -138,7 +145,7 @@ public static class JsonApiExtensions
         {
             Data = data,
             Meta = new Meta(),
-            Status = status,
+            Status = status
         };
     }
 
@@ -150,7 +157,7 @@ public static class JsonApiExtensions
     {
         return new JsonApiSerializerSettings
         {
-            Formatting = Formatting.Indented,
+            Formatting = Formatting.Indented
         };
     }
 
@@ -165,16 +172,16 @@ public static class JsonApiExtensions
 }
 
 /// <summary>
-/// DocumentRootJson.
+/// DocumentRootJson
 /// </summary>
 /// <typeparam name="TData"></typeparam>
 public class DocumentRootJson<TData> : IDocumentRoot<TData>
 {
     /// <summary>
-    /// Gets or sets data.
+    /// Gets or sets data
     /// </summary>
     /// <value>
-    /// Data.
+    /// Data
     /// </value>
     [JsonProperty(Order = 2)]
     public TData Data { get; set; } = default!;
@@ -196,42 +203,42 @@ public class DocumentRootJson<TData> : IDocumentRoot<TData>
     public Meta Meta { get; set; } = new();
 
     /// <summary>
-    /// Gets or sets responseTime in ms.
+    /// Gets or sets responseTime in ms
     /// </summary>
     /// <value>
-    /// ResponseTime in ms.
+    /// ResponseTime in ms
     /// </value>
     [JsonProperty(Order = 1000)]
     public long ResponseTime { get; set; }
 
     /// <summary>
-    /// Gets or sets status.
+    /// Gets or sets status
     /// </summary>
     /// <value>
-    /// Status.
+    /// Status
     /// </value>
     [JsonProperty(Order = 10000)]
     public Status? Status { get; set; }
 }
 
 /// <summary>
-/// Status.
+/// Status
 /// </summary>
 public class Status
 {
     /// <summary>
-    /// Gets or sets code.
+    /// Gets or sets code
     /// </summary>
     /// <value>
-    /// Code.
+    /// Code
     /// </value>
     public int Code { get; set; }
 
     /// <summary>
-    /// Gets or sets desc.
+    /// Gets or sets desc
     /// </summary>
     /// <value>
-    /// Desc.
+    /// Desc
     /// </value>
     public object? Desc { get; set; }
 }

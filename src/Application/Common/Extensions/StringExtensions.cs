@@ -31,9 +31,12 @@ public static class StringExtensions
     /// <param name="s"></param>
     /// <param name="maxChars"></param>
     /// <returns></returns>
-    public static string Truncate(string? s, int maxChars)
+    public static string? Truncate(string s, int maxChars)
     {
-        return s!.Length <= maxChars ? s : s[..maxChars];
+        if (s == null)
+            return null;
+
+        return s.Length <= maxChars ? s : s[..maxChars];
     }
 
     /// <summary>
@@ -45,6 +48,7 @@ public static class StringExtensions
     {
         var result = new StringBuilder();
         var splitString = arrayString.Split(' ');
+
         if (splitString.Length > 1)
         {
             var first = true;
@@ -61,10 +65,8 @@ public static class StringExtensions
 
             return result.ToString();
         }
-        else
-        {
-            return arrayString;
-        }
+
+        return arrayString;
     }
 
     /// <summary>
@@ -75,9 +77,11 @@ public static class StringExtensions
     /// <returns></returns>
     public static string JsonRepair(string value, string regex)
     {
-        var regexs = regex.Split(",").ToList();
-        return regexs.Select(item => Regex.Escape($@"{item}")).Aggregate(value,
-            (current, regexReplace) => Regex.Replace(current, regexReplace, ""));
+        var regexs = regex != null ? regex.Split(",").ToList() : new List<string>();
+
+        return regexs
+            .Select(item => Regex.Escape($@"{item}"))
+            .Aggregate(value, (current, regexReplace) => Regex.Replace(current, regexReplace, ""));
     }
 
     /// <summary>
@@ -134,9 +138,10 @@ public static class StringExtensions
             var valueType = properties[key]?.GetType();
             if (valueType != null)
             {
-                var valueElemType = valueType is { IsGenericType: true }
-                    ? valueType.GetGenericArguments()[0]
-                    : valueType.GetElementType();
+                var valueElemType = valueType is { IsGenericType: true } ?
+                    valueType.GetGenericArguments()[0] :
+                    valueType.GetElementType();
+
                 if (valueElemType != null && (valueElemType.IsPrimitive || valueElemType == typeof(string)))
                 {
                     var enumerable = properties[key] as IEnumerable;
@@ -147,23 +152,27 @@ public static class StringExtensions
             properties.Remove(key);
         }
 
-        return url + "?" +
-               string.Join("&", properties
-                   .Select(x =>
-                   {
-                       var (key, value) = x;
-                       if (value != null)
-                       {
-                           return string.Concat(
-                               Uri.EscapeDataString(key),
-                               "=",
-                               Uri.EscapeDataString(value.ToString() ?? string.Empty));
-                       }
+        var result = new StringBuilder(url);
+        result.Append("?");
+        result.Append(string.Join("&", properties
+            .Select(x =>
+            {
+                var (key, value) = x;
 
-                       return null;
-                   })
-               ) +
-               string.Join("&", p);
+                if (value != null)
+                {
+                    return string.Concat(
+                        Uri.EscapeDataString(key),
+                        "=",
+                        Uri.EscapeDataString(value.ToString() ?? string.Empty));
+                }
+
+                return null;
+            })));
+
+        result.Append(string.Join("&", p));
+
+        return result.ToString();
     }
 
     /// <summary>
@@ -174,7 +183,10 @@ public static class StringExtensions
     /// <returns></returns>
     public static List<string> GetAttribute(this Dictionary<string, List<string>> dict, string key)
     {
-        return !dict.ContainsKey(key) ? new List<string>() : dict[key].Distinct().ToList();
+        if (dict == null || !dict.ContainsKey(key))
+            return new List<string>();
+
+        return dict[key].Distinct().ToList();
     }
 
     /// <summary>
@@ -182,9 +194,11 @@ public static class StringExtensions
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static string NullSafeToLower(this string? value)
+    public static string? NullSafeToLower(this string? value)
     {
-        value ??= string.Empty;
+        if (value == null)
+            return null;
+
         return value.ToLower();
     }
 }

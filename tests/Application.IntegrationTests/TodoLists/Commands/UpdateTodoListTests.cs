@@ -71,8 +71,8 @@ public class UpdateTodoListTests : TestBase
                         Id = id,
                         Title = nweTitle
                     }))
-                .Should().ThrowAsync<ValidationException>().Where(ex => ex.Errors.ContainsKey("Title")))
-            .And.Errors["Title"].Should().Contain("The specified title already exists.");
+                .Should().ThrowAsync<ValidationException>().Where(ex => ex.Errors!.ContainsKey("Title")))
+            .And.Errors?["Title"].Should().Contain("The specified title already exists.");
     }
     
     /// <summary>

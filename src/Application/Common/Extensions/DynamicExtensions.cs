@@ -20,8 +20,8 @@ public static class DynamicExtensions
     /// <param name="propertyName"></param>
     /// <param name="propertyValue"></param>
     /// <param name="replace"></param>
-    public static void AddProperty(ExpandoObject expando, string propertyName, object propertyValue,
-        bool replace = true)
+    public static void AddProperty(
+        ExpandoObject expando, string propertyName, object propertyValue, bool replace = true)
     {
         var exDict = expando as IDictionary<string, object>;
         if (exDict.ContainsKey(propertyName))
