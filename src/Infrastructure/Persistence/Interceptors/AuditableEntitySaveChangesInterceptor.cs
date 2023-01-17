@@ -23,9 +23,9 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
 {
     private readonly IUserAuthorizationService _currentUserService;
     private readonly IDateTime _dateTime;
-    
+
     /// <summary>
-    /// AuditableEntitySaveChangesInterceptor
+    /// Initializes a new instance of the <see cref="AuditableEntitySaveChangesInterceptor"/> class.
     /// </summary>
     /// <param name="currentUserService"></param>
     /// <param name="dateTime"></param>
@@ -43,12 +43,13 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
     /// <param name="eventData"></param>
     /// <param name="result"></param>
     /// <returns></returns>
-    public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
+    public override InterceptionResult<int> SavingChanges(
+        DbContextEventData eventData, InterceptionResult<int> result)
     {
         UpdateEntities(eventData.Context);
         return base.SavingChanges(eventData, result);
     }
-    
+
     /// <summary>
     /// SavingChangesAsync
     /// </summary>
@@ -56,34 +57,45 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
     /// <param name="result"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+        DbContextEventData eventData,
+        InterceptionResult<int> result,
+        CancellationToken cancellationToken = default)
     {
         UpdateEntities(eventData.Context);
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
-    
+
     /// <summary>
     /// UpdateEntities
     /// </summary>
     /// <param name="context"></param>
     private void UpdateEntities(DbContext? context)
     {
-        if (context == null) return;
+        if (context == null)
+            return;
+
+        var userId = _currentUserService.GetUserId();
 
         foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
         {
-            var userId = _currentUserService.GetUserId();
-            if (entry.State == EntityState.Added)
-            {
-                entry.Entity.CreatedBy ??= userId;
-                entry.Entity.CreatedDate = _dateTime.UtcNow;
-                entry.Entity.IsDeleted = false;
-            }
+            var entity = entry.Entity;
 
-            if (entry.State != EntityState.Added && entry.State != EntityState.Modified &&
-                !entry.HasChangedOwnedEntities()) continue;
-            entry.Entity.UpdatedBy ??= userId;
-            entry.Entity.UpdatedDate = _dateTime.UtcNow;
+            if (entity != null)
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.CreatedBy ??= userId;
+                        entry.Entity.CreatedDate = _dateTime.UtcNow;
+                        entry.Entity.IsDeleted = false;
+                        break;
+                    case EntityState.Modified:
+                        entry.Entity.UpdatedBy ??= userId;
+                        entry.Entity.UpdatedDate = _dateTime.UtcNow;
+                        break;
+                }
+            }
         }
     }
 }
@@ -99,8 +111,8 @@ public static class Extensions
     /// <param name="entry"></param>
     /// <returns></returns>
     public static bool HasChangedOwnedEntities(this EntityEntry entry) =>
-        entry.References.Any(r => 
-            r.TargetEntry != null && 
-            r.TargetEntry.Metadata.IsOwned() && 
+        entry.References.Any(r =>
+            r.TargetEntry != null &&
+            r.TargetEntry.Metadata.IsOwned() &&
             r.TargetEntry.State is EntityState.Added or EntityState.Modified);
 }

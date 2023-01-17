@@ -13,5 +13,4 @@ namespace netca.Domain.Common;
 /// </summary>
 public class BaseEvent : INotification
 {
-    
 }

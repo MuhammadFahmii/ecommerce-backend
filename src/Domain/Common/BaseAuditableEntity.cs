@@ -11,9 +11,33 @@ namespace netca.Domain.Common;
 /// </summary>
 public abstract record BaseAuditableEntity : BaseEntity
 {
-    public long CreatedDate { get; set; }
+    /// <summary>
+    /// Gets or sets createdBy
+    /// </summary>
+    /// <value></value>
     public Guid? CreatedBy { get; set; }
-    public long? UpdatedDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets createdDate
+    /// </summary>
+    /// <value></value>
+    public long CreatedDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets updatedBy
+    /// </summary>
+    /// <value></value>
     public Guid? UpdatedBy { get; set; }
+
+    /// <summary>
+    /// Gets or sets updatedDate
+    /// </summary>
+    /// <value></value>
+    public long? UpdatedDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether isDeleted
+    /// </summary>
+    /// <value></value>
     public bool IsDeleted { get; set; }
 }

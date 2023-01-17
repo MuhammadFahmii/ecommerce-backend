@@ -10,19 +10,20 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using netca.Domain.Common;
 
-namespace netca.Infrastructure.MediatorExtensions;
+namespace netca.Infrastructure.Extensions;
 
 /// <summary>
-/// MediatorExtensions
+/// MediatorExtension
 /// </summary>
-public static class MediatorExtensions
+public static class MediatorExtension
 {
     /// <summary>
     /// DispatchDomainEvents
     /// </summary>
     /// <param name="mediator"></param>
     /// <param name="context"></param>
-    public static async Task DispatchDomainEvents(this IMediator mediator, DbContext context) 
+    /// <returns></returns>
+    public static async Task DispatchDomainEvents(this IMediator mediator, DbContext context)
     {
         var entities = context.ChangeTracker
             .Entries<BaseEntity>()
@@ -33,7 +34,10 @@ public static class MediatorExtensions
         var domainEvents = baseEntities
             .SelectMany(e => e.DomainEvents)
             .ToList();
-        baseEntities.ToList().ForEach(e => e.ClearDomainEvents());
+
+        baseEntities
+            .ToList()
+            .ForEach(e => e.ClearDomainEvents());
 
         foreach (var domainEvent in domainEvents)
             await mediator.Publish(domainEvent);

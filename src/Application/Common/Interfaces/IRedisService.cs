@@ -150,5 +150,4 @@ public interface IRedisService
     /// <param name="key">Redis identifier key</param>
     /// <returns></returns>
     Task<bool> DeleteAsync(string key);
-
 }

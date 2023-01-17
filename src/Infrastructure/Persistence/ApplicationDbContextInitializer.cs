@@ -23,12 +23,12 @@ public class ApplicationDbContextInitializer
     private readonly ApplicationDbContext _context;
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of the <see cref="ApplicationDbContextInitializer"/> class.
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="context"></param>
-    public ApplicationDbContextInitializer(ILogger<ApplicationDbContextInitializer> logger,
-        ApplicationDbContext context)
+    public ApplicationDbContextInitializer(
+        ILogger<ApplicationDbContextInitializer> logger, ApplicationDbContext context)
     {
         _logger = logger;
         _context = context;

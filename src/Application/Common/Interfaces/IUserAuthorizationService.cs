@@ -28,6 +28,12 @@ public interface IUserAuthorizationService
     string? GetUserName();
 
     /// <summary>
+    /// GetUserNameSystem
+    /// </summary>
+    /// <returns></returns>
+    string? GetUserNameSystem();
+
+    /// <summary>
     /// GetCustomerCode
     /// </summary>
     /// <returns></returns>
@@ -44,6 +50,12 @@ public interface IUserAuthorizationService
     /// </summary>
     /// <returns></returns>
     AuthorizedUser GetAuthorizedUser();
+
+    /// <summary>
+    /// GetAuthorizedUserSystem
+    /// </summary>
+    /// <returns></returns>
+    AuthorizedUser GetAuthorizedUserSystem();
 
     /// <summary>
     /// GetUserAttributesAsync
@@ -72,8 +84,11 @@ public interface IUserAuthorizationService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<List<UserClientIdInfo>> GetNotifiedUsersAsync(
-        string serviceName, Dictionary<string, List<string>> attributes, string permission,
-        IEnumerable<string> clientIds, CancellationToken cancellationToken);
+        string serviceName,
+        Dictionary<string, List<string>> attributes,
+        string permission,
+        IEnumerable<string> clientIds,
+        CancellationToken cancellationToken);
 
     /// <summary>
     /// GetDevicesIdByUserId
@@ -82,7 +97,9 @@ public interface IUserAuthorizationService
     /// <param name="clientId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<List<UserDeviceInfo>> GetDevicesIdByUserIdAsync(Guid userId, string clientId,
+    Task<List<UserDeviceInfo>> GetDevicesIdByUserIdAsync(
+        Guid userId,
+        string clientId,
         CancellationToken cancellationToken);
 
     /// <summary>
@@ -99,11 +116,11 @@ public interface IUserAuthorizationService
     /// <param name="generalParameterCode"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<GeneralParameterInfo> GetGeneralParameterAsync(string generalParameterCode,
-        CancellationToken cancellationToken);
+    Task<GeneralParameterInfo> GetGeneralParameterAsync(
+        string generalParameterCode, CancellationToken cancellationToken);
 
     /// <summary>
-    /// GetUserServices
+    /// GetUserServicesAsync
     /// </summary>
     /// <param name="generalParameterCode"></param>
     /// <returns></returns>

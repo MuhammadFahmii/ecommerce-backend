@@ -38,11 +38,16 @@ public class ChangelogConfiguration : IEntityTypeConfiguration<Changelog>
         builder.Property(e => e.KeyValues)
             .HasColumnType("nvarchar(100)")
             .HasMaxLength(100);
+
         builder.Property(e => e.NewValues)
             .HasColumnType("nvarchar(max)");
 
         builder.Property(e => e.OldValues)
             .HasColumnType("nvarchar(max)");
+
+        builder.Property(e => e.ChangeBy)
+            .HasColumnType("varchar(150)")
+            .HasMaxLength(150);
 
         builder.Property(e => e.ChangeDate)
             .HasColumnType("bigint");

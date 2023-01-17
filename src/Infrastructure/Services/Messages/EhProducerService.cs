@@ -65,7 +65,10 @@ public class EhProducerService : IEhProducerService
     /// <param name="message"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<bool> SendAsync(AzureEventHub az, string topic, string message,
+    public async Task<bool> SendAsync(
+        AzureEventHub az,
+        string topic,
+        string message,
         CancellationToken cancellationToken)
     {
         var result = false;

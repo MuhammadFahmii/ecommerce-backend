@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,8 +15,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using netca.Application.Common.Interfaces;
+using netca.Application.Common.Models;
 using netca.Domain.Entities;
-using netca.Infrastructure.MediatorExtensions;
+using netca.Infrastructure.Extensions;
 using netca.Infrastructure.Persistence.Interceptors;
 using Newtonsoft.Json;
 
@@ -28,24 +28,39 @@ namespace netca.Infrastructure.Persistence;
 /// </summary>
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
+    private readonly IUserAuthorizationService _userAuthorizationService;
     private readonly IMediator _mediator;
-    private readonly IDateTime _dateTime;
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
+    private readonly IDateTime _dateTime;
+    private readonly AppSetting _appSetting;
+    private readonly List<EntityState> _auditState = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
     /// </summary>
     /// <param name="options"></param>
+    /// <param name="userAuthorizationService"></param>
     /// <param name="mediator"></param>
     /// <param name="auditableEntitySaveChangesInterceptor"></param>
     /// <param name="dateTime"></param>
+    /// <param name="appSetting"></param>
     public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
-        IDateTime dateTime) : base(options)
+        DbContextOptions<ApplicationDbContext> options,
+        IUserAuthorizationService userAuthorizationService,
+        IMediator mediator,
+        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+        IDateTime dateTime,
+        AppSetting appSetting)
+        : base(options)
     {
+        _userAuthorizationService = userAuthorizationService;
+        _mediator = mediator;
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
         _dateTime = dateTime;
-        _mediator = mediator;
+        _appSetting = appSetting;
+
+        foreach (var state in _appSetting.DatabaseSettings.AuditState)
+            _auditState.Add((EntityState)Enum.Parse(typeof(EntityState), state));
     }
 
     /// <summary>
@@ -62,6 +77,23 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// Gets or sets todoLists
     /// </summary>
     public DbSet<TodoList> TodoLists { get; set; } = null!;
+
+    /// <summary>
+    /// AsNoTracking
+    /// </summary>
+    public void AsNoTracking()
+    {
+        ChangeTracker.AutoDetectChangesEnabled = false;
+        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+    }
+
+    /// <summary>
+    /// Clear
+    /// </summary>
+    public void Clear()
+    {
+        ChangeTracker.Clear();
+    }
 
     /// <summary>
     /// to prevent hard delete
@@ -102,9 +134,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ConfigureServices).Assembly);
+
         base.OnModelCreating(modelBuilder);
     }
-    
+
     /// <summary>
     /// OnConfiguring
     /// </summary>
@@ -112,6 +145,22 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
+    }
+
+    /// <summary>
+    /// Execute using EF Core resiliency strategy
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public async Task ExecuteResiliencyAsync(Func<Task> action)
+    {
+        var strategy = this.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction = await this.Database.BeginTransactionAsync();
+            await action();
+            await transaction.CommitAsync();
+        });
     }
 
     /// <summary>
@@ -141,23 +190,31 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             if (entry.Entity is Changelog || entry.State is EntityState.Detached or EntityState.Unchanged)
                 continue;
 
-            var changelogEntry = new ChangelogEntry
+            var tableName = entry.Metadata.GetTableName();
+
+            var enableAuditChangelog = _appSetting.DatabaseSettings.EnableAuditChangelog &&
+                !ignoreTable.Contains(tableName) &&
+                _auditState.Contains(entry.State);
+
+            if (enableAuditChangelog)
             {
-                ChangeDate = _dateTime.UtcNow,
-                TableName = entry.Metadata.GetTableName()
-            };
+                var username = _userAuthorizationService.GetUserNameSystem();
 
-            if (ignoreTable.Contains(changelogEntry.TableName))
-                continue;
-            changelogEntries.Add(changelogEntry);
+                var changelogEntry = new ChangelogEntry
+                {
+                    ChangeBy = username,
+                    ChangeDate = _dateTime.UtcNow,
+                    TableName = tableName
+                };
 
-            ChangelogEntryEvent(changelogEntry, entry);
+                changelogEntries.Add(changelogEntry);
+
+                ChangelogEntryEvent(changelogEntry, entry);
+            }
         }
 
         foreach (var changelogEntry in changelogEntries.Where(_ => !_.HasTemporaryProperties))
-        {
-            Changelogs?.Add(changelogEntry.ToAudit());
-        }
+            Changelogs.Add(changelogEntry.ToAudit());
 
         return changelogEntries
             .Where(_ => _.HasTemporaryProperties)
@@ -167,10 +224,13 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     private void ReplaceUnicodePostgres(PropertyEntry property)
     {
         var con = Database.ProviderName;
+
         if (!con!.Equals("Npgsql.EntityFrameworkCore.PostgreSQL"))
             return;
+
         var type = property.Metadata.ClrType;
         var typeName = type.ShortDisplayName();
+
         if (typeName.Equals("string") && property.CurrentValue != null)
         {
             property.CurrentValue = Encoding.ASCII.GetString(
@@ -179,11 +239,11 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                     Encoding.GetEncoding(
                         Encoding.ASCII.EncodingName,
                         new EncoderReplacementFallback(string.Empty),
-                        new DecoderExceptionFallback()
-                    ),
-                    Encoding.UTF8.GetBytes(property.CurrentValue.ToString()!
-                    )
-                ));
+                        new DecoderExceptionFallback()),
+                    Encoding.UTF8.GetBytes(property.CurrentValue.ToString()!)));
+
+            property.CurrentValue = ((string)property.CurrentValue)
+                    .Replace("\u0000", string.Empty);
         }
 
         if (typeName.Equals("string") && property.OriginalValue != null)
@@ -194,11 +254,11 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                     Encoding.GetEncoding(
                         Encoding.ASCII.EncodingName,
                         new EncoderReplacementFallback(string.Empty),
-                        new DecoderExceptionFallback()
-                    ),
-                    Encoding.UTF8.GetBytes(property.OriginalValue.ToString()!
-                    )
-                ));
+                        new DecoderExceptionFallback()),
+                    Encoding.UTF8.GetBytes(property.OriginalValue.ToString()!)));
+
+            property.OriginalValue = ((string)property.OriginalValue)
+                .Replace("\u0000", string.Empty);
         }
     }
 
@@ -255,7 +315,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     private Task OnAfterSaveChanges(List<ChangelogEntry> changelogEntries, CancellationToken cancellationToken)
     {
-        if (changelogEntries.Count == 0)
+        if (changelogEntries == null || changelogEntries.Count == 0)
             return Task.CompletedTask;
 
         foreach (var changelogEntry in changelogEntries)
@@ -291,6 +351,12 @@ public class ChangelogEntry
     /// </summary>
     /// <value></value>
     public string? TableName { get; set; }
+
+    /// <summary>
+    /// Gets or sets changeBy
+    /// </summary>
+    /// <value></value>
+    public string? ChangeBy { get; set; }
 
     /// <summary>
     /// Gets or sets changeDate
@@ -337,6 +403,7 @@ public class ChangelogEntry
         var changelog = new Changelog
         {
             TableName = TableName,
+            ChangeBy = ChangeBy,
             ChangeDate = ChangeDate,
             Method = Method,
             KeyValues = JsonConvert.SerializeObject(KeyValues),

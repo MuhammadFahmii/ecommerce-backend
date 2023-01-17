@@ -32,7 +32,6 @@ namespace netca.Infrastructure.Services;
 public class UserAuthorizationService : IUserAuthorizationService
 {
     private readonly ClaimsPrincipal? _user;
-    private readonly AppSetting _appSetting;
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger<UserAuthorizationService> _logger;
     private readonly bool _isAuthenticated;
@@ -47,6 +46,8 @@ public class UserAuthorizationService : IUserAuthorizationService
         SleepDuration = 1000
     });
 
+    private static readonly SemaphoreSlim SemaphoreSlim = new(1);
+
     /// <summary>
     /// Initializes a new instance of the <see cref="UserAuthorizationService"/> class.
     /// </summary>
@@ -55,25 +56,33 @@ public class UserAuthorizationService : IUserAuthorizationService
     /// <param name="environment"></param>
     /// <param name="httpContextAccessor"></param>
     public UserAuthorizationService(
-        ILogger<UserAuthorizationService> logger, AppSetting appSetting, IWebHostEnvironment environment,
+        ILogger<UserAuthorizationService> logger,
+        AppSetting appSetting,
+        IWebHostEnvironment environment,
         IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
-        _user = httpContextAccessor.HttpContext?.User;
-        _appSetting = appSetting;
+        _user = httpContextAccessor?.HttpContext?.User;
         _environment = environment;
+        _permissionName = (string)httpContextAccessor?.HttpContext?.Items?["CurrentPolicyName"]!;
         _authorization = httpContextAccessor?.HttpContext?.Request?.Headers?["Authorization"] ?? string.Empty;
-        
-        if (httpContextAccessor?.HttpContext?.Items.TryGetValue("CurrentPolicyName", out _) == true)
-        {
-            _permissionName = (string)httpContextAccessor.HttpContext?.Items["CurrentPolicyName"]!;
-        }
         _isAuthenticated = httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) != null;
 
-        _httpClient.DefaultRequestHeaders.Add(
-            _appSetting.AuthorizationServer.Header,
-            _appSetting.AuthorizationServer.Secret
-        );
+        _httpClient.BaseAddress ??= new Uri(appSetting.AuthorizationServer.Address);
+
+        SemaphoreSlim.Wait();
+
+        try
+        {
+            if (!_httpClient.DefaultRequestHeaders.Contains(appSetting.AuthorizationServer.Header))
+                _httpClient.DefaultRequestHeaders.Add(appSetting.AuthorizationServer.Header, appSetting.AuthorizationServer.Secret);
+        }
+        catch
+        {
+            logger.LogDebug("Error when add request header");
+        }
+
+        SemaphoreSlim.Release();
     }
 
     private bool IsProd() => _environment.IsProduction();
@@ -99,7 +108,21 @@ public class UserAuthorizationService : IUserAuthorizationService
     /// <returns></returns>
     public string? GetUserName()
     {
+        if ((!IsProd() && !_isAuthenticated) || IsTest())
+            return Constants.SystemEmail;
+
         return _user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Name)?.Value;
+    }
+
+    /// <summary>
+    /// GetUserNameSystem
+    /// </summary>
+    /// <returns></returns>
+    public string? GetUserNameSystem()
+    {
+        return _isAuthenticated ?
+            _user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Name)?.Value :
+            Constants.SystemEmail;
     }
 
     /// <summary>
@@ -108,7 +131,7 @@ public class UserAuthorizationService : IUserAuthorizationService
     /// <returns></returns>
     public string? GetCustomerCode()
     {
-        if (!IsProd() && !_isAuthenticated)
+        if ((!IsProd() && !_isAuthenticated) || IsTest())
             return Constants.SystemCustomerName;
 
         return _user?.Claims.FirstOrDefault(i => i.Type == Constants.CustomerCode)?.Value;
@@ -120,7 +143,7 @@ public class UserAuthorizationService : IUserAuthorizationService
     /// <returns></returns>
     public string? GetClientId()
     {
-        if (!IsProd() && !_isAuthenticated)
+        if ((!IsProd() && !_isAuthenticated) || IsTest())
             return Constants.SystemClientId;
 
         return _user?.Claims.FirstOrDefault(i => i.Type == Constants.ClientId)?.Value;
@@ -134,15 +157,15 @@ public class UserAuthorizationService : IUserAuthorizationService
     {
         var result = MockData.GetAuthorizedUser();
 
-        if (!IsProd() && !_isAuthenticated)
+        if ((!IsProd() && !_isAuthenticated) || IsTest())
             return result;
 
         if (_isAuthenticated)
         {
-            result = new AuthorizedUser()
+            result = new AuthorizedUser
             {
                 UserId = GetUserId(),
-                UserName = StringExtensions.Truncate(GetUserName(), 50),
+                UserName = StringExtensions.Truncate(GetUserName() ?? string.Empty, 50),
                 UserFullName = StringExtensions.Truncate(
                     $"{_user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.GivenName)?.Value} {_user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Surname)?.Value}",
                     50),
@@ -155,31 +178,48 @@ public class UserAuthorizationService : IUserAuthorizationService
     }
 
     /// <summary>
+    /// GetAuthorizedUserSystem
+    /// </summary>
+    /// <returns></returns>
+    public AuthorizedUser GetAuthorizedUserSystem()
+    {
+        var result = MockData.GetAuthorizedUser();
+
+        return _isAuthenticated ? new AuthorizedUser
+        {
+            UserId = GetUserId(),
+            UserName = StringExtensions.Truncate(GetUserName() ?? string.Empty, 50),
+            UserFullName = StringExtensions.Truncate(
+                $"{_user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.GivenName)?.Value} {_user?.Claims.FirstOrDefault(i => i.Type == ClaimTypes.Surname)?.Value}",
+                50),
+            CustomerCode = GetCustomerCode(),
+            ClientId = GetClientId()
+        }
+        : result;
+    }
+
+    /// <summary>
     /// GetUserAttributesAsync
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public async Task<Dictionary<string, List<string>>?> GetUserAttributesAsync(CancellationToken cancellationToken)
     {
-        Dictionary<string, List<string>>? result = null;
-        if (!IsProd() && !_isAuthenticated)
+        if ((!IsProd() && !_isAuthenticated) || IsTest())
             return MockData.GetUserAttribute();
 
-        if (IsTest())
-            return MockData.GetUserAttribute();
+        Dictionary<string, List<string>>? result = null;
 
         if (!_isAuthenticated || _permissionName == null)
-            return null;
+            return result;
 
         var userId = GetUserId();
         var clientId = GetClientId();
-        var url = new Uri(_appSetting.AuthorizationServer.Gateway +
-                          $"/api/user/attribute/{userId}/{clientId}/{_permissionName}");
+        var url = $"api/user/attribute/{userId}/{clientId}/{_permissionName}";
 
-        var response = await _httpClient.GetAsync(url, cancellationToken);
+        var response = await _httpClient.GetAsync(new Uri(_httpClient.BaseAddress + url), cancellationToken);
 
-        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
-        _logger.LogDebug("{M}", response.ToString());
+        _logger.LogDebug("Response: \n {response}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
             return null;
@@ -192,7 +232,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed HTTP request status {Status} {Response}", response.StatusCode, responseString);
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
         return result;
@@ -208,7 +248,7 @@ public class UserAuthorizationService : IUserAuthorizationService
     public async Task<List<UserClientIdInfo>> GetUsersByAttributesAsync(
         string serviceName, Dictionary<string, IList<string>> attributes, CancellationToken cancellationToken)
     {
-        if (IsTest())
+        if ((!IsProd() && !_isAuthenticated) || IsTest())
             return MockData.GetUserByAttribute();
 
         var result = new List<UserClientIdInfo>();
@@ -218,16 +258,14 @@ public class UserAuthorizationService : IUserAuthorizationService
 
         var jsonString = JsonConvert.SerializeObject(attributes);
 
-        var url = new Uri(_appSetting.AuthorizationServer.Gateway + $"/api/user/attributes/{serviceName}");
+        var url = $"api/user/attributes/{serviceName}";
 
         var response = await _httpClient.PostAsync(
-            url,
+            new Uri(_httpClient.BaseAddress + url),
             new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
-            cancellationToken
-        );
+            cancellationToken);
 
-        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
-        _logger.LogDebug("{M}", response.ToString());
+        _logger.LogDebug("Response: \n {response}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
             return result;
@@ -240,7 +278,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed HTTP request status {Status} {Response}", response.StatusCode, responseString);
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
         return result!;
@@ -256,29 +294,31 @@ public class UserAuthorizationService : IUserAuthorizationService
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public async Task<List<UserClientIdInfo>> GetNotifiedUsersAsync(
-        string serviceName, Dictionary<string, List<string>> attributes, string permission,
-        IEnumerable<string> clientIds, CancellationToken cancellationToken)
+        string serviceName,
+        Dictionary<string, List<string>> attributes,
+        string permission,
+        IEnumerable<string> clientIds,
+        CancellationToken cancellationToken)
     {
         var result = new List<UserClientIdInfo>();
 
         if (!_isAuthenticated)
             return result;
 
-        var jsonString = JsonConvert.SerializeObject(attributes);
-        var url = $"/api/user/attributes/notification/{serviceName}?notifPermission={permission}";
+        var url = $"api/user/attributes/notification/{serviceName}?notifPermission={permission}";
         var enumerable = clientIds.ToList();
 
         if (enumerable.Any())
             url = enumerable.Aggregate(url, (current, clientId) => current + $"&clientId={clientId}");
 
-        var response = await _httpClient.PostAsync(
-            url,
-            new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
-            cancellationToken
-        );
+        var jsonString = JsonConvert.SerializeObject(attributes);
 
-        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
-        _logger.LogDebug("{M}", response.ToString());
+        var response = await _httpClient.PostAsync(
+            new Uri(_httpClient.BaseAddress + url),
+            new StringContent(jsonString, Encoding.UTF8, Constants.HeaderJson),
+            cancellationToken);
+
+        _logger.LogDebug("Response: \n {response}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
             return result;
@@ -291,7 +331,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed HTTP request status {Status} {Response}", response.StatusCode, responseString);
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
         return result!;
@@ -312,11 +352,10 @@ public class UserAuthorizationService : IUserAuthorizationService
         if (!_isAuthenticated)
             return result;
 
-        var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/device/{userId}/{clientId}";
-        var response = await _httpClient.GetAsync(url, cancellationToken);
+        var url = $"api/user/device/{userId}/{clientId}";
+        var response = await _httpClient.GetAsync(new Uri(_httpClient.BaseAddress + url), cancellationToken);
 
-        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
-        _logger.LogDebug("{M}", response.ToString());
+        _logger.LogDebug("Response: \n {response}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
             return result;
@@ -329,7 +368,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed HTTP request status {Status} {Response}", response.StatusCode, responseString);
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
         return result!;
@@ -343,16 +382,18 @@ public class UserAuthorizationService : IUserAuthorizationService
     /// <returns></returns>
     public async Task<UserEmailInfo> GetEmailByUserIdAsync(Guid userId, CancellationToken cancellationToken)
     {
+        if ((!IsProd() && !_isAuthenticated) || IsTest())
+            return MockData.GetUserEmailInfo();
+
         var result = new UserEmailInfo();
 
         if (!_isAuthenticated)
             return result;
 
-        var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/email/{userId}";
-        var response = await _httpClient.GetAsync(url, cancellationToken);
+        var url = $"api/user/email/{userId}";
+        var response = await _httpClient.GetAsync(new Uri(_httpClient.BaseAddress + url), cancellationToken);
 
-        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
-        _logger.LogDebug("{M}", response.ToString());
+        _logger.LogDebug("Response: \n {response}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
             return result;
@@ -365,7 +406,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed HTTP request status {Status} {Response}", response.StatusCode, responseString);
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
         return result!;
@@ -385,12 +426,11 @@ public class UserAuthorizationService : IUserAuthorizationService
         if (!_isAuthenticated)
             return result;
 
-        var url = new Uri(
-            _appSetting.AuthorizationServer.Gateway + "api/generalparameter/" + generalParameterCode);
-        var response = await _httpClient.GetAsync(url, cancellationToken);
+        var url = $"api/generalparameter/{generalParameterCode}";
 
-        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
-        _logger.LogDebug("{M}", response.ToString());
+        var response = await _httpClient.GetAsync(new Uri(_httpClient.BaseAddress + url), cancellationToken);
+
+        _logger.LogDebug("Response: \n {response}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
             return result;
@@ -403,7 +443,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed HTTP request status {Status} {Response}", response.StatusCode, responseString);
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
         return result!;
@@ -434,12 +474,11 @@ public class UserAuthorizationService : IUserAuthorizationService
 
         var userId = GetUserId();
         var clientId = GetClientId();
-        var url = _appSetting.AuthorizationServer.Gateway +
-                  $"/api/user/attribute/service/{userId}/{clientId}/{_permissionName}?getService=true";
-        var response = await _httpClient.GetAsync(url, cancellationToken);
+        var url = $"api/user/attribute/service/{userId}/{clientId}/{_permissionName}?getService=true";
 
-        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
-        _logger.LogDebug("{M}", response.ToString());
+        var response = await _httpClient.GetAsync(new Uri(_httpClient.BaseAddress + url), cancellationToken);
+
+        _logger.LogDebug("Response: \n {response}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
             return result;
@@ -452,7 +491,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed HTTP request status {Status} {Response}", response.StatusCode, responseString);
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
         return result!;
@@ -467,18 +506,18 @@ public class UserAuthorizationService : IUserAuthorizationService
     {
         var result = new List<UserManagementUser>();
 
-        if (IsTest())
+        if ((!IsProd() && !_isAuthenticated) || IsTest())
             return MockData.GetListMechanics();
 
         if (!_isAuthenticated)
             return result;
 
         var clientId = GetClientId();
-        var url = _appSetting.AuthorizationServer.Gateway + $"/api/user/clientid/{clientId}";
-        var response = await _httpClient.GetAsync(url, cancellationToken);
+        var url = $"api/user/clientid/{clientId}";
 
-        _logger.LogDebug("Response: {Code}", response.IsSuccessStatusCode);
-        _logger.LogDebug("{M}", response.ToString());
+        var response = await _httpClient.GetAsync(new Uri(_httpClient.BaseAddress + url), cancellationToken);
+
+        _logger.LogDebug("Response: \n {response}", response.ToString());
 
         if (!response.IsSuccessStatusCode)
             return result;
@@ -491,7 +530,7 @@ public class UserAuthorizationService : IUserAuthorizationService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed HTTP request status {Status} {Response}", response.StatusCode, responseString);
+            _logger.LogError(e, "Failed to HTTP request with status {statusCode}: {response}", response.StatusCode, responseString);
         }
 
         return result!;
@@ -507,8 +546,9 @@ public class UserAuthorizationService : IUserAuthorizationService
         if (!_isAuthenticated)
             return;
 
-        var url = _appSetting.AuthorizationServer.Gateway + $"/api/deviceid/{deviceId}";
-        await _httpClient.DeleteAsync(url);
+        var url = $"api/deviceid/{deviceId}";
+
+        await _httpClient.DeleteAsync(new Uri(_httpClient.BaseAddress + url));
     }
 
     /// <summary>

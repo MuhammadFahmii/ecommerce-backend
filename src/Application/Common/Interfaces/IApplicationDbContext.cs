@@ -36,9 +36,26 @@ public interface IApplicationDbContext
     public DatabaseFacade Database { get; }
 
     /// <summary>
+    /// AsNoTracking
+    /// </summary>
+    public void AsNoTracking();
+
+    /// <summary>
+    /// Clear
+    /// </summary>
+    public void Clear();
+
+    /// <summary>
+    /// Execute using EF Core resiliency strategy
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public Task ExecuteResiliencyAsync(Func<Task> action);
+
+    /// <summary>
     /// SaveChangesAsync
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

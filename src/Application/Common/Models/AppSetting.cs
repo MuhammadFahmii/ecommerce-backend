@@ -353,6 +353,23 @@ public record DatabaseSettings
     public int CommandTimeout { get; set; } = 60;
 
     /// <summary>
+    /// Gets or sets a value indicating whether gets or sets enableAuditChangelog
+    /// </summary>
+    /// <value></value>
+    public bool EnableAuditChangelog { get; set; }
+
+    /// <summary>
+    /// Gets or sets a audit state
+    /// </summary>
+    /// <value></value>
+    public List<string> AuditState { get; set; } = new()
+    {
+        "Added",
+        "Modified",
+        "Deleted"
+    };
+
+    /// <summary>
     /// Gets or sets a value indicating whether migrations
     /// </summary>
     /// <value></value>

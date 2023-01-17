@@ -44,6 +44,20 @@ public static class MockData
     }
 
     /// <summary>
+    /// GetUserEmailInfo
+    /// </summary>
+    /// <returns></returns>
+    public static UserEmailInfo GetUserEmailInfo()
+    {
+        return new UserEmailInfo
+        {
+            Email = Constants.SystemEmail,
+            FirstName = Constants.SystemName,
+            LastName = Constants.SystemName
+        };
+    }
+
+    /// <summary>
     /// GetUserByAttributeAsync
     /// </summary>
     /// <returns></returns>

@@ -50,6 +50,12 @@ public record Changelog
     public string? OldValues { get; set; }
 
     /// <summary>
+    /// Gets or sets changeBy
+    /// </summary>
+    /// <value></value>
+    public string? ChangeBy { get; set; }
+
+    /// <summary>
     /// Gets or sets changeDate
     /// </summary>
     /// <value></value>
