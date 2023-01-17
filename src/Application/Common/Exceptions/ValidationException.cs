@@ -4,9 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using FluentValidation.Results;
 
 namespace netca.Application.Common.Exceptions;
@@ -16,6 +13,12 @@ namespace netca.Application.Common.Exceptions;
 /// </summary>
 public class ValidationException : Exception
 {
+    /// <summary>
+    /// Gets errors
+    /// </summary>
+    /// <value></value>
+    public IDictionary<string, string[]> Errors { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationException"/> class.
     /// </summary>
@@ -34,12 +37,6 @@ public class ValidationException : Exception
     {
         Errors = failures
             .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
-            .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
+            .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.Distinct().ToArray());
     }
-
-    /// <summary>
-    /// Gets errors
-    /// </summary>
-    /// <value></value>
-    public IDictionary<string, string[]> Errors { get; }
 }

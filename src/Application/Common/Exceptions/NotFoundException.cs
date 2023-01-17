@@ -4,8 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-
 namespace netca.Application.Common.Exceptions;
 
 /// <summary>
@@ -17,7 +15,8 @@ public class NotFoundException : Exception
     /// Initializes a new instance of the <see cref="NotFoundException"/> class.
     /// </summary>
     /// <param name="message"></param>
-    public NotFoundException(string message) : base(message)
+    public NotFoundException(string message)
+        : base(message)
     {
     }
 
