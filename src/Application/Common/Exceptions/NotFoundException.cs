@@ -4,13 +4,23 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System.Runtime.Serialization;
+
 namespace netca.Application.Common.Exceptions;
 
 /// <summary>
 /// NotFoundException
 /// </summary>
+[Serializable]
 public class NotFoundException : Exception
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotFoundException"/> class.
+    /// </summary>
+    public NotFoundException()
+    {
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="NotFoundException"/> class.
     /// </summary>
@@ -37,6 +47,16 @@ public class NotFoundException : Exception
     /// <param name="key"></param>
     public NotFoundException(string name, object key)
         : base($"Entity \"{name}\" ({key}) was not found.")
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotFoundException"/> class.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    protected NotFoundException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }

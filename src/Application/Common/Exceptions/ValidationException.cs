@@ -4,6 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using System.Runtime.Serialization;
 using FluentValidation.Results;
 
 namespace netca.Application.Common.Exceptions;
@@ -11,13 +12,14 @@ namespace netca.Application.Common.Exceptions;
 /// <summary>
 /// ValidationException
 /// </summary>
+[Serializable]
 public class ValidationException : Exception
 {
     /// <summary>
     /// Gets errors
     /// </summary>
     /// <value></value>
-    public IDictionary<string, string[]> Errors { get; }
+    public IDictionary<string, string[]>? Errors { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationException"/> class.
@@ -38,5 +40,15 @@ public class ValidationException : Exception
         Errors = failures
             .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
             .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.Distinct().ToArray());
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidationException"/> class.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    protected ValidationException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
     }
 }
