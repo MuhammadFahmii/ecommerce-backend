@@ -4,6 +4,8 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
+using netca.Domain.Entities;
+
 namespace netca.Application.Common.Models;
 
 /// <summary>
@@ -15,15 +17,101 @@ public static class MockData
     /// GetUserAttribute
     /// </summary>
     /// <returns></returns>
-    public static Dictionary<string, List<string>>? GetUserAttribute()
+    public static Dictionary<string, List<string>> GetUserAttribute()
     {
         var result = new Dictionary<string, List<string>>();
-        var plants = new List<string>();
-        var workCenters = GetWorkCenters().Select(w => w.Key).ToList();
-        result.Add(Constants.WorkCenterFieldName, workCenters);
-        plants.Add(Constants.All);
+        var customers = new List<string> { Constants.All };
+        var plants = new List<string> { Constants.All };
+        var customerSites = new List<string> { Constants.All };
+        var workCenters = new List<string> { Constants.All };
+        var abcInds = new List<string> { Constants.All };
+        result.Add(Constants.CustomerName, customers);
         result.Add(Constants.PlantFieldName, plants);
+        result.Add(Constants.CustomerSiteFieldName, customerSites);
+        result.Add(Constants.WorkCenterFieldName, workCenters);
+        result.Add(Constants.ABCFieldName, abcInds);
         return result;
+    }
+
+    /// <summary>
+    /// GetUnitModelsOrCodes
+    /// </summary>
+    /// <returns></returns>
+    public static string[] GetUnitModelsOrCodes()
+    {
+        return new[]
+        {
+            "HD785-7",
+            "PC2000-8",
+            "HD1500-7",
+            "HD785-5",
+            "GD825A-2",
+            "PC3000-6",
+            "PC4000-6",
+            "PC3000-6E",
+            "P420CB-8X4",
+            "P360CB-6X4",
+            "P360LA-6X4",
+            "P410CB-8X4",
+            "P460LA-6x4",
+            "R580LA-6X4"
+        };
+    }
+
+    /// <summary>
+    /// Get Changelogs data Examples
+    /// </summary>
+    /// <returns></returns>
+    public static List<Changelog> GetChangelogs()
+    {
+        var changelogs = new List<Changelog>();
+        var mockGuids = new List<Guid>
+        {
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid()
+        };
+        int sequence = 1;
+
+        foreach (var guid in mockGuids)
+        {
+            changelogs.Add(new Changelog
+            {
+                Id = guid,
+                Method = GetDbMethod(),
+                KeyValues = "Value",
+                NewValues = "Value",
+                OldValues = "Value",
+                TableName = "Table",
+                ChangeDate = DateTime.UtcNow.AddMonths(-1 * sequence).Ticks
+            });
+            sequence += 1;
+        }
+
+        return changelogs;
+    }
+
+    /// <summary>
+    /// Get Db Method Exmaple
+    /// </summary>
+    /// <returns></returns>
+    public static string GetDbMethod()
+    {
+        string[] types =
+        {
+            "DELETE",
+            "EDIT",
+            "ADD"
+        };
+        var random = new Random();
+        return types[random.Next(0, 2)];
     }
 
     /// <summary>
@@ -156,6 +244,39 @@ public static class MockData
     }
 
     /// <summary>
+    /// RandomUnitModel
+    /// </summary>
+    /// <returns></returns>
+    public static string RandomUnitModel()
+    {
+        var names = GetUnitModelsOrCodes();
+        var random = new Random();
+        return names[random.Next(0, names.Length)];
+    }
+
+    /// <summary>
+    /// RandomString
+    /// </summary>
+    /// <param name="length"></param>
+    /// <returns></returns>
+    public static string RandomString(int length = 50)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[new Random().Next(s.Length)]).ToArray());
+    }
+
+    /// <summary>
+    /// RandomTimeSpan
+    /// </summary>
+    /// <param name="length"></param>
+    /// <returns></returns>
+    public static TimeSpan RandomTimeSpan(int length = 86400)
+    {
+        return new TimeSpan(0, 0, 0, new Random().Next(length));
+    }
+
+    /// <summary>
     /// GetWorkCenters
     /// </summary>
     /// <returns></returns>
@@ -183,5 +304,27 @@ public static class MockData
             new("FM-MTBPM", "FMC MTBU Pama"),
             new("FM-TBGKW", "FMC Tabang KWN")
         };
+    }
+
+    /// <summary>
+    /// Fill
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="value"></param>
+    /// <param name="count"></param>
+    public static void Fill(this Stream stream, byte value, int count)
+    {
+        var buffer = new byte[64];
+
+        for (int i = 0; i < buffer.Length; i++)
+            buffer[i] = value;
+
+        while (count > buffer.Length)
+        {
+            stream.Write(buffer, 0, buffer.Length);
+            count -= buffer.Length;
+        }
+
+        stream.Write(buffer, 0, count);
     }
 }

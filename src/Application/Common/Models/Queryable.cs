@@ -4,9 +4,6 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Dynamic.Core.Exceptions;
 using Microsoft.Extensions.Logging;
@@ -36,23 +33,26 @@ public static class Queryable
 
         _type = typeof(T);
 
-        source = Filter(source, queryModel.GetFiltersParsed());
+        source = Filter(source, queryModel.GetFiltersParsed() ?? new List<FilterQuery>());
 
         source = Sort(source, queryModel.GetSortsParsed());
 
         if (queryModel.PageNumber < 1)
             queryModel.PageNumber = Constants.DefaultPageNumber;
-        if (queryModel.PageSize < 1)
-            queryModel.PageSize = Constants.DefaultPageSize;
 
-        source = Limit(source, queryModel.PageNumber ?? Constants.DefaultPageNumber,
-            queryModel.PageSize ?? Constants.DefaultPageSize);
+        if (queryModel.PageSize > 0)
+        {
+            source = Limit(
+                source,
+                queryModel.PageNumber ?? Constants.DefaultPageNumber,
+                queryModel.PageSize ?? Constants.DefaultPageSize);
+        }
 
         return source;
     }
 
     /// <summary>
-    /// Query
+    /// QueryWithoutLimit
     /// </summary>
     /// <param name="source"></param>
     /// <param name="queryModel"></param>
@@ -65,9 +65,28 @@ public static class Queryable
 
         _type = typeof(T);
 
-        source = Filter(source, queryModel.GetFiltersParsed());
+        source = Filter(source, queryModel.GetFiltersParsed() ?? new List<FilterQuery>());
 
         source = Sort(source, queryModel.GetSortsParsed());
+
+        return source;
+    }
+
+    /// <summary>
+    /// Filter
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="queryModel"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static IQueryable<T> Filter<T>(this IQueryable<T> source, QueryModel queryModel)
+    {
+        if (source == null)
+            throw new ArgumentNullException(nameof(source));
+
+        _type = typeof(T);
+
+        source = Filter(source, queryModel.GetFiltersParsed() ?? new List<FilterQuery>());
 
         return source;
     }
@@ -76,20 +95,23 @@ public static class Queryable
     {
         try
         {
-            if (filter.Any())
+            if (filter != null && filter.Any())
             {
                 var where = SwitchLogic(filter);
+
                 if (!string.IsNullOrEmpty(where))
                 {
                     var values = filter.Select(f => f.Value).ToArray();
-                    Logger?.LogDebug("Filter {Type} with {Where} {Values}", _type, where, values);
+
+                    Logger?.LogDebug("Filter {type} with {where} {values}", _type, where, values);
+
                     source = source.Where(where, values);
                 }
             }
         }
         catch (Exception e)
         {
-            Logger?.LogWarning("Failed to filter {Message}", e.Message);
+            Logger?.LogWarning("Failed to filter {message}", e.Message);
         }
 
         return source;
@@ -104,9 +126,9 @@ public static class Queryable
             string f;
 
             if (logic.StartsWith("("))
-                f = i == 0
-                    ? $"({Transform(logic[1..], filter[i], i)}"
-                    : $"{Transform(logic[1..] + " (", filter[i], i)}";
+                f = i == 0 ?
+                	$"({Transform(logic[1..], filter[i], i)}" :
+                	$"{Transform(logic[1..] + " (", filter[i], i)}";
             else if (logic.EndsWith(")"))
                 f = $"{Transform(logic[..^1], filter[i], i)})";
             else
@@ -120,8 +142,13 @@ public static class Queryable
 
     private static IQueryable<T> Limit<T>(IQueryable<T> source, int pageNumber, int pageSize)
     {
-        Logger?.LogDebug("Try to skip {Skip} and take {PageSize}", (pageSize * (pageNumber - 1)), pageSize);
-        return source.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+        var skip = pageSize * (pageNumber - 1);
+
+        Logger?.LogDebug("Try to skip {skip} and take {pageSize}", skip, pageSize);
+
+        return source
+            .Skip(skip)
+            .Take(pageSize);
     }
 
     private static readonly IDictionary<string, string>
@@ -169,7 +196,7 @@ public static class Queryable
         }
         catch (Exception e)
         {
-            Logger?.LogWarning("Operator {Operator} not part of the Dictionary {Message}", filter.Operator, e.Message);
+            Logger?.LogWarning("Operator {operator} not part of the Dictionary {message}", filter.Operator, e.Message);
         }
 
         return null!;
@@ -182,46 +209,42 @@ public static class Queryable
             if (index > 0)
             {
                 return string.Format(
-                    "{0} ({1} != null && !{1}.{2}(@{3}))",
+                    "{0} ({1} != null && !{1}.ToString().{2}(@{3}))",
                     logic,
                     filter.Field,
                     comparison,
-                    index
-                );
+                    index);
             }
 
             return string.Format(
-                "({0} != null && !{0}.{1}(@{2}))",
+                "({0} != null && !{0}.ToString().{1}(@{2}))",
                 filter.Field,
                 comparison,
-                index
-            );
+                index);
         }
 
         if (comparison != "StartsWith" && comparison != "EndsWith" && comparison != "Contains")
         {
-            return index > 0
-                ? $" {logic} {filter.Field} {comparison} @{index}"
-                : $"{filter.Field} {comparison} @{index}";
+            return index > 0 ?
+                $" {logic} {filter.Field} {comparison} @{index}" :
+                $"{filter.Field} {comparison} @{index}";
         }
 
         if (index > 0)
         {
             return string.Format(
-                "{0} ({1} != null && {1}.{2}(@{3}))",
+                "{0} ({1} != null && {1}.ToString().{2}(@{3}))",
                 logic,
                 filter.Field,
                 comparison,
-                index
-            );
+                index);
         }
 
         return string.Format(
             "({0} != null && {0}.{1}(@{2}))",
             filter.Field,
             comparison,
-            index
-        );
+            index);
     }
 
     /// <summary>
@@ -233,18 +256,20 @@ public static class Queryable
     /// <returns></returns>
     private static IQueryable<T> Sort<T>(this IQueryable<T> source, IReadOnlyCollection<Sort> sort)
     {
-        if (!sort.Any())
+        if (sort == null || !sort.Any())
             return source;
 
         try
         {
             var ordering = string.Join(",", sort.Select(s => $"{s.Field} {s.Direction}"));
-            Logger?.LogDebug("Try to sort {Type} with {Ordering}", _type, ordering);
+
+            Logger?.LogDebug("Try to sort {type} with {ordering}", _type, ordering);
+
             return source.OrderBy(ordering);
         }
         catch (ParseException e)
         {
-            Logger?.LogWarning("sortBy include field not part of the {Type} {Message}", _type, e.Message);
+            Logger?.LogWarning("sortBy include field not part of the {type}: {message}", _type, e.Message);
         }
 
         return source;

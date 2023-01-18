@@ -13,7 +13,6 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Constants = netca.Application.Common.Models.Constants;
-using ILogger = Serilog.ILogger;
 
 namespace netca.Api.Handlers;
 

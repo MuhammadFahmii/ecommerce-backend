@@ -37,7 +37,7 @@ public static class MappingExtensions
     /// <param name="configuration"></param>
     /// <typeparam name="TDestination"></typeparam>
     /// <returns></returns>
-    public static Task<List<TDestination>> ProjectToListAsync<TDestination>(this IQueryable queryable,
-        IConfigurationProvider configuration)
+    public static Task<List<TDestination>> ProjectToListAsync<TDestination>(
+        this IQueryable queryable, IConfigurationProvider configuration)
         => queryable.ProjectTo<TDestination>(configuration).ToListAsync();
 }

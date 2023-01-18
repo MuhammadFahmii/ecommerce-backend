@@ -332,6 +332,21 @@ public static class Constants
     public const string PlantFieldName = "Plant";
 
     /// <summary>
+    /// CustomerSiteFieldName
+    /// </summary>
+    public const string CustomerSiteFieldName = "Customer Site";
+
+    /// <summary>
+    /// ABCFieldName
+    /// </summary>
+    public const string ABCFieldName = "ABCInd";
+
+    /// <summary>
+    /// CustomerName
+    /// </summary>
+    public const string CustomerName = "Customer";
+
+    /// <summary>
     /// WorkCenterFieldName
     /// </summary>
     public const string WorkCenterFieldName = "Work Center";
@@ -342,4 +357,18 @@ public static class Constants
     public const string All = "*";
 
     #endregion UserAttribute
+
+    #region  validation
+
+    /// <summary>
+    /// Maximum Length Base64 in byte
+    /// </summary>
+    public const int MaximumLengthBase64 = 512 * 1024;
+
+    /// <summary>
+    /// Maximum File Size in byte
+    /// </summary>
+    public const int MaximumFileSize = 3072 * 1024;
+
+    #endregion
 }

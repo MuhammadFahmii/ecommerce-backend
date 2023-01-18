@@ -21,6 +21,11 @@ public class QueryModel
     private static readonly ILogger? Logger = AppLoggingExtensions.CreateLogger("QueryModel");
 
     /// <summary>
+    /// Gets or sets Searching Key for Global Search
+    /// </summary>
+    public string SearchValue { get; set; }
+
+    /// <summary>
     /// Gets or sets filters
     /// </summary>
     public string? Filters { get; set; }
@@ -99,7 +104,7 @@ public class QueryModel
                 Logic = logic
             });
 
-            Logger?.LogDebug("Filter = {Sub} {F1} {F2}",subFilters[i], filterSplit[0], filterSplit[1]);
+            Logger?.LogDebug("Filter = {filter1} {filter2} {filter3}", subFilters[i], filterSplit[0], filterSplit[1]);
         }
     }
 
@@ -115,8 +120,7 @@ public class QueryModel
             var subFilters = Regex
                 .Split(
                     filterSplit[1][1..filterSplit[1].IndexOf(")", StringComparison.Ordinal)],
-                    Constants.EscapedPipePattern
-                );
+                    Constants.EscapedPipePattern);
 
             for (var i = 0; i < subFilters.Length; i++)
             {
@@ -150,7 +154,7 @@ public class QueryModel
                 Value = filterSplit[1],
                 Logic = "AND"
             });
-            
+
             Logger?.LogDebug(
                 "Filter = {F1} {Op} {Fs}", filterSplit[0], Array.Find(Constants.Operators, filter.Contains) ?? "==", filterSplit[1]);
         }
@@ -172,22 +176,16 @@ public class QueryModel
             if (string.IsNullOrWhiteSpace(sort))
                 continue;
 
-            if (sort[..1] == "-")
+            value.Add(sort[..1] == "-" ? new Sort
             {
-                value.Add(new Sort
-                {
-                    Field = sort[1..],
-                    Direction = "DESC"
-                });
+                Field = sort[1..],
+                Direction = "DESC"
             }
-            else
+            : new Sort
             {
-                value.Add(new Sort
-                {
-                    Field = sort,
-                    Direction = "ASC"
-                });
-            }
+                Field = sort,
+                Direction = "ASC"
+            });
         }
 
         return value;

@@ -76,7 +76,7 @@ public static class UseMigrationsHandlerExtensions
     /// <param name="environment"></param>
     /// <param name="appSetting"></param>
     public static void UseMigrationsHandler(
-        this IApplicationBuilder builder, IWebHostEnvironment environment,AppSetting appSetting)
+        this IApplicationBuilder builder, IWebHostEnvironment environment, AppSetting appSetting)
     {
         MigrationsHandler.ApplyMigration(builder, environment, appSetting).ConfigureAwait(false);
     }

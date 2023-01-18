@@ -9,7 +9,7 @@ namespace netca.Application.Common.Models;
 /// <summary>
 /// MsTeamTemplate
 /// </summary>
-public class MsTeamTemplate
+public record MsTeamTemplate
 {
     /// <summary>
     /// Gets or sets summary
@@ -30,7 +30,7 @@ public class MsTeamTemplate
 /// <summary>
 /// Section
 /// </summary>
-public class Section
+public record Section
 {
     /// <summary>
     /// Gets or sets activityTitle
@@ -60,7 +60,7 @@ public class Section
 /// <summary>
 /// Fact
 /// </summary>
-public class Fact
+public record Fact
 {
     /// <summary>
     /// Gets or sets name
@@ -78,7 +78,7 @@ public class Fact
 /// <summary>
 /// CacheMsTeam
 /// </summary>
-public class CacheMsTeam
+public record CacheMsTeam
 {
     /// <summary>
     /// Gets or sets counter
