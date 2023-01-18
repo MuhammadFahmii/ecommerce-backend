@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using netca.Application.Common.Models;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace netca.Infrastructure.Apis;
@@ -18,7 +19,8 @@ namespace netca.Infrastructure.Apis;
 /// </summary>
 public static class SendToMsTeams
 {
-    private static readonly ILogger Logger = Log.ForContext(typeof(SendToMsTeams));
+    private static readonly HttpClient _httpClient = new(new HttpHandler(new HttpClientHandler()));
+    private static readonly ILogger _logger = Log.ForContext(typeof(SendToMsTeams));
 
     /// <summary>
     /// SendToMsTeam
@@ -28,18 +30,20 @@ public static class SendToMsTeams
     /// <returns></returns>
     public static async Task Send(AppSetting appSetting, MsTeamTemplate tmpl)
     {
-        using var client = new HttpClient(new HttpHandler(new HttpClientHandler()));
-        client.DefaultRequestHeaders.Add(appSetting.Bot.Header, appSetting.Bot.Secret);
-        var str = Newtonsoft.Json.JsonConvert.SerializeObject(tmpl);
+        if (!_httpClient.DefaultRequestHeaders.Contains(appSetting.Bot.Header))
+            _httpClient.DefaultRequestHeaders.Add(appSetting.Bot.Header, appSetting.Bot.Secret);
+
+        var str = JsonConvert.SerializeObject(tmpl);
         var count = Encoding.UTF8.GetByteCount(str);
-        if (count > 5242880)
+
+        if (count > Constants.MsTeamsMaxSizeInBytes)
         {
-            Logger.Warning("Cancelling send message to teams. Size {Count} byte too large", count);
+            _logger.Warning($"Cancelling sending message to teams. Size message too large ({count} byte)");
         }
         else
         {
             var content = new StringContent(str, Encoding.UTF8, Constants.HeaderJson);
-            var response = client.PostAsync(new Uri(appSetting.Bot.Address), content);
+            var response = _httpClient.PostAsync(new Uri(appSetting.Bot.Address), content);
             await response;
         }
     }

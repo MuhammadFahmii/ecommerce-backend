@@ -192,6 +192,11 @@ public static class Constants
     /// </summary>
     public const string MsTeamsThemeColorWarning = "#f7db05";
 
+    /// <summary>
+    /// MsTeamsMaxSizeInBytes
+    /// </summary>
+    public const int MsTeamsMaxSizeInBytes = 5_242_880;
+
     #endregion MsTeams
 
     #region paging

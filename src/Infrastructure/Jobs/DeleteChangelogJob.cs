@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using netca.Application.Changelogs.Commands.DeleteChangelog;
 using Quartz;
-using Serilog;
 
 namespace netca.Infrastructure.Jobs;
 
@@ -21,12 +20,12 @@ namespace netca.Infrastructure.Jobs;
 public class DeleteChangelogJob : BaseJob<DeleteChangelogJob>
 {
     /// <summary>
-    /// DeleteChangelogJob
+    /// Initializes a new instance of the <see cref="DeleteChangelogJob"/> class.
     /// </summary>
-    /// <param name="logger"></param>
     /// <param name="serviceScopeFactory"></param>
-    public DeleteChangelogJob(ILogger<DeleteChangelogJob> logger, IServiceScopeFactory serviceScopeFactory) : base(logger,
-        serviceScopeFactory)
+    /// <param name="logger"></param>
+    public DeleteChangelogJob(IServiceScopeFactory serviceScopeFactory, ILogger<DeleteChangelogJob> logger)
+        : base(logger, serviceScopeFactory)
     {
     }
 
@@ -40,13 +39,15 @@ public class DeleteChangelogJob : BaseJob<DeleteChangelogJob>
         try
         {
             Logger.LogDebug("Process delete changelog");
+
             using var scope = ServiceScopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
             await mediator.Send(new DeleteChangelogCommand());
         }
         catch (Exception e)
         {
-            Logger.LogError("Error when running worker delete changelog: {Message}", e.Message);
+            Logger.LogError("Error when running worker delete changelog: {message}", e.Message);
         }
         finally
         {
