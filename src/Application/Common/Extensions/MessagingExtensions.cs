@@ -25,7 +25,7 @@ public static class MessagingExtensions
         if (value == null)
             return null;
 
-        var topicData = value?.Messaging?.AzureEventHub.Find(x => x.Name.Equals(name))?.Topics;
+        var topicData = value?.Messaging?.AzureEventHubs.Find(x => x.Name.Equals(name))?.Topics;
         var topic = topicData?.Find(x => x.Name.Equals(topicName))?.Value;
 
         return topic;

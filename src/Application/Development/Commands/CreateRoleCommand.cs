@@ -71,7 +71,7 @@ public class CreateRoleCommand : IRequest<DocumentRootJson<ResponseGroupRoleUmsV
             {
                 var isGroupValid = true;
 
-                itemRole!.Group = itemRole?.Group?.Distinct().ToList();
+                itemRole!.Group = itemRole?.Group?.Distinct().ToList() ?? new();
 
                 var isAllGroup = itemRole?.Group?.Any(x => x.Equals("*"));
 

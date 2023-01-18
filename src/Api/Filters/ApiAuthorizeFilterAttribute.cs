@@ -83,7 +83,7 @@ public class ApiAuthorizeFilterAttribute : ActionFilterAttribute
     {
         logger.LogDebug("Get Policy '{policy}' if exists", policy);
 
-        var policyList = appSetting.AuthorizationServer.Policy ?? new List<Policy?>();
+        var policyList = appSetting.AuthorizationServer.Policy ?? new List<Policy>();
         return policyList.Count.Equals(0) ?
             null :
             policyList.FirstOrDefault(x => x!.Name.ToLower().Equals(policy.ToLower()));

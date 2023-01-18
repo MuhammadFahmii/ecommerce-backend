@@ -23,7 +23,7 @@ public class QueryModel
     /// <summary>
     /// Gets or sets Searching Key for Global Search
     /// </summary>
-    public string SearchValue { get; set; }
+    public string? SearchValue { get; set; }
 
     /// <summary>
     /// Gets or sets filters

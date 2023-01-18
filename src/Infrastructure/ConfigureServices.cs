@@ -110,10 +110,10 @@ public static class ConfigureServices
                         s.UseClustering(cfg =>
                         {
                             cfg.CheckinInterval =
-                                TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.CheckinInterval);
+                                TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore.CheckInInterval);
                             cfg.CheckinMisfireThreshold =
                                 TimeSpan.FromMilliseconds(appSetting.BackgroundJob.PersistentStore
-                                    .CheckinMisfireThreshold);
+                                    .CheckInMisfireThreshold);
                         });
                     }
                 });

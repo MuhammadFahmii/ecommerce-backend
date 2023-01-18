@@ -62,13 +62,13 @@ public class RedisService : BaseService, IRedisService
         Options = ConfigurationOptions.Parse(redisServer?.Server!);
 
         Options.ConnectRetry = redisServer?.ConnectRetry != null ?
-            redisServer.ConnectRetry.Value : Options.ConnectRetry;
+            redisServer.ConnectRetry : Options.ConnectRetry;
         Options.ConnectTimeout = redisServer?.ConnectTimeout != null ?
-            redisServer.ConnectTimeout.Value * 1000 : Options.ConnectTimeout;
+            redisServer.ConnectTimeout * 1000 : Options.ConnectTimeout;
         Options.AsyncTimeout = redisServer?.OperationTimeout != null ?
-            redisServer.OperationTimeout.Value * 1000 : Options.AsyncTimeout;
+            redisServer.OperationTimeout * 1000 : Options.AsyncTimeout;
         Options.SyncTimeout = redisServer?.OperationTimeout != null ?
-            redisServer.OperationTimeout.Value * 1000 : Options.SyncTimeout;
+            redisServer.OperationTimeout * 1000 : Options.SyncTimeout;
 
         Options.ReconnectRetryPolicy = new ExponentialRetry(redisServer!.DeltaBackOff, redisServer!.MaxDeltaBackOff);
 

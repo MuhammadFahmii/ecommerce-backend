@@ -51,7 +51,7 @@ public static class AddHealthCheckHandler
                 failureStatus: HealthStatus.Degraded,
                 timeout: TimeSpan.FromSeconds(Constants.DefaultHealthCheckTimeoutInSeconds));
 
-        foreach (var eventHub in appSetting?.Messaging?.AzureEventHub!)
+        foreach (var eventHub in appSetting?.Messaging?.AzureEventHubs!)
         {
             foreach (var topic in eventHub.Topics)
             {
