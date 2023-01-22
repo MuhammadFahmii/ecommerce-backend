@@ -260,7 +260,7 @@ public class RedisService : BaseService, IRedisService
         var data = new List<RedisDto>();
         try
         {
-            foreach (var k in Servers.SelectMany(redisServer => redisServer.Keys(pattern: key)))
+            foreach (var k in Servers.SelectMany(redis => redis.Keys(pattern: key)))
             {
                 _logger.LogDebug("Process Redis key: {key}", k);
 

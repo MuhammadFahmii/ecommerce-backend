@@ -86,13 +86,13 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy ??= userId;
-                        entry.Entity.CreatedDate = _dateTime.UtcNow;
-                        entry.Entity.IsDeleted = false;
+                        entity.CreatedBy ??= userId;
+                        entity.CreatedDate = _dateTime.UtcNow;
+                        entity.IsDeleted = false;
                         break;
                     case EntityState.Modified:
-                        entry.Entity.UpdatedBy ??= userId;
-                        entry.Entity.UpdatedDate = _dateTime.UtcNow;
+                        entity.UpdatedBy ??= userId;
+                        entity.UpdatedDate = _dateTime.UtcNow;
                         break;
                 }
             }

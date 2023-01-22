@@ -37,6 +37,7 @@ public class ApplicationDbContextInitializer
     /// <summary>
     /// InitializeAsync
     /// </summary>
+    /// <returns></returns>
     public async Task InitializeAsync()
     {
         try
@@ -57,6 +58,7 @@ public class ApplicationDbContextInitializer
     /// <summary>
     /// SeedAsync
     /// </summary>
+    /// <returns></returns>
     public async Task SeedAsync()
     {
         try

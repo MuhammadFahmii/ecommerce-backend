@@ -19,6 +19,7 @@ public abstract class BaseWorkerService : IHostedService, IDisposable
     private Task? _executingTask;
     private readonly CancellationTokenSource _stoppingCts = new();
     private bool _disposedValue;
+
     /// <summary>
     /// ExecuteAsync
     /// </summary>
@@ -34,6 +35,7 @@ public abstract class BaseWorkerService : IHostedService, IDisposable
     public virtual Task StartAsync(CancellationToken cancellationToken)
     {
         _executingTask = ExecuteAsync(_stoppingCts.Token);
+
         return _executingTask!.IsCompleted ? _executingTask : Task.CompletedTask;
     }
 
@@ -60,11 +62,11 @@ public abstract class BaseWorkerService : IHostedService, IDisposable
     /// <param name="disposing"></param>
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposedValue) return;
+        if (_disposedValue)
+            return;
+
         if (disposing)
-        {
             _stoppingCts.Cancel();
-        }
 
         _disposedValue = true;
     }

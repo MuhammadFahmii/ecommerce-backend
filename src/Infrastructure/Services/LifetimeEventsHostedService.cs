@@ -23,9 +23,9 @@ namespace netca.Infrastructure.Services;
 /// </summary>
 public class LifetimeEventsHostedService : IHostedService
 {
-    private readonly ILogger<LifetimeEventsHostedService> _logger;
     private readonly IHostApplicationLifetime _appLifetime;
-    private readonly ISchedulerFactory? _iSchedulerFactory;
+    private readonly ILogger<LifetimeEventsHostedService> _logger;
+    private readonly ISchedulerFactory _schedulerFactory;
     private readonly AppSetting _appSetting;
     private readonly string _appName;
     private readonly bool _isEnable;
@@ -37,21 +37,21 @@ public class LifetimeEventsHostedService : IHostedService
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="appLifetime"></param>
+    /// <param name="schedulerFactory"></param>
     /// <param name="appSetting"></param>
-    /// <param name="iSchedulerFactory"></param>
     public LifetimeEventsHostedService(
-        ILogger<LifetimeEventsHostedService> logger, IHostApplicationLifetime appLifetime, AppSetting appSetting,
-        ISchedulerFactory? iSchedulerFactory = null)
+        ILogger<LifetimeEventsHostedService> logger,
+        IHostApplicationLifetime appLifetime,
+        ISchedulerFactory schedulerFactory,
+        AppSetting appSetting)
     {
         _logger = logger;
         _appLifetime = appLifetime;
+        _schedulerFactory = schedulerFactory;
         _appSetting = appSetting;
+
         _isEnable = _appSetting.Bot.IsEnable;
         _appName = $"[{_appSetting.Bot.ServiceName}](http://{_appSetting.Bot.ServiceDomain})";
-        if (iSchedulerFactory != null)
-        {
-            _iSchedulerFactory = iSchedulerFactory;
-        }
     }
 
     /// <summary>
@@ -61,9 +61,12 @@ public class LifetimeEventsHostedService : IHostedService
     /// <returns></returns>
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        _appLifetime.ApplicationStarted.Register(CleanUpDisableJobQuartz);
         _appLifetime.ApplicationStopping.Register(CleanUpQuartz);
+
         if (!_isEnable)
             return Task.CompletedTask;
+
         _appLifetime.ApplicationStarted.Register(OnStarted);
         _appLifetime.ApplicationStopping.Register(OnStopping);
         _appLifetime.ApplicationStopped.Register(OnStopped);
@@ -81,33 +84,63 @@ public class LifetimeEventsHostedService : IHostedService
         return Task.CompletedTask;
     }
 
-    private void CleanUpQuartz()
+    private void CleanUpDisableJobQuartz()
     {
-        if (!_appSetting.BackgroundJob.IsEnable)
+        if (!_appSetting.BackgroundJob.IsEnable || !_appSetting.BackgroundJob.UsePersistentStore)
             return;
-        var sc = _iSchedulerFactory?.GetScheduler().Result;
-        var triggers = (from jobGroupName in sc?.GetTriggerGroupNames().Result
-            from triggerKey in sc?.GetTriggerKeys(GroupMatcher<TriggerKey>.GroupEquals(jobGroupName))?.Result!
-            select sc?.GetTrigger(triggerKey).Result).ToList();
-        List<JobKey> jobs;
-        if (_appSetting.BackgroundJob.UsePersistentStore)
+
+        var removeJobs = new List<JobKey>();
+
+        var jobs = _appSetting.BackgroundJob.Jobs
+            .Where(x => !x.IsEnable)
+            .ToList();
+
+        foreach (var job in jobs)
         {
-            jobs = triggers.Where(x => x!.Key.Name.Contains(_appSetting.BackgroundJob.HostName))
-                .Select(x => x!.JobKey).ToList();
-        }
-        else
-        {
-            jobs = triggers
-                .Select(x => x!.JobKey).ToList();
+            var jobName = job.Name;
+
+            if (job.Parameters == null || job.Parameters.Count == 0)
+            {
+                removeJobs.Add(new JobKey(jobName, $"{jobName}_Group"));
+            }
+            else
+            {
+                for (byte i = 0; i < job.Parameters.Count; i++)
+                    removeJobs.Add(new JobKey($"{jobName}{i}", $"{jobName}_Group"));
+            }
         }
 
-        sc?.DeleteJobs(jobs);
+        var scheduler = _schedulerFactory.GetScheduler().Result;
+
+        scheduler.DeleteJobs(removeJobs);
+    }
+
+    private void CleanUpQuartz()
+    {
+        if (!_appSetting.BackgroundJob.IsEnable || !_appSetting.BackgroundJob.UsePersistentStore)
+            return;
+
+        var scheduler = _schedulerFactory.GetScheduler().Result;
+
+        var triggers = (
+                from jobGroupName in scheduler.GetTriggerGroupNames().Result
+                from triggerKey in scheduler.GetTriggerKeys(GroupMatcher<TriggerKey>.GroupEquals(jobGroupName)).Result
+                select scheduler.GetTrigger(triggerKey).Result)
+            .ToList();
+
+        var jobs = triggers
+            .Where(x => x!.Key.Name.Contains(_appSetting.BackgroundJob.HostName))
+            .Select(x => x!.JobKey)
+            .ToList();
+
+        scheduler.DeleteJobs(jobs);
     }
 
     private void OnStarted()
     {
-        const string msg = Constants.MsTeamsactivitySubtitleStart;
-        _logger.LogDebug(msg);
+        const string message = Constants.MsTeamsactivitySubtitleStart;
+
+        _logger.LogDebug(message);
 
         _tmpl = new MsTeamTemplate();
 
@@ -115,26 +148,31 @@ public class LifetimeEventsHostedService : IHostedService
         var facts = new List<Fact>
         {
             new() { Name = "Date", Value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}" },
-            new() { Name = "Message", Value = msg }
+            new() { Name = "Message", Value = message }
         };
 
         sections.Add(new Section
         {
             ActivityTitle = $"{_appName}",
-            ActivitySubtitle = msg,
+            ActivitySubtitle = message,
             Facts = facts,
             ActivityImage = ImgWarning
         });
 
-        _tmpl.Summary = $"{_appName} has started";
-        _tmpl.ThemeColor = Constants.MsTeamsThemeColorWarning;
-        _tmpl.Sections = sections;
+        _tmpl = _tmpl with
+        {
+            Summary = $"{_appName} has started",
+            ThemeColor = Constants.MsTeamsThemeColorWarning,
+            Sections = sections
+        };
+
         Send();
     }
 
     private void OnStopping()
     {
-        const string msg = Constants.MsTeamsactivitySubtitleStop;
+        const string message = Constants.MsTeamsactivitySubtitleStop;
+
         _logger.LogDebug("Try to stopping Application");
 
         _tmpl = new MsTeamTemplate();
@@ -143,19 +181,23 @@ public class LifetimeEventsHostedService : IHostedService
         var facts = new List<Fact>
         {
             new() { Name = "Date", Value = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}" },
-            new() { Name = "Message", Value = msg }
+            new() { Name = "Message", Value = message }
         };
 
         sections.Add(new Section
         {
             ActivityTitle = $"{_appName}",
-            ActivitySubtitle = msg,
+            ActivitySubtitle = message,
             Facts = facts,
             ActivityImage = ImgWarning
         });
-        _tmpl.Summary = $"{_appName} has stopping";
-        _tmpl.ThemeColor = Constants.MsTeamsThemeColorWarning;
-        _tmpl.Sections = sections;
+
+        _tmpl = _tmpl with
+        {
+            Summary = $"{_appName} has stopping",
+            ThemeColor = Constants.MsTeamsThemeColorWarning,
+            Sections = sections
+        };
 
         Send();
     }
@@ -167,7 +209,9 @@ public class LifetimeEventsHostedService : IHostedService
 
     private void Send()
     {
-        _logger.LogDebug("Sending message to MsTeam with color {Color}", _tmpl?.ThemeColor);
-        if (_tmpl != null) SendToMsTeams.Send(_appSetting, _tmpl).ConfigureAwait(false);
+        _logger.LogDebug("Sending message to MsTeam with color {color}", _tmpl?.ThemeColor);
+
+        if (_tmpl != null)
+        	SendToMsTeams.Send(_appSetting, _tmpl).ConfigureAwait(false);
     }
 }
