@@ -6,10 +6,12 @@
 
 using FluentValidation;
 using MediatR;
+using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using netca.Application.Common.Behaviors;
 using netca.Application.Common.Interfaces;
 using Scrutor;
+using System.Reflection;
 
 namespace netca.Application;
 
@@ -26,11 +28,11 @@ public static class ConfigureServices
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         var assembly = typeof(ConfigureServices).Assembly;
-
+        
         services.AddAutoMapper(assembly);
         services.AddValidatorsFromAssembly(assembly);
         services.AddMediatR(assembly);
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<>));
+        services.AddTransient(typeof(IRequestPreProcessor<>), typeof(LoggingBehavior<>));
         services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(RateLimitPolicyBehavior<,>));
         services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(BulkheadPolicyBehavior<,>));
         services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(CircuitBreakerPolicyBehavior<,>));

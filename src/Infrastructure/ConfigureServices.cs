@@ -37,9 +37,10 @@ public static class ConfigureServices
         this IServiceCollection services, IWebHostEnvironment? environment, AppSetting appSetting)
     {
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-        services.AddDbContext<ApplicationDbContext>(
+        services.AddEntityFrameworkNpgsql()
+            .AddDbContext<ApplicationDbContext>(
             options =>
-                options.UseSqlServer(
+                options.UseNpgsql(
                     appSetting.ConnectionStrings.DefaultConnection,
                     b =>
                     {

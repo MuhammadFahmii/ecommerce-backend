@@ -6,6 +6,7 @@
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using netca.Domain.Entities;
+using netca.Domain.ValueObjects;
 
 namespace netca.Infrastructure.Persistence.Configurations;
 
@@ -23,8 +24,7 @@ public class TodoListConfiguration : AuditTableConfiguration<TodoList>
         builder.Property(t => t.Title)
             .HasMaxLength(200)
             .IsRequired();
-        builder
-            .OwnsOne(b => b.Colour);
+        builder.OwnsOne(t => t.Colour);
         base.Configure(builder);
     }
 }

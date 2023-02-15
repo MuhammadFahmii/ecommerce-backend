@@ -11,15 +11,15 @@ using netca.Domain.Entities;
 namespace netca.Infrastructure.Persistence.Configurations;
 
 /// <summary>
-/// ChangelogConfiguration
+/// Product Configuration
 /// </summary>
-public class ChangelogConfiguration : IEntityTypeConfiguration<Changelog>
+public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     /// <summary>
-    /// Configure Changelog
+    /// Configure Products
     /// </summary>
     /// <param name="builder"></param>
-    public void Configure(EntityTypeBuilder<Changelog> builder)
+    public void Configure(EntityTypeBuilder<Product> builder)
     {
         builder.HasKey(e => e.Id);
 
@@ -27,27 +27,11 @@ public class ChangelogConfiguration : IEntityTypeConfiguration<Changelog>
             .HasColumnType("uuid")
             .ValueGeneratedOnAdd();
 
-        builder.Property(e => e.TableName)
+        builder.Property(e => e.Name)
             .HasColumnType("varchar(50)")
             .HasMaxLength(50);
 
-        builder.Property(e => e.Method)
-            .HasColumnType("varchar(6)")
-            .HasMaxLength(6);
-
-        builder.Property(e => e.KeyValues)
-            .HasColumnType("text");
-
-        builder.Property(e => e.NewValues)
-            .HasColumnType("text");
-
-        builder.Property(e => e.OldValues)
-            .HasColumnType("text");
-
-        builder.Property(e => e.ChangeBy)
-            .HasColumnType("text");
-
-        builder.Property(e => e.ChangeDate)
-            .HasColumnType("integer");
+        builder.Property(e => e.Price)
+           .HasColumnType("bigint");
     }
 }

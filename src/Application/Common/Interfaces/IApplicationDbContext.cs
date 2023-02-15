@@ -31,6 +31,21 @@ public interface IApplicationDbContext
     DbSet<Changelog> Changelogs { get; set; }
 
     /// <summary>
+    /// Gets or sets products
+    /// </summary>
+    DbSet<Product> Products { get; set; }
+
+    /// <summary>
+    /// Gets or sets orders
+    /// </summary>
+    DbSet<Order> Orders { get; set; }
+
+    /// <summary>
+    /// Gets or sets product orders
+    /// </summary>
+    DbSet<OrderProduct> OrderProducts { get; set; }
+
+    /// <summary>
     /// Gets database
     /// </summary>
     public DatabaseFacade Database { get; }

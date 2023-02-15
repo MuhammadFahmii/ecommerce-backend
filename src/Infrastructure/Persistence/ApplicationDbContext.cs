@@ -79,6 +79,21 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<TodoList> TodoLists { get; set; } = null!;
 
     /// <summary>
+    /// Gets or sets products
+    /// </summary>
+    public DbSet<Product> Products { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets orders
+    /// </summary>
+    public DbSet<Order> Orders { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets product orders
+    /// </summary>
+    public DbSet<OrderProduct> OrderProducts { get; set; } = null!;
+
+    /// <summary>
     /// AsNoTracking
     /// </summary>
     public void AsNoTracking()
@@ -133,6 +148,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     /// <param name="modelBuilder"></param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<OrderProduct>().HasKey(po => new { po.ProductId, po.OrderID });
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ConfigureServices).Assembly);
 
         base.OnModelCreating(modelBuilder);

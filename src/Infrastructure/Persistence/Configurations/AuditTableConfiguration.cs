@@ -28,26 +28,22 @@ public abstract class AuditTableConfiguration<TBase> : IEntityTypeConfiguration<
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Id)
-            .HasColumnType("Uniqueidentifier")
+            .HasColumnType("uuid")
             .ValueGeneratedOnAdd();
 
         builder.Property(e => e.IsDeleted)
-            .HasColumnType("bit");
+            .HasColumnType("boolean");
 
         builder.Property(e => e.CreatedBy)
-            .HasColumnType("Uniqueidentifier");
+            .HasColumnType("varchar(100)");
 
         builder.Property(e => e.CreatedDate)
             .HasColumnType("bigint");
 
         builder.Property(e => e.UpdatedBy)
-            .HasColumnType("Uniqueidentifier");
+            .HasColumnType("varchar(100)");
 
         builder.Property(e => e.UpdatedDate)
-            .HasColumnType("bigint");
-
-        builder.Property(e => e.IsDeleted)
-            .HasColumnType("bit");
-
+            .HasColumnType("integer");
     }
 }
