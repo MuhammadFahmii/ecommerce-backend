@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Domain.Events;
+namespace ecommerce.Domain.Events;
 
 /// <summary>
 /// TodoItemCompletedEvent

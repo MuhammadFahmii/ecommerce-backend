@@ -1,0 +1,6 @@
+{
+  "ecommerce.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "~",
+  "ecommerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "~",
+  "ecommerce.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "~",
+  "ecommerce.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "~"
+}

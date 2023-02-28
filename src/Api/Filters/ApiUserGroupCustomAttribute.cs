@@ -6,7 +6,7 @@
 
 using System;
 
-namespace netca.Api.Filters;
+namespace ecommerce.Api.Filters;
 
 /// <summary>
 /// ApiUserGroupCustomAttribute

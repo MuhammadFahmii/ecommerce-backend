@@ -5,10 +5,10 @@
 // -----------------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using netca.Domain.Entities;
-using netca.Domain.ValueObjects;
+using ecommerce.Domain.Entities;
+using ecommerce.Domain.ValueObjects;
 
-namespace netca.Infrastructure.Persistence.Configurations;
+namespace ecommerce.Infrastructure.Persistence.Configurations;
 
 /// <summary>
 /// TodoListConfiguration

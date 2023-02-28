@@ -5,11 +5,11 @@
 // -----------------------------------------------------------------------------------
 
 using MediatR;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
 using Z.EntityFramework.Plus;
 
-namespace netca.Application.Changelogs.Commands.DeleteChangelog;
+namespace ecommerce.Application.Changelogs.Commands.DeleteChangelog;
 
 /// <summary>
 /// DeleteChangelogCommand

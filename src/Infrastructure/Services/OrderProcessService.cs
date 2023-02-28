@@ -8,9 +8,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Interfaces;
+using ecommerce.Application.Common.Interfaces;
 
-namespace netca.Infrastructure.Services;
+namespace ecommerce.Infrastructure.Services;
 
 /// <summary>
 /// OrderProcessService

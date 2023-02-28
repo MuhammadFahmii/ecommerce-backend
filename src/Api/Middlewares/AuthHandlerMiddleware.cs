@@ -17,10 +17,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using netca.Application.Common.Models;
-using netca.Infrastructure.Services;
+using ecommerce.Application.Common.Models;
+using ecommerce.Infrastructure.Services;
 
-namespace netca.Api.Middlewares;
+namespace ecommerce.Api.Middlewares;
 
 /// <summary>
 /// AuthHandlerMiddleware

@@ -7,16 +7,16 @@
 using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using netca.Application.Common.Exceptions;
-using netca.Application.Common.Models;
-using netca.Application.IntegrationTests.Data;
-using netca.Application.TodoItems.Commands.CreateTodoItem;
-using netca.Application.TodoLists.Commands.CreateTodoList;
-using netca.Domain.Entities;
+using ecommerce.Application.Common.Exceptions;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.IntegrationTests.Data;
+using ecommerce.Application.TodoItems.Commands.CreateTodoItem;
+using ecommerce.Application.TodoLists.Commands.CreateTodoList;
+using ecommerce.Domain.Entities;
 using NUnit.Framework;
 using Shouldly;
 
-namespace netca.Application.IntegrationTests.TodoItems.Commands;
+namespace ecommerce.Application.IntegrationTests.TodoItems.Commands;
 
 using static Testing;
 

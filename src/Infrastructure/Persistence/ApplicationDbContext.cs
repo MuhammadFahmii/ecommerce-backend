@@ -14,14 +14,14 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
-using netca.Domain.Entities;
-using netca.Infrastructure.Extensions;
-using netca.Infrastructure.Persistence.Interceptors;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
+using ecommerce.Domain.Entities;
+using ecommerce.Infrastructure.Extensions;
+using ecommerce.Infrastructure.Persistence.Interceptors;
 using Newtonsoft.Json;
 
-namespace netca.Infrastructure.Persistence;
+namespace ecommerce.Infrastructure.Persistence;
 
 /// <summary>
 /// ApplicationDbContext

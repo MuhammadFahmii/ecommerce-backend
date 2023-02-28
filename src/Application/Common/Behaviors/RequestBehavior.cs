@@ -8,9 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Exceptions;
+using ecommerce.Application.Common.Exceptions;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// RequestBehavior

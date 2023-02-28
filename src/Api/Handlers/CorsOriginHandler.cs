@@ -5,9 +5,9 @@
 // -----------------------------------------------------------------------------------
 
 using Microsoft.AspNetCore.Builder;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Api.Handlers;
+namespace ecommerce.Api.Handlers;
 
 /// <summary>
 /// CorsOriginHandler

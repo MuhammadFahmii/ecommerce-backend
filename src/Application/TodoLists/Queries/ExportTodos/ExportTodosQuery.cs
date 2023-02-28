@@ -8,10 +8,10 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using netca.Application.Common.Behaviors;
-using netca.Application.Common.Interfaces;
+using ecommerce.Application.Common.Behaviors;
+using ecommerce.Application.Common.Interfaces;
 
-namespace netca.Application.TodoLists.Queries.ExportTodos
+namespace ecommerce.Application.TodoLists.Queries.ExportTodos
 {
     /// <summary>
     /// ExportTodosQuery

@@ -11,7 +11,7 @@ using Polly.Contrib.WaitAndRetry;
 using Polly.Retry;
 using Polly.Wrap;
 
-namespace netca.Application.Common.Models;
+namespace ecommerce.Application.Common.Models;
 
 /// <summary>
 /// HttpHandler

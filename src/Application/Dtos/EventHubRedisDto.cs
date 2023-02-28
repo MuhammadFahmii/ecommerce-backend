@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Application.Dtos;
+namespace ecommerce.Application.Dtos;
 
 /// <summary>
 /// EventHubRedisDto

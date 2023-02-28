@@ -4,9 +4,9 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using netca.Domain.Entities;
+using ecommerce.Domain.Entities;
 
-namespace netca.Application.Common.Models;
+namespace ecommerce.Application.Common.Models;
 
 /// <summary>
 /// MockData

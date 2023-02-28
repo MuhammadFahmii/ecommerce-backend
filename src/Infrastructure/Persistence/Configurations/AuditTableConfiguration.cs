@@ -6,9 +6,9 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using netca.Domain.Common;
+using ecommerce.Domain.Common;
 
-namespace netca.Infrastructure.Persistence.Configurations;
+namespace ecommerce.Infrastructure.Persistence.Configurations;
 
 /// <summary>
 /// AuditTableConfiguration

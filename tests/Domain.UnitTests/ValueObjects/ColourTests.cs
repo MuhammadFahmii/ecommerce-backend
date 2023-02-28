@@ -4,11 +4,11 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 using FluentAssertions;
-using netca.Domain.Exceptions;
-using netca.Domain.ValueObjects;
+using ecommerce.Domain.Exceptions;
+using ecommerce.Domain.ValueObjects;
 using NUnit.Framework;
 
-namespace netca.Domain.UnitTests.ValueObjects;
+namespace ecommerce.Domain.UnitTests.ValueObjects;
 
 /// <summary>
 /// ColourTests

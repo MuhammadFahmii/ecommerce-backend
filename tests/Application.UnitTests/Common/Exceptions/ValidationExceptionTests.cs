@@ -8,10 +8,10 @@ using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using FluentValidation.Results;
-using netca.Application.Common.Exceptions;
+using ecommerce.Application.Common.Exceptions;
 using NUnit.Framework;
 
-namespace netca.Application.UnitTests.Common.Exceptions;
+namespace ecommerce.Application.UnitTests.Common.Exceptions;
 
 /// <summary>
 /// ValidationExceptionTests

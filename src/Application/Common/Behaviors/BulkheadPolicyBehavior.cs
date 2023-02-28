@@ -7,10 +7,10 @@
 using System.Reflection;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Models;
 using Polly.Bulkhead;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a fallback policy on the MediatR request.

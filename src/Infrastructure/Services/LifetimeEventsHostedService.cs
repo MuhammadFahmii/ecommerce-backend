@@ -11,12 +11,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Models;
-using netca.Infrastructure.Apis;
+using ecommerce.Application.Common.Models;
+using ecommerce.Infrastructure.Apis;
 using Quartz;
 using Quartz.Impl.Matchers;
 
-namespace netca.Infrastructure.Services;
+namespace ecommerce.Infrastructure.Services;
 
 /// <summary>
 /// LifetimeEventsHostedService

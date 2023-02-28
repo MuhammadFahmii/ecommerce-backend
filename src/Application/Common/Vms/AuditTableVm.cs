@@ -6,7 +6,7 @@
 
 using System;
 
-namespace netca.Application.Common.Vms;
+namespace ecommerce.Application.Common.Vms;
 
 /// <summary>
 /// AuditTableVm

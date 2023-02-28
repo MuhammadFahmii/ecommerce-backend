@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Application.Common.Models;
+namespace ecommerce.Application.Common.Models;
 
 /// <summary>
 /// Retry

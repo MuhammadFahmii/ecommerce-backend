@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
-namespace netca.Infrastructure.Jobs;
+namespace ecommerce.Infrastructure.Jobs;
 
 /// <summary>
 /// BaseJob

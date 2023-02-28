@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Application.TodoLists.Queries.GetTodos
+namespace ecommerce.Application.TodoLists.Queries.GetTodos
 {
     /// <summary>
     /// PriorityLevelVm

@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Application.Common.Interfaces;
+namespace ecommerce.Application.Common.Interfaces;
 
 /// <summary>
 /// IDateTime

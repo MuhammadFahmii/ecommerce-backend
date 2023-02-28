@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
-using netca.Application.Dtos;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.Dtos;
 
-namespace netca.Application.Development.Commands;
+namespace ecommerce.Application.Development.Commands;
 
 /// <summary>
 /// CreateRoleCommand

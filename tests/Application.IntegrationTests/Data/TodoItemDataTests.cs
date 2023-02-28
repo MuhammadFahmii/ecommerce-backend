@@ -6,10 +6,10 @@
 
 using System;
 using System.Collections.Generic;
-using netca.Domain.Enums;
+using ecommerce.Domain.Enums;
 using NUnit.Framework;
 
-namespace netca.Application.IntegrationTests.Data;
+namespace ecommerce.Application.IntegrationTests.Data;
 
 /// <summary>
 /// TodoItemDataTests

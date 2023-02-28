@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Application.Common.Models;
+namespace ecommerce.Application.Common.Models;
 
 /// <summary>
 /// AppSetting
@@ -117,7 +117,7 @@ public record App
     /// Gets or sets title
     /// </summary>
     /// <value></value>
-    public string Title { get; set; } = "netca API";
+    public string Title { get; set; } = "ecommerce API";
 
     /// <summary>
     /// Gets or sets description
@@ -369,7 +369,7 @@ public record ConnectionStrings
     /// Gets or sets defaultConnection
     /// </summary>
     /// <value></value>
-    public string DefaultConnection { get; set; } = "netca.db";
+    public string DefaultConnection { get; set; } = "ecommerce.db";
 }
 
 /// <summary>
@@ -716,7 +716,7 @@ public record AuthorizationServer
     /// Gets or sets service
     /// </summary>
     /// <value></value>
-    public string Service { get; set; } = "netca";
+    public string Service { get; set; } = "ecommerce";
 
     /// <summary>
     /// Gets or sets policy
@@ -918,13 +918,13 @@ public record Bot
     /// Gets or sets serviceName
     /// </summary>
     /// <value></value>
-    public string ServiceName { get; set; } = "DCA - netca";
+    public string ServiceName { get; set; } = "DCA - ecommerce";
 
     /// <summary>
     /// Gets or sets serviceDomain
     /// </summary>
     /// <value></value>
-    public string ServiceDomain { get; set; } = "netca.dev-aks.unitedtractors.com";
+    public string ServiceDomain { get; set; } = "ecommerce.dev-aks.unitedtractors.com";
 
     /// <summary>
     /// Gets or sets address

@@ -8,9 +8,9 @@ using System.IO.Compression;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Api.Handlers;
+namespace ecommerce.Api.Handlers;
 
 /// <summary>
 /// CompressionHandler

@@ -6,10 +6,10 @@
 
 using MediatR;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Exceptions;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Exceptions;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// UnhandledExceptionBehavior

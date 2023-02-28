@@ -1,4 +1,4 @@
-Thank you for your contribution to the netca repo.
+Thank you for your contribution to the ecommerce repo.
 Before submitting this PR, please make sure:
 
 - [ ] [Following Rules 1](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_git/BaseRepo?path=%2Fdocs%2FCODE_OF_CONDUCT.md&version=GBdotnetcore)

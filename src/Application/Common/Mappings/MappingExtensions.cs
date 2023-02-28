@@ -8,9 +8,9 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using JsonApiSerializer.JsonApi;
 using Microsoft.EntityFrameworkCore;
-using netca.Application.Common.Extensions;
+using ecommerce.Application.Common.Extensions;
 
-namespace netca.Application.Common.Mappings;
+namespace ecommerce.Application.Common.Mappings;
 
 /// <summary>
 /// MappingExtensions

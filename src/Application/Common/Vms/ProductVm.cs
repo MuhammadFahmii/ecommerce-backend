@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using netca.Application.Common.Mappings;
-using netca.Application.Orders.Queries;
-using netca.Domain.Entities;
+using ecommerce.Application.Common.Mappings;
+using ecommerce.Application.Orders.Queries;
+using ecommerce.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace netca.Application.Common.Vms;
+namespace ecommerce.Application.Common.Vms;
 
 /// <summary>
 /// Product Vm

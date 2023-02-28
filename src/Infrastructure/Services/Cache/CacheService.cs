@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Infrastructure.Services.Cache;
+namespace ecommerce.Infrastructure.Services.Cache;
 
 /// <summary>
 /// CacheService

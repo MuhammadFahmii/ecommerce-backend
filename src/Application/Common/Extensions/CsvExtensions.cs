@@ -9,7 +9,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Http;
 
-namespace netca.Application.Common.Extensions;
+namespace ecommerce.Application.Common.Extensions;
 
 /// <summary>
 /// Csv Extension

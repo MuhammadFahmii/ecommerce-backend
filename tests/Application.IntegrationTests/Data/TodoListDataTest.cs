@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace netca.Application.IntegrationTests.Data;
+namespace ecommerce.Application.IntegrationTests.Data;
 
 /// <summary>
 /// TodoListDataTest

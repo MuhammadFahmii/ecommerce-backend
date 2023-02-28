@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using netca.Application.Common.Mappings;
-using netca.Domain.Entities;
+using ecommerce.Application.Common.Mappings;
+using ecommerce.Domain.Entities;
 
-namespace netca.Application.Dtos;
+namespace ecommerce.Application.Dtos;
 
 /// <summary>
 /// Product order dto

@@ -8,11 +8,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using CsvHelper;
-using netca.Application.Common.Interfaces;
-using netca.Application.TodoLists.Queries.ExportTodos;
-using netca.Infrastructure.Files.Maps;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.TodoLists.Queries.ExportTodos;
+using ecommerce.Infrastructure.Files.Maps;
 
-namespace netca.Infrastructure.Files;
+namespace ecommerce.Infrastructure.Files;
 
 /// <summary>
 /// CsvFileBuilder

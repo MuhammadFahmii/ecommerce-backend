@@ -6,10 +6,10 @@
 
 using System.ComponentModel.DataAnnotations;
 using MediatR;
-using netca.Application.Common.Interfaces;
-using netca.Domain.Entities;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Domain.Entities;
 
-namespace netca.Application.TodoLists.Commands.CreateTodoList
+namespace ecommerce.Application.TodoLists.Commands.CreateTodoList
 {
     /// <summary>
     /// CreateTodoListCommand

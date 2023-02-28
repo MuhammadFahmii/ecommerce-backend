@@ -8,12 +8,12 @@ using System;
 using System.Runtime.Serialization;
 using AutoMapper;
 using FluentAssertions;
-using netca.Application.Common.Mappings;
-using netca.Application.Common.Vms;
-using netca.Domain.Entities;
+using ecommerce.Application.Common.Mappings;
+using ecommerce.Application.Common.Vms;
+using ecommerce.Domain.Entities;
 using NUnit.Framework;
 
-namespace netca.Application.UnitTests.Common.Mappings;
+namespace ecommerce.Application.UnitTests.Common.Mappings;
 
 /// <summary>
 /// MappingTests

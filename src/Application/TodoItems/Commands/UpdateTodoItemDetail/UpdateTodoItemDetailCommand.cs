@@ -6,12 +6,12 @@
 
 using System.ComponentModel.DataAnnotations;
 using MediatR;
-using netca.Application.Common.Exceptions;
-using netca.Application.Common.Interfaces;
-using netca.Domain.Entities;
-using netca.Domain.Enums;
+using ecommerce.Application.Common.Exceptions;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Domain.Entities;
+using ecommerce.Domain.Enums;
 
-namespace netca.Application.TodoItems.Commands.UpdateTodoItemDetail;
+namespace ecommerce.Application.TodoItems.Commands.UpdateTodoItemDetail;
 
 /// <summary>
 /// UpdateTodoItemDetailCommand

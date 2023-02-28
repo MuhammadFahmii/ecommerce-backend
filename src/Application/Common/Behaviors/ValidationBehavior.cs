@@ -6,9 +6,9 @@
 
 using FluentValidation;
 using MediatR;
-using ValidationException = netca.Application.Common.Exceptions.ValidationException;
+using ValidationException = ecommerce.Application.Common.Exceptions.ValidationException;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// ValidationBehavior

@@ -7,11 +7,11 @@
 using System.Reflection;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Exceptions;
+using ecommerce.Application.Common.Exceptions;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a retry policy on the MediatR request.

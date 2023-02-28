@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Domain.ValueObjects;
+namespace ecommerce.Domain.ValueObjects;
 
 /// <summary>
 /// Colour

@@ -9,10 +9,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using netca.Domain.Entities;
-using netca.Domain.ValueObjects;
+using ecommerce.Domain.Entities;
+using ecommerce.Domain.ValueObjects;
 
-namespace netca.Infrastructure.Persistence;
+namespace ecommerce.Infrastructure.Persistence;
 
 /// <summary>
 /// ApplicationDbContextInitializer

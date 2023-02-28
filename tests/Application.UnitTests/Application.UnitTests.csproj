@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>netca.Application.UnitTests</RootNamespace>
-        <AssemblyName>netca.Application.UnitTests</AssemblyName>
+        <RootNamespace>ecommerce.Application.UnitTests</RootNamespace>
+        <AssemblyName>ecommerce.Application.UnitTests</AssemblyName>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>

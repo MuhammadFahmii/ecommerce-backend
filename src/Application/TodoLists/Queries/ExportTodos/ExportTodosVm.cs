@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Application.TodoLists.Queries.ExportTodos
+namespace ecommerce.Application.TodoLists.Queries.ExportTodos
 {
     /// <summary>
     /// ExportTodosVm

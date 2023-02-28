@@ -15,9 +15,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Api.Filters;
+namespace ecommerce.Api.Filters;
 
 /// <summary>
 /// ApiAuthorizeFilterAttribute

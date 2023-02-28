@@ -64,7 +64,7 @@ This layer is a REST API. This layer depends on both the Application and Infrast
 
 ## Support
 
-If you are having problems or having new idea, please let us know by [raising a new pr to main branch](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_git/netca/pullrequests).
+If you are having problems or having new idea, please let us know by [raising a new pr to main branch](https://tfs.unitedtractors.com/DefaultCollection/Mobile%20Web%20Development/_git/ecommerce/pullrequests).
 
 ## Source
 

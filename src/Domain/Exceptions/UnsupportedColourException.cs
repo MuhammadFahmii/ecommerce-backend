@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Domain.Exceptions;
+namespace ecommerce.Domain.Exceptions;
 
 /// <summary>
 /// UnsupportedColourException

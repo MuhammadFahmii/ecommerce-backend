@@ -5,11 +5,11 @@
 // -----------------------------------------------------------------------------------
 
 using AutoMapper;
-using netca.Application.Common.Mappings;
-using netca.Domain.Entities;
-using netca.Domain.Enums;
+using ecommerce.Application.Common.Mappings;
+using ecommerce.Domain.Entities;
+using ecommerce.Domain.Enums;
 
-namespace netca.Application.Common.Vms;
+namespace ecommerce.Application.Common.Vms;
 
 /// <summary>
 /// TodoItemVm

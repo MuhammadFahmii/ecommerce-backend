@@ -6,11 +6,11 @@
 
 using System.ComponentModel.DataAnnotations;
 using MediatR;
-using netca.Application.Common.Interfaces;
-using netca.Domain.Entities;
-using netca.Domain.Events;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Domain.Entities;
+using ecommerce.Domain.Events;
 
-namespace netca.Application.TodoItems.Commands.CreateTodoItem;
+namespace ecommerce.Application.TodoItems.Commands.CreateTodoItem;
 
 /// <summary>
 /// CreateTodoItemCommand

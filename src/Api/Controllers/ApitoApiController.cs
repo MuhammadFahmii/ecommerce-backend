@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace netca.Api.Controllers;
+namespace ecommerce.Api.Controllers;
 
 /// <summary>
 /// Represents RESTful of ApitoApi

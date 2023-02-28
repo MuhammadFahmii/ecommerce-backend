@@ -6,7 +6,7 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace netca.Domain.Common;
+namespace ecommerce.Domain.Common;
 
 /// <summary>
 /// BaseEntity

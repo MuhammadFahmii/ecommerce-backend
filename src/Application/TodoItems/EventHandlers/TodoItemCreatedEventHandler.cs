@@ -6,9 +6,9 @@
 
 using MediatR;
 using Microsoft.Extensions.Logging;
-using netca.Domain.Events;
+using ecommerce.Domain.Events;
 
-namespace netca.Application.TodoItems.EventHandlers;
+namespace ecommerce.Application.TodoItems.EventHandlers;
 
 /// <summary>
 /// TodoItemCreatedEventHandler
@@ -34,7 +34,7 @@ public class TodoItemCreatedEventHandler : INotificationHandler<TodoItemCreatedE
     /// <returns></returns>
     public Task Handle(TodoItemCreatedEvent notification, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("netca Domain Event: {DomainEvent}", notification.GetType().Name);
+        _logger.LogInformation("ecommerce Domain Event: {DomainEvent}", notification.GetType().Name);
 
         return Task.CompletedTask;
     }

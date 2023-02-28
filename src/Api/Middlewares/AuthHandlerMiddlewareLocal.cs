@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using netca.Api.Handlers;
-using netca.Application.Common.Models;
+using ecommerce.Api.Handlers;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Api.Middlewares;
+namespace ecommerce.Api.Middlewares;
 
 /// <summary>
 /// AuthHandlerMiddlewareLocal

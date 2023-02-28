@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Domain.Enums;
+namespace ecommerce.Domain.Enums;
 
 /// <summary>
 /// PriorityLevel

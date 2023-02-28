@@ -8,11 +8,11 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Models;
 using Newtonsoft.Json;
 using Serilog;
 
-namespace netca.Infrastructure.Apis;
+namespace ecommerce.Infrastructure.Apis;
 
 /// <summary>
 /// SendToMsTeams

@@ -6,7 +6,7 @@
 
 using FluentValidation;
 
-namespace netca.Application.TodoItems.Commands.UpdateTodoItem;
+namespace ecommerce.Application.TodoItems.Commands.UpdateTodoItem;
 
 /// <summary>
 /// UpdateTodoItemCommandValidator

@@ -6,7 +6,7 @@
 
 using System.Text;
 
-namespace netca.Application.Common.Models;
+namespace ecommerce.Application.Common.Models;
 
 /// <summary>
 /// CustomValidator

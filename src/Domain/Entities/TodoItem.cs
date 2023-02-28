@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Domain.Entities;
+namespace ecommerce.Domain.Entities;
 
 /// <summary>
 /// TodoItem

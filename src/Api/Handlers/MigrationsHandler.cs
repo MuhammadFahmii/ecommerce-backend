@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using netca.Application.Common.Models;
-using netca.Infrastructure.Persistence;
+using ecommerce.Application.Common.Models;
+using ecommerce.Infrastructure.Persistence;
 using Serilog;
 
-namespace netca.Api.Handlers;
+namespace ecommerce.Api.Handlers;
 
 /// <summary>
 /// MigrationsHandler

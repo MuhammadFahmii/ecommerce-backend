@@ -8,7 +8,7 @@ using System.Collections;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace netca.Application.Common.Extensions;
+namespace ecommerce.Application.Common.Extensions;
 
 /// <summary>
 /// StringExtensions

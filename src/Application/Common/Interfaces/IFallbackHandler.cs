@@ -6,7 +6,7 @@
 
 using MediatR;
 
-namespace netca.Application.Common.Interfaces;
+namespace ecommerce.Application.Common.Interfaces;
 
 /// <summary>
 /// Interface of fallback policy implementation.

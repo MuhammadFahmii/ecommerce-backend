@@ -7,7 +7,7 @@
 using System.Reflection;
 using AutoMapper;
 
-namespace netca.Application.Common.Mappings;
+namespace ecommerce.Application.Common.Mappings;
 
 /// <summary>
 /// MappingProfile

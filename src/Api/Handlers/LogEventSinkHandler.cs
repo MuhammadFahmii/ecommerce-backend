@@ -7,14 +7,14 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Caching.Memory;
-using netca.Application.Common.Models;
-using netca.Infrastructure.Apis;
+using ecommerce.Application.Common.Models;
+using ecommerce.Infrastructure.Apis;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
-using Constants = netca.Application.Common.Models.Constants;
+using Constants = ecommerce.Application.Common.Models.Constants;
 
-namespace netca.Api.Handlers;
+namespace ecommerce.Api.Handlers;
 
 /// <summary>
 /// LogEventSinkHandler

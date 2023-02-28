@@ -7,15 +7,15 @@
 using System.Reflection;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Exceptions;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Exceptions;
+using ecommerce.Application.Common.Models;
 using Polly;
 using Polly.Bulkhead;
 using Polly.CircuitBreaker;
 using Polly.RateLimit;
 using Polly.Timeout;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a circuit breaker policy on the MediatR request.

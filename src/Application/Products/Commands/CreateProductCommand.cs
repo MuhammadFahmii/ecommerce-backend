@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using MediatR;
-using netca.Application.Common.Interfaces;
-using netca.Domain.Entities;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace netca.Application.Products.Commands;
+namespace ecommerce.Application.Products.Commands;
 
 /// <summary>
 /// 

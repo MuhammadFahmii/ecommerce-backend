@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>netca.Infrastructure</RootNamespace>
-        <AssemblyName>netca.Infrastructure</AssemblyName>
+        <RootNamespace>ecommerce.Infrastructure</RootNamespace>
+        <AssemblyName>ecommerce.Infrastructure</AssemblyName>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PreserveCompilationContext>false</PreserveCompilationContext>
         <Nullable>enable</Nullable>

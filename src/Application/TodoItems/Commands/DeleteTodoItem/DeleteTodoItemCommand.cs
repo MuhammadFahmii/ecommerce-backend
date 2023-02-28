@@ -6,11 +6,11 @@
 
 using System.ComponentModel.DataAnnotations;
 using MediatR;
-using netca.Application.Common.Exceptions;
-using netca.Application.Common.Interfaces;
-using netca.Domain.Entities;
+using ecommerce.Application.Common.Exceptions;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Domain.Entities;
 
-namespace netca.Application.TodoItems.Commands.DeleteTodoItem;
+namespace ecommerce.Application.TodoItems.Commands.DeleteTodoItem;
 
 /// <summary>
 /// DeleteTodoItemCommand

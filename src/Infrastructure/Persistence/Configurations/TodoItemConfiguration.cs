@@ -5,9 +5,9 @@
 // -----------------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using netca.Domain.Entities;
+using ecommerce.Domain.Entities;
 
-namespace netca.Infrastructure.Persistence.Configurations;
+namespace ecommerce.Infrastructure.Persistence.Configurations;
 
 /// <summary>
 /// TodoItemConfiguration

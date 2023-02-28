@@ -6,7 +6,7 @@
 
 using System.Globalization;
 
-namespace netca.Application.Common.Extensions;
+namespace ecommerce.Application.Common.Extensions;
 
 /// <summary>
 /// DateExtensions

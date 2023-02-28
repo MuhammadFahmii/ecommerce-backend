@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using netca.Application.Common.Interfaces;
-using netca.Domain.Common;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Domain.Common;
 
-namespace netca.Infrastructure.Persistence.Interceptors;
+namespace ecommerce.Infrastructure.Persistence.Interceptors;
 
 
 /// <summary>

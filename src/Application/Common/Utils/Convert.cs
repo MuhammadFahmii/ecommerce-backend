@@ -1,7 +1,7 @@
-﻿using netca.Application.Common.Extensions;
+﻿using ecommerce.Application.Common.Extensions;
 using System.Globalization;
 
-namespace netca.Application.Common.Utils;
+namespace ecommerce.Application.Common.Utils;
 
 /// <summary>
 /// Convert

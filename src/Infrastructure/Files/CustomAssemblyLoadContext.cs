@@ -8,7 +8,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace netca.Infrastructure.Files;
+namespace ecommerce.Infrastructure.Files;
 
 /// <summary>
 /// CustomAssemblyLoadContext

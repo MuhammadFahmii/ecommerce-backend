@@ -6,7 +6,7 @@
 
 using AutoMapper;
 
-namespace netca.Application.Common.Mappings;
+namespace ecommerce.Application.Common.Mappings;
 
 /// <summary>
 /// IMapFrom

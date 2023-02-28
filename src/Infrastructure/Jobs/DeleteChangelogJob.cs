@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using netca.Application.Changelogs.Commands.DeleteChangelog;
+using ecommerce.Application.Changelogs.Commands.DeleteChangelog;
 using Quartz;
 
-namespace netca.Infrastructure.Jobs;
+namespace ecommerce.Infrastructure.Jobs;
 
 /// <summary>
 /// DeleteChangelogJob

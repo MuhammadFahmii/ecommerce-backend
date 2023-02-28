@@ -9,16 +9,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
-using netca.Application.Common.Utils;
-using netca.Application.Dtos;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.Common.Utils;
+using ecommerce.Application.Dtos;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using StackExchange.Redis;
 
-namespace netca.Infrastructure.Services.Cache;
+namespace ecommerce.Infrastructure.Services.Cache;
 
 /// <summary>
 /// RedisService

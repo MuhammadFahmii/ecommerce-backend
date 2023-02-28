@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>netca.Application.IntegrationTests</RootNamespace>
-        <AssemblyName>netca.Application.IntegrationTests</AssemblyName>
+        <RootNamespace>ecommerce.Application.IntegrationTests</RootNamespace>
+        <AssemblyName>ecommerce.Application.IntegrationTests</AssemblyName>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>

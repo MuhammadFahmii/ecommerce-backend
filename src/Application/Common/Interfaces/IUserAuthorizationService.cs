@@ -5,10 +5,10 @@
 // -----------------------------------------------------------------------------------
 
 using System.Net;
-using netca.Application.Common.Models;
-using netca.Application.Dtos;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.Dtos;
 
-namespace netca.Application.Common.Interfaces;
+namespace ecommerce.Application.Common.Interfaces;
 
 /// <summary>
 /// IUserAuthorizationService

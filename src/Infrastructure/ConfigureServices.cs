@@ -11,16 +11,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
-using netca.Infrastructure.Files;
-using netca.Infrastructure.Persistence;
-using netca.Infrastructure.Persistence.Interceptors;
-using netca.Infrastructure.Services;
-using netca.Infrastructure.Services.Cache;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
+using ecommerce.Infrastructure.Files;
+using ecommerce.Infrastructure.Persistence;
+using ecommerce.Infrastructure.Persistence.Interceptors;
+using ecommerce.Infrastructure.Services;
+using ecommerce.Infrastructure.Services.Cache;
 using Quartz;
 
-namespace netca.Infrastructure;
+namespace ecommerce.Infrastructure;
 
 /// <summary>
 /// ConfigureServices

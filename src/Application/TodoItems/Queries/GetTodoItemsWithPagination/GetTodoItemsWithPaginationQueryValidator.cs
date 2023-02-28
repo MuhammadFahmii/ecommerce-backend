@@ -6,7 +6,7 @@
 
 using FluentValidation;
 
-namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
+namespace ecommerce.Application.TodoItems.Queries.GetTodoItemsWithPagination
 {
     /// <summary>
     /// GetTodoItemsWithPaginationQueryValidator

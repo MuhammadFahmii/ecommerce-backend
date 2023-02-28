@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>netca.Application</RootNamespace>
-        <AssemblyName>netca.Application</AssemblyName>
+        <RootNamespace>ecommerce.Application</RootNamespace>
+        <AssemblyName>ecommerce.Application</AssemblyName>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PreserveCompilationContext>false</PreserveCompilationContext>
         <ImplicitUsings>enable</ImplicitUsings>

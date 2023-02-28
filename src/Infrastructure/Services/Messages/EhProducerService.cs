@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
-using netca.Application.Dtos;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.Dtos;
 using Newtonsoft.Json;
 
-namespace netca.Infrastructure.Services.Messages;
+namespace ecommerce.Infrastructure.Services.Messages;
 
 /// <summary>
 /// EHProducerService

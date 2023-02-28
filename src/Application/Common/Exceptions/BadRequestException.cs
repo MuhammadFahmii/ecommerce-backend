@@ -6,7 +6,7 @@
 
 using System.Runtime.Serialization;
 
-namespace netca.Application.Common.Exceptions;
+namespace ecommerce.Application.Common.Exceptions;
 
 /// <summary>
 /// BadRequestException

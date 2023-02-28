@@ -9,13 +9,13 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using JsonApiSerializer.JsonApi;
 using MediatR;
-using netca.Application.Common.Behaviors;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Mappings;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Behaviors;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Mappings;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
+namespace ecommerce.Application.TodoItems.Queries.GetTodoItemsWithPagination
 {
     /// <summary>
     /// GetTodoItemsWithPaginationQuery

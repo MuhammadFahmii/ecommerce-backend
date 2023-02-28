@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>netca.Domain</RootNamespace>
-        <AssemblyName>netca.Domain</AssemblyName>
+        <RootNamespace>ecommerce.Domain</RootNamespace>
+        <AssemblyName>ecommerce.Domain</AssemblyName>
         <PreserveCompilationContext>false</PreserveCompilationContext>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>

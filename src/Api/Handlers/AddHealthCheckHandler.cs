@@ -20,10 +20,10 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Api.Handlers;
+namespace ecommerce.Api.Handlers;
 
 /// <summary>
 /// AddHealthCheckHandler

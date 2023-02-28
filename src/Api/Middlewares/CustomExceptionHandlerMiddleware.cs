@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Exceptions;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Exceptions;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Polly.Bulkhead;
 using Polly.CircuitBreaker;
 using Polly.RateLimit;
 
-namespace netca.Api.Middlewares;
+namespace ecommerce.Api.Middlewares;
 
 /// <summary>
 /// CustomExceptionHandlerMiddleware

@@ -6,10 +6,10 @@
 
 using System.Reflection;
 using MediatR;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Models;
 using Polly.RateLimit;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a rate limit policy on the MediatR request.

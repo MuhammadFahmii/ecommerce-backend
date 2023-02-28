@@ -11,10 +11,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Models;
-using Constants = netca.Application.Common.Models.Constants;
+using ecommerce.Application.Common.Models;
+using Constants = ecommerce.Application.Common.Models.Constants;
 
-namespace netca.Infrastructure.Services;
+namespace ecommerce.Infrastructure.Services;
 
 /// <summary>
 /// UserAuthorizationHandlerService

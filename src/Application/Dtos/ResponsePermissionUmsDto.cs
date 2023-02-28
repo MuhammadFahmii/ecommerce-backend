@@ -1,4 +1,4 @@
-﻿namespace netca.Application.Dtos;
+﻿namespace ecommerce.Application.Dtos;
 
 #pragma warning disable
 public record ResponsePermissionUmsVm

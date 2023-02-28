@@ -5,10 +5,10 @@
 // -----------------------------------------------------------------------------------
 
 using System;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Interfaces;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Interfaces;
 
-namespace netca.Infrastructure.Services;
+namespace ecommerce.Infrastructure.Services;
 
 /// <summary>
 /// DateTimeService

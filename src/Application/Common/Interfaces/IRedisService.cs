@@ -4,10 +4,10 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using netca.Application.Dtos;
+using ecommerce.Application.Dtos;
 using StackExchange.Redis;
 
-namespace netca.Application.Common.Interfaces;
+namespace ecommerce.Application.Common.Interfaces;
 
 /// <summary>
 /// IRedisService

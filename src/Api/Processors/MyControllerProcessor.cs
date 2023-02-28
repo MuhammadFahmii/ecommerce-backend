@@ -4,11 +4,11 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using netca.Api.Controllers;
+using ecommerce.Api.Controllers;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
-namespace netca.Api.Processors;
+namespace ecommerce.Api.Processors;
 
 /// <summary>
 /// MyControllerProcessor

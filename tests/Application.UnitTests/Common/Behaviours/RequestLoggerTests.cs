@@ -9,13 +9,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
-using netca.Application.Common.Behaviors;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
-using netca.Application.TodoItems.Commands.CreateTodoItem;
+using ecommerce.Application.Common.Behaviors;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.TodoItems.Commands.CreateTodoItem;
 using NUnit.Framework;
 
-namespace netca.Application.UnitTests.Common.Behaviors;
+namespace ecommerce.Application.UnitTests.Common.Behaviors;
 
 /// <summary>
 /// RequestLoggerTests

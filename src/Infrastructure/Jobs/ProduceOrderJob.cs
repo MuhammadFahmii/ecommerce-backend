@@ -8,10 +8,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Interfaces;
+using ecommerce.Application.Common.Interfaces;
 using Quartz;
 
-namespace netca.Infrastructure.Jobs;
+namespace ecommerce.Infrastructure.Jobs;
     /// <summary>
     /// ProduceOrderJob
     /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace netca.Domain.Entities;
+﻿namespace ecommerce.Domain.Entities;
 
 public record Order : BaseAuditableEntity
 {

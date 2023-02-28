@@ -7,7 +7,7 @@
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace netca.Application.IntegrationTests;
+namespace ecommerce.Application.IntegrationTests;
 
 /// <summary>
 /// 

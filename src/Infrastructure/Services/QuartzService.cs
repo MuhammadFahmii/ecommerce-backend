@@ -6,10 +6,10 @@
 
 using System;
 using System.Linq;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Models;
 using Quartz;
 
-namespace netca.Infrastructure.Services;
+namespace ecommerce.Infrastructure.Services;
 
 /// <summary>
 /// QuartzService
@@ -26,7 +26,7 @@ public static class QuartzService
     public static void AddJobAndTrigger(this IServiceCollectionQuartzConfigurator quartz, string jobName, AppSetting appSetting)
     {
         var job = appSetting.BackgroundJob.Jobs.FirstOrDefault(x => x.Name.Equals(jobName));
-        var type = Type.GetType($"netca.Infrastructure.Jobs.{jobName}");
+        var type = Type.GetType($"ecommerce.Infrastructure.Jobs.{jobName}");
 
         if (job == null || type == null)
             throw new ArgumentNullException($"No Quartz.NET Cron schedule found for {jobName} in configuration");

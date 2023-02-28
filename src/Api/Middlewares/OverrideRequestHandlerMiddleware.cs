@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Api.Middlewares;
+namespace ecommerce.Api.Middlewares;
 
 /// <summary>
 /// OverrideRequestHandlerMiddleware

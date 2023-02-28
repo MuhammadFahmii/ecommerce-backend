@@ -9,7 +9,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace netca.Application.Common.Extensions;
+namespace ecommerce.Application.Common.Extensions;
 
 /// <summary>
 /// DistributedCachingExtensions

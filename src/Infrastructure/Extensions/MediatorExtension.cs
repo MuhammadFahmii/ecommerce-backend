@@ -8,9 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using netca.Domain.Common;
+using ecommerce.Domain.Common;
 
-namespace netca.Infrastructure.Extensions;
+namespace ecommerce.Infrastructure.Extensions;
 
 /// <summary>
 /// MediatorExtension

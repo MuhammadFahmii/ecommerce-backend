@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using netca.Application.Common.Models;
-using netca.Application.Products.Commands;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.Products.Commands;
 using NSwag.Annotations;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace netca.Api.Controllers;
+namespace ecommerce.Api.Controllers;
 
 /// <summary>
 ///

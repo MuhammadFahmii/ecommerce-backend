@@ -8,12 +8,12 @@ using FluentValidation;
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
-using netca.Application.Common.Behaviors;
-using netca.Application.Common.Interfaces;
+using ecommerce.Application.Common.Behaviors;
+using ecommerce.Application.Common.Interfaces;
 using Scrutor;
 using System.Reflection;
 
-namespace netca.Application;
+namespace ecommerce.Application;
 
 /// <summary>
 /// ConfigureServices

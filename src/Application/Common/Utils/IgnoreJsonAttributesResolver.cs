@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace netca.Application.Common.Utils;
+namespace ecommerce.Application.Common.Utils;
 
 /// <summary>
 /// IgnoreJsonAttributesResolver

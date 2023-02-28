@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>netca.Api</RootNamespace>
-        <AssemblyName>netca.Api</AssemblyName>
+        <RootNamespace>ecommerce.Api</RootNamespace>
+        <AssemblyName>ecommerce.Api</AssemblyName>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PreserveCompilationContext>false</PreserveCompilationContext>
         <IsWebConfigTransformDisabled>true</IsWebConfigTransformDisabled>

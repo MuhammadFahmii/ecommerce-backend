@@ -9,9 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Extensions;
+using ecommerce.Application.Common.Extensions;
 
-namespace netca.Application.Common.Models;
+namespace ecommerce.Application.Common.Models;
 
 /// <summary>
 /// Model for receive sort, filter and pagging

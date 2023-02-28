@@ -9,11 +9,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
-using netca.Api.Filters;
-using netca.Application.Dtos;
+using ecommerce.Api.Filters;
+using ecommerce.Application.Dtos;
 using NSwag.Annotations;
 
-namespace netca.Api.Extensions;
+namespace ecommerce.Api.Extensions;
 
 /// <summary>
 /// ControllerExtension

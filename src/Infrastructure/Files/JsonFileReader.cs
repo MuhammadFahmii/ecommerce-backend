@@ -8,10 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Extensions;
+using ecommerce.Application.Common.Extensions;
 using Newtonsoft.Json;
 
-namespace netca.Infrastructure.Files;
+namespace ecommerce.Infrastructure.Files;
 
 /// <summary>
 /// JsonFileReader

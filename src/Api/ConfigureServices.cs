@@ -14,10 +14,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.DependencyInjection;
-using netca.Api.Filters;
-using netca.Api.Handlers;
-using netca.Api.Middlewares;
-using netca.Application.Common.Models;
+using ecommerce.Api.Filters;
+using ecommerce.Api.Handlers;
+using ecommerce.Api.Middlewares;
+using ecommerce.Application.Common.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NJsonSchema.Generation;
@@ -25,7 +25,7 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 using Serilog;
 
-namespace netca.Api;
+namespace ecommerce.Api;
 
 /// <summary>
 /// ConfigureServices

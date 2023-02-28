@@ -12,17 +12,17 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using netca.Api.Extensions;
-using netca.Api.Filters;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Models;
-using netca.Application.Common.Vms;
-using netca.Application.Development.Commands;
-using netca.Application.Dtos;
-using netca.Application.TodoLists.Queries.GetTodos;
+using ecommerce.Api.Extensions;
+using ecommerce.Api.Filters;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.Common.Vms;
+using ecommerce.Application.Development.Commands;
+using ecommerce.Application.Dtos;
+using ecommerce.Application.TodoLists.Queries.GetTodos;
 using NSwag.Annotations;
 
-namespace netca.Api.Controllers;
+namespace ecommerce.Api.Controllers;
 
 /// <summary>
 /// Represents RESTful of DevelopmentController

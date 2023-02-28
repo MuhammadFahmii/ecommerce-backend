@@ -7,11 +7,11 @@
 using System.Reflection;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Models;
 using Polly.Timeout;
-using Timeout = netca.Application.Common.Models.Timeout;
+using Timeout = ecommerce.Application.Common.Models.Timeout;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// Applies a timeout policy on the MediatR request.

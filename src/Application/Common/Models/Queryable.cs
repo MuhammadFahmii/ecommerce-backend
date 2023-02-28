@@ -7,9 +7,9 @@
 using System.Linq.Dynamic.Core;
 using System.Linq.Dynamic.Core.Exceptions;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Extensions;
+using ecommerce.Application.Common.Extensions;
 
-namespace netca.Application.Common.Models;
+namespace ecommerce.Application.Common.Models;
 
 /// <summary>
 /// Queryable

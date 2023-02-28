@@ -6,9 +6,9 @@
 
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using netca.Application.Common.Interfaces;
+using ecommerce.Application.Common.Interfaces;
 
-namespace netca.Application.TodoItems.Commands.UpdateTodoItemDetail;
+namespace ecommerce.Application.TodoItems.Commands.UpdateTodoItemDetail;
 
 /// <summary>
 /// UpdateTodoItemDetailCommandValidator

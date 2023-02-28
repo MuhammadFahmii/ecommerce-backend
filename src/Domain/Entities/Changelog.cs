@@ -6,7 +6,7 @@
 
 using System;
 
-namespace netca.Domain.Entities;
+namespace ecommerce.Domain.Entities;
 
 /// <summary>
 /// Changelog

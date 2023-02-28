@@ -6,7 +6,7 @@
 
 using FluentValidation;
 
-namespace netca.Application.TodoItems.Commands.DeleteTodoItem;
+namespace ecommerce.Application.TodoItems.Commands.DeleteTodoItem;
 
 /// <summary>
 /// DeleteTodoItemCommandValidator

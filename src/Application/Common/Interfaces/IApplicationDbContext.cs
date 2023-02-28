@@ -6,9 +6,9 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using netca.Domain.Entities;
+using ecommerce.Domain.Entities;
 
-namespace netca.Application.Common.Interfaces;
+namespace ecommerce.Application.Common.Interfaces;
 
 /// <summary>
 /// IApplicationDbContext

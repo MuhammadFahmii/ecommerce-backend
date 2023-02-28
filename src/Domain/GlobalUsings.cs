@@ -4,9 +4,9 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-global using netca.Domain.Common;
-global using netca.Domain.Entities;
-global using netca.Domain.Enums;
-global using netca.Domain.Events;
-global using netca.Domain.Exceptions;
-global using netca.Domain.ValueObjects;
+global using ecommerce.Domain.Common;
+global using ecommerce.Domain.Entities;
+global using ecommerce.Domain.Enums;
+global using ecommerce.Domain.Events;
+global using ecommerce.Domain.Exceptions;
+global using ecommerce.Domain.ValueObjects;

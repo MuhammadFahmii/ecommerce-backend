@@ -4,9 +4,9 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using netca.Application.Common.Vms;
+using ecommerce.Application.Common.Vms;
 
-namespace netca.Application.TodoLists.Queries.GetTodos
+namespace ecommerce.Application.TodoLists.Queries.GetTodos
 {
     /// <summary>
     /// TodosVm

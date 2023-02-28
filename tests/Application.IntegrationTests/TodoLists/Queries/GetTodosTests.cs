@@ -8,12 +8,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using netca.Application.TodoLists.Queries.GetTodos;
-using netca.Domain.Entities;
-using netca.Domain.ValueObjects;
+using ecommerce.Application.TodoLists.Queries.GetTodos;
+using ecommerce.Domain.Entities;
+using ecommerce.Domain.ValueObjects;
 using NUnit.Framework;
 
-namespace netca.Application.IntegrationTests.TodoLists.Queries;
+namespace ecommerce.Application.IntegrationTests.TodoLists.Queries;
 
 using static Testing;
 

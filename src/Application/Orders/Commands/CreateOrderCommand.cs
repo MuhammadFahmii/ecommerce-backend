@@ -1,12 +1,12 @@
 ﻿using MediatR;
-using netca.Application.Common.Interfaces;
-using netca.Domain.Events;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Domain.Events;
 using System.ComponentModel.DataAnnotations;
-using netca.Domain.Entities;
-using netca.Application.Dtos;
+using ecommerce.Domain.Entities;
+using ecommerce.Application.Dtos;
 using AutoMapper;
 
-namespace netca.Application.Orders.Commands;
+namespace ecommerce.Application.Orders.Commands;
 
 /// <summary>
 /// Create Order Command

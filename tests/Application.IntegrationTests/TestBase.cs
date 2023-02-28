@@ -7,7 +7,7 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace netca.Application.IntegrationTests;
+namespace ecommerce.Application.IntegrationTests;
 using static Testing;
 
 /// <summary>

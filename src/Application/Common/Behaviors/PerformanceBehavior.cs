@@ -9,10 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// PerformanceBehavior

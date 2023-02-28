@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Extensions;
+using ecommerce.Application.Common.Extensions;
 
-namespace netca.Api.Filters;
+namespace ecommerce.Api.Filters;
 
 /// <summary>
 /// ApiDevelopmentFilterAttribute

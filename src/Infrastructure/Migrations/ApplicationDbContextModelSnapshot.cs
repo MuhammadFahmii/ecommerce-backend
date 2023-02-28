@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using netca.Infrastructure.Persistence;
+using ecommerce.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace netca.Infrastructure.Migrations
+namespace ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,7 @@ namespace netca.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("netca.Domain.Entities.Changelog", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.Changelog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -56,7 +56,7 @@ namespace netca.Infrastructure.Migrations
                     b.ToTable("Changelogs");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.Order", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,7 +93,7 @@ namespace netca.Infrastructure.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.OrderProduct", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.OrderProduct", b =>
                 {
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
@@ -111,7 +111,7 @@ namespace netca.Infrastructure.Migrations
                     b.ToTable("OrderProducts");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.Product", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,7 +144,7 @@ namespace netca.Infrastructure.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.TodoItem", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.TodoItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -192,7 +192,7 @@ namespace netca.Infrastructure.Migrations
                     b.ToTable("TodoItems");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.TodoList", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.TodoList", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -223,7 +223,7 @@ namespace netca.Infrastructure.Migrations
                     b.ToTable("TodoLists");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.Voucher", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.Voucher", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -253,24 +253,24 @@ namespace netca.Infrastructure.Migrations
                     b.ToTable("Voucher");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.Order", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("netca.Domain.Entities.Voucher", "Voucher")
+                    b.HasOne("ecommerce.Domain.Entities.Voucher", "Voucher")
                         .WithMany()
                         .HasForeignKey("VoucherId");
 
                     b.Navigation("Voucher");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.OrderProduct", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.OrderProduct", b =>
                 {
-                    b.HasOne("netca.Domain.Entities.Order", "Order")
+                    b.HasOne("ecommerce.Domain.Entities.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("netca.Domain.Entities.Product", "Product")
+                    b.HasOne("ecommerce.Domain.Entities.Product", "Product")
                         .WithMany("OrderProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -281,9 +281,9 @@ namespace netca.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.TodoItem", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.TodoItem", b =>
                 {
-                    b.HasOne("netca.Domain.Entities.TodoList", "List")
+                    b.HasOne("ecommerce.Domain.Entities.TodoList", "List")
                         .WithMany("Items")
                         .HasForeignKey("ListId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -292,9 +292,9 @@ namespace netca.Infrastructure.Migrations
                     b.Navigation("List");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.TodoList", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.TodoList", b =>
                 {
-                    b.OwnsOne("netca.Domain.ValueObjects.Colour", "Colour", b1 =>
+                    b.OwnsOne("ecommerce.Domain.ValueObjects.Colour", "Colour", b1 =>
                         {
                             b1.Property<Guid>("TodoListId")
                                 .HasColumnType("uuid");
@@ -315,17 +315,17 @@ namespace netca.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.Order", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderProducts");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.Product", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.Product", b =>
                 {
                     b.Navigation("OrderProducts");
                 });
 
-            modelBuilder.Entity("netca.Domain.Entities.TodoList", b =>
+            modelBuilder.Entity("ecommerce.Domain.Entities.TodoList", b =>
                 {
                     b.Navigation("Items");
                 });

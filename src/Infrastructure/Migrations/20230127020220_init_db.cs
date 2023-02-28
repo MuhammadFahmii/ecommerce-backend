@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace netca.Infrastructure.Migrations
+namespace ecommerce.Infrastructure.Migrations
 {
     public partial class init_db : Migration
     {

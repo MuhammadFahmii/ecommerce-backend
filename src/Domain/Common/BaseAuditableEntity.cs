@@ -4,7 +4,7 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-namespace netca.Domain.Common;
+namespace ecommerce.Domain.Common;
 
 /// <summary>
 /// BaseAuditableEntity

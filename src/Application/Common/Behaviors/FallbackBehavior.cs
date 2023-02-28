@@ -6,10 +6,10 @@
 
 using MediatR;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Interfaces;
+using ecommerce.Application.Common.Interfaces;
 using Polly;
 
-namespace netca.Application.Common.Behaviors;
+namespace ecommerce.Application.Common.Behaviors;
 
 /// <summary>
 /// Wraps request handler execution of requests

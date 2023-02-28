@@ -10,11 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
-using netca.Infrastructure.Persistence;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
+using ecommerce.Infrastructure.Persistence;
 
-namespace netca.Application.IntegrationTests;
+namespace ecommerce.Application.IntegrationTests;
 
 internal class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
@@ -33,7 +33,7 @@ internal class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices((builderContext, services) =>
         {
-            services.AddSingleton(Mock.Of<IWebHostEnvironment>(x => x.EnvironmentName == "Test" && x.ApplicationName == "netca.Api"));
+            services.AddSingleton(Mock.Of<IWebHostEnvironment>(x => x.EnvironmentName == "Test" && x.ApplicationName == "ecommerce.Api"));
             
             services
                 .Remove<IUserAuthorizationService>()

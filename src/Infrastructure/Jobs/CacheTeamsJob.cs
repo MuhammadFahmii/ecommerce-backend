@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Models;
+using ecommerce.Application.Common.Models;
 using Quartz;
 
-namespace netca.Infrastructure.Jobs;
+namespace ecommerce.Infrastructure.Jobs;
 
 /// <summary>
 /// CacheTeamsJob

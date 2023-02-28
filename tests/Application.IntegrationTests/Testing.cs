@@ -11,12 +11,12 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using netca.Infrastructure.Persistence;
+using ecommerce.Infrastructure.Persistence;
 using NUnit.Framework;
 using Respawn;
 using Respawn.Graph;
 
-namespace netca.Application.IntegrationTests;
+namespace ecommerce.Application.IntegrationTests;
 
 /// <summary>
 /// Testing

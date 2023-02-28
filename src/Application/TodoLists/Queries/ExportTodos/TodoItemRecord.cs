@@ -4,10 +4,10 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using netca.Application.Common.Mappings;
-using netca.Domain.Entities;
+using ecommerce.Application.Common.Mappings;
+using ecommerce.Domain.Entities;
 
-namespace netca.Application.TodoLists.Queries.ExportTodos
+namespace ecommerce.Application.TodoLists.Queries.ExportTodos
 {
     /// <summary>
     /// TodoItemRecord

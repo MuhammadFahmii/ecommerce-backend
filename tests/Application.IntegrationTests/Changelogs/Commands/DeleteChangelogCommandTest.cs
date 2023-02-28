@@ -10,13 +10,13 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using netca.Application.Changelogs.Commands.DeleteChangelog;
-using netca.Application.IntegrationTests.Data;
-using netca.Domain.Entities;
-using netca.Infrastructure.Persistence;
+using ecommerce.Application.Changelogs.Commands.DeleteChangelog;
+using ecommerce.Application.IntegrationTests.Data;
+using ecommerce.Domain.Entities;
+using ecommerce.Infrastructure.Persistence;
 using NUnit.Framework;
 
-namespace netca.Application.IntegrationTests.Changelogs.Commands;
+namespace ecommerce.Application.IntegrationTests.Changelogs.Commands;
 
 using static Testing;
 

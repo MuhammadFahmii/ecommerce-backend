@@ -4,11 +4,11 @@
 // ahmadilmanfadilah@gmail.com,ahmadilmanfadilah@outlook.com
 // -----------------------------------------------------------------------------------
 
-using netca.Application.Common.Mappings;
-using netca.Application.Common.Vms;
-using netca.Domain.Entities;
+using ecommerce.Application.Common.Mappings;
+using ecommerce.Application.Common.Vms;
+using ecommerce.Domain.Entities;
 
-namespace netca.Application.TodoItems.Queries.GetTodoItemsWithPagination
+namespace ecommerce.Application.TodoItems.Queries.GetTodoItemsWithPagination
 {
     /// <summary>
     /// TodoItemBriefVm

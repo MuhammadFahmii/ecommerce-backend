@@ -6,9 +6,9 @@
 
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using netca.Application.Common.Interfaces;
+using ecommerce.Application.Common.Interfaces;
 
-namespace netca.Application.TodoLists.Commands.UpdateTodoList
+namespace ecommerce.Application.TodoLists.Commands.UpdateTodoList
 {
     /// <summary>
     /// UpdateTodoListCommandValidator

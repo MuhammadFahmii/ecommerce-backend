@@ -6,7 +6,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace netca.Application.Common.Extensions;
+namespace ecommerce.Application.Common.Extensions;
 
 /// <summary>
 /// Shared logger

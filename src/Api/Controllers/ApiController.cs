@@ -8,7 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace netca.Api.Controllers;
+namespace ecommerce.Api.Controllers;
 
 /// <summary>
 /// Base class for object controllers.

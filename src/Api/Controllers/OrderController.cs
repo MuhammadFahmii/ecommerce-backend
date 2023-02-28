@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using netca.Api.Filters;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Models;
-using netca.Application.Orders.Commands;
-using netca.Application.Orders.Queries;
-using netca.Application.TodoLists.Commands.CreateTodoList;
+using ecommerce.Api.Filters;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.Orders.Commands;
+using ecommerce.Application.Orders.Queries;
+using ecommerce.Application.TodoLists.Commands.CreateTodoList;
 using NSwag.Annotations;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace netca.Api.Controllers;
+namespace ecommerce.Api.Controllers;
 
 /// <summary>
 /// Represent Restful Order Controller

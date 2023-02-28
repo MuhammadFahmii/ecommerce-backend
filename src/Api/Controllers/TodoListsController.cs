@@ -11,16 +11,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using netca.Api.Filters;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Models;
-using netca.Application.Common.Vms;
-using netca.Application.TodoLists.Commands.CreateTodoList;
-using netca.Application.TodoLists.Queries.ExportTodos;
-using netca.Application.TodoLists.Queries.GetTodos;
+using ecommerce.Api.Filters;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.Common.Vms;
+using ecommerce.Application.TodoLists.Commands.CreateTodoList;
+using ecommerce.Application.TodoLists.Queries.ExportTodos;
+using ecommerce.Application.TodoLists.Queries.GetTodos;
 using NSwag.Annotations;
 
-namespace netca.Api.Controllers;
+namespace ecommerce.Api.Controllers;
 
 /// <summary>
 /// Represents RESTful of TodoListsController

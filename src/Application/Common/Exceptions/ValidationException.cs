@@ -7,7 +7,7 @@
 using System.Runtime.Serialization;
 using FluentValidation.Results;
 
-namespace netca.Application.Common.Exceptions;
+namespace ecommerce.Application.Common.Exceptions;
 
 /// <summary>
 /// ValidationException

@@ -17,14 +17,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using netca.Application.Common.Exceptions;
-using netca.Application.Common.Extensions;
-using netca.Application.Common.Interfaces;
-using netca.Application.Common.Models;
-using netca.Application.Dtos;
+using ecommerce.Application.Common.Exceptions;
+using ecommerce.Application.Common.Extensions;
+using ecommerce.Application.Common.Interfaces;
+using ecommerce.Application.Common.Models;
+using ecommerce.Application.Dtos;
 using Newtonsoft.Json;
 
-namespace netca.Infrastructure.Services;
+namespace ecommerce.Infrastructure.Services;
 
 /// <summary>
 /// UserAuthorizationService

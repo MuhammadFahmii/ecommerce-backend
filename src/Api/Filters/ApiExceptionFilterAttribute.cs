@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace netca.Api.Filters;
+namespace ecommerce.Api.Filters;
 
 /// <summary>
 /// ApiExceptionFilterAttribute
