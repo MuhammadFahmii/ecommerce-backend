@@ -30,7 +30,7 @@ services:
       - "DatabaseSettings__Migrations=true"
       - "DatabaseSettings__SeedData=true"
       # - "Redis__Server=redis:6379,password=${REDIS_PASSWORD:-Admin123}"
-    ports:
+    expose:
       - 5000
     restart: always
     deploy:
