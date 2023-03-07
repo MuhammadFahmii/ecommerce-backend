@@ -18,6 +18,9 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
           touch .env
-          echo "SSH_KEY=${{secrets.SSH_KEY}}" >  .env
-          echo "SSH_HOST=${{secrets.SSH_HOST}}" > .env
+          echo "IsEnableAuth="false"" >> .env
+          echo "ConnectionStrings__DefaultConnection="User ID=postgres;Password=postgres;Server=postgres-test;Database=e-commerce;Port=5432"" >> .env
+          echo "DatabaseSettings__Migrations="true"" >> .env
+          echo "DatabaseSettings__SeedData="true"" >> .env
+          echo "ASPNETCORE_ENVIRONMENT="Development"" >> .env
           cat .env
