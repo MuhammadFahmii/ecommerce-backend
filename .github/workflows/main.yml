@@ -1,0 +1,23 @@
+name: ecommerce-backend
+
+on: 
+  push:
+    branches:
+      - "main"
+    
+jobs:
+  push-server:
+    name: push-server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: connect server & clone repo
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          touch .env
+          echo "SSH_KEY=${{secrets.SSH_KEY}}" >  .env
+          echo "SSH_HOST=${{secrets.SSH_HOST}}" > .env
+          cat .env
